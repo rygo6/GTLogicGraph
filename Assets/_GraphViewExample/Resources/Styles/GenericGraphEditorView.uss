@@ -1,0 +1,7 @@
+GenericGraphEditorView {
+    flex: 1;
+}
+
+GenericGraphEditorView > #content {
+    flex: 1;
+}

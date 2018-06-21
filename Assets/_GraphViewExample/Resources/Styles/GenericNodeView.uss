@@ -1,0 +1,15 @@
+GenericNodeView {
+  width: 400;
+}
+
+GenericNodeView #collapsible-area {
+    width: 0;
+    height: 0;
+}
+
+GenericNodeView #controls {
+    background-color: rgba(63, 63, 63, 0.8);
+}
+
+
+  #background-color: #FF0000;
