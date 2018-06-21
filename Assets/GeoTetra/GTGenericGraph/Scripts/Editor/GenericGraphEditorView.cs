@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 using UnityEngine.Experimental.UIElements.StyleEnums;
 
-namespace GeoTetra.GenericGraph
+namespace GeoTetra.GTGenericGraph
 {
     public class GenericGraphEditorView : VisualElement
     {

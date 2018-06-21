@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Experimental.UIElements.GraphView;
 using UnityEngine;
 
-namespace GeoTetra.GenericGraph
+namespace GeoTetra.GTGenericGraph
 {
 	public class GenericGraphView : GraphView
 	{

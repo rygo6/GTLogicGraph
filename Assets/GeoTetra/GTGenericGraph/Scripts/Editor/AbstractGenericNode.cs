@@ -6,7 +6,7 @@ using UnityEditor.Graphing;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
 
-namespace GeoTetra.GenericGraph
+namespace GeoTetra.GTGenericGraph
 {
     [Serializable]
     public abstract class AbstractGenericNode : INode, ISerializationCallbackReceiver

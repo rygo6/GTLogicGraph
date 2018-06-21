@@ -7,7 +7,7 @@ using UnityEditor.Graphing;
 using UnityEditor.ShaderGraph;
 using UnityEngine.Experimental.UIElements;
 
-namespace GeoTetra.GenericGraph
+namespace GeoTetra.GTGenericGraph
 {
     [Serializable]
     public abstract class GenericSlot : ISlot

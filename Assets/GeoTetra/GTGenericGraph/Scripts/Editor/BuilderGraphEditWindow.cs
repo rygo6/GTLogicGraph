@@ -5,7 +5,7 @@ using UnityEditor.Experimental.UIElements;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 
-namespace GeoTetra.GenericGraph
+namespace GeoTetra.GTGenericGraph
 {
     public class BuilderGraphEditWindow : EditorWindow
     {
@@ -43,7 +43,7 @@ namespace GeoTetra.GenericGraph
             private set { _selected = value; }
         }
 
-        [MenuItem("Window/BuilderGraph")]
+        [MenuItem("Window/GenericGraph")]
         private static void CreateFromMenu()
         {
             BuilderGraphEditWindow window = GetWindow<BuilderGraphEditWindow>();

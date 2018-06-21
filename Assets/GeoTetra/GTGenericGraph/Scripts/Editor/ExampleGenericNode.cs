@@ -5,7 +5,7 @@ using UnityEditor.ShaderGraph;
 using UnityEditor.ShaderGraph.Drawing.Controls;
 using UnityEngine;
 
-namespace GeoTetra.GenericGraph
+namespace GeoTetra.GTGenericGraph
 {
     public class ExampleGenericNode : AbstractGenericNode
     {

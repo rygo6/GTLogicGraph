@@ -6,7 +6,7 @@ using UnityEditor.Experimental.UIElements.GraphView;
 using UnityEditor.ShaderGraph.Drawing.Controls;
 using UnityEngine.Experimental.UIElements;
 
-namespace GeoTetra.GenericGraph
+namespace GeoTetra.GTGenericGraph
 {
     public class GenericNodeView : Node
     {
