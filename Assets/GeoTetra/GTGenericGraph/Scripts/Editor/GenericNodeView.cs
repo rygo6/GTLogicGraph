@@ -12,14 +12,15 @@ namespace GeoTetra.GTGenericGraph
     {
         VisualElement _controlsDivider;
         VisualElement _controlItems;
+        IEdgeConnectorListener _connectorListener;
 
-        public AbstractGenericNode tNode { get; private set; }
+        public AbstractGenericNode Node { get; private set; }
         
         public void Initialize(AbstractGenericNode node)
         {
             AddStyleSheetPath("Styles/GenericNodeView");
 
-            tNode = node;
+            Node = node;
             
             title = "Node";
 
@@ -46,6 +47,21 @@ namespace GeoTetra.GTGenericGraph
             SetPosition(new Rect(node.DrawState.position.x, node.DrawState.position.y, 0, 0));
 
             RefreshExpandedState();
+        }
+        
+        void AddSlots(IEnumerable<GenericSlot> slots)
+        {
+            foreach (var slot in slots)
+            {
+                if (slot.hidden)
+                    continue;
+
+                var port = GenericPort.Create(slot, _connectorListener);
+                if (slot.isOutputSlot)
+                    outputContainer.Add(port);
+                else
+                    inputContainer.Add(port);
+            }
         }
     }
 }
