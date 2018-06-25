@@ -16,7 +16,7 @@ namespace GeoTetra.GTGenericGraph
             : base(portOrientation, portDirection, portCapacity, type)
 #endif
         {
-            AddStyleSheetPath("Styles/ShaderPort");
+            AddStyleSheetPath("Styles/GenericPort");
         }
 
         GenericSlot _slot;

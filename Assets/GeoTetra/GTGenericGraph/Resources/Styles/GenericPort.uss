@@ -1,0 +1,195 @@
+/* THIS FILE IS FROM GRAPHVIEW BUT CONTAINS MODIFICATIONS */
+
+GenericPort {
+    height: 24;
+    align-items: center;
+    padding-left: 4;
+    padding-right: 4;
+    port-color: rgb(200, 200, 200);
+    disabled-port-color: rgb(70, 70, 70);
+}
+
+GenericPort.input {
+    flex-direction: row;
+}
+
+GenericPort.output {
+    flex-direction: row-reverse;
+}
+
+GenericPort > #connector {
+    border-color: rgb(70, 70, 70);
+    background-color: #212121;
+    width: 8;
+    height: 8;
+    border-radius: 8;
+    align-items: center;
+    justify-content: center;
+
+    margin-left: 4;
+    margin-right: 4;
+    border-left-width:1;
+    border-top-width:1;
+    border-right-width:1;
+    border-bottom-width:1;
+}
+
+GenericPort > #connector:hover {
+    border-color:  #f0f0f0
+}
+
+GenericPort > #connector > #cap
+{
+    background-color: #212121;
+    width: 4;
+    height: 4;
+    border-radius: 4;
+}
+
+GenericPort > #connector > #cap:hover
+{
+    background-color: #f0f0f0;
+}
+
+GenericPort > #connector.portHighlight {
+    border-color: #f0f0f0;
+}
+
+GenericPort > #type {
+    text-color: #c1c1c1;
+    font-size:11;
+    height:16;
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 4;
+    margin-right: 4;
+}
+
+GenericPort.input > #type {
+    text-alignment: middle-left;
+}
+
+GenericPort.output > #type {
+    text-alignment:middle-right;
+}
+
+/*******************************/
+/* GenericPorts colors by types */
+/*******************************/
+
+GenericPort.typeTexture {
+    port-color:#FF8B8B;
+}
+
+GenericPort.typeTexture2D {
+    /* Same as typeTexture */
+    port-color:#FF8B8B;
+}
+
+GenericPort.typeCubemap {
+	/* Same as typeTexture */
+    port-color:#FF8B8B;
+}
+
+GenericPort.typeGraphScript {
+    /* Todo: there is no such type in Unity atm */
+    port-color:#E681BA;
+}
+
+GenericPort.typeFloat4 {
+    port-color:#FBCBF4;
+}
+
+GenericPort.typeVector4 {
+    /* Same as typeFloat4 */
+    port-color:#FBCBF4;
+}
+
+GenericPort.typeQuaternion {
+    /* Same as typeFloat4 */
+    port-color:#FBCBF4;
+}
+
+GenericPort.typeColor {
+    /* Same as typeFloat4 */
+    port-color:#FBCBF4;
+}
+
+GenericPort.typeInt {
+    port-color:#9481E6;
+}
+
+GenericPort.typeInt32 {
+    /* Same as typeInt */
+    port-color:#9481E6;
+}
+
+/* TEMP STUFF THAT SHOULD ACTUALLY STAY IN GRAPHVIEW */
+GenericPort.typeInt64 {
+    /* Same as typeInt */
+    /* todo we might want to differentiate that from int32 */
+    port-color:#9481E6;
+}
+
+GenericPort.typeBoolean {
+    port-color:#9481E6;
+}
+
+GenericPort.typeMatrix {
+    port-color:#8FC1DF;
+}
+
+GenericPort.typeMatrix4x4 {
+    /* Same as typeMatrix */
+    port-color:#8FC1DF;
+}
+
+GenericPort.typeGameObject {
+    port-color:#8FC1DF;
+}
+
+GenericPort.typeFloat {
+    port-color:#84E4E7;
+}
+
+GenericPort.typeFloat1 {
+    /* Same as typeFloat */
+    port-color:#84E4E7;
+}
+
+GenericPort.typeSingle {
+    /* Same as typeFloat */
+    port-color:#84E4E7;
+}
+
+GenericPort.typeDouble {
+    /* Same as typeFloat */
+    /* todo we might want to differentiate that from float */
+    port-color:#84E4E7;
+}
+
+GenericPort.typeFloat2 {
+    port-color:#9AEF92;
+}
+
+GenericPort.typeVector2 {
+    /* Same as typeFloat2 */
+    port-color:#9AEF92;
+}
+
+GenericPort.typeComponent {
+    port-color:#C9F774;
+}
+
+GenericPort.typeFloat3 {
+    port-color:#F6FF9A;
+}
+
+GenericPort.typeVector3 {
+    /* Same as typeFloat3 */
+    port-color:#F6FF9A;
+}
+
+GenericPort.typeString {
+    port-color:#FCD76E;
+}

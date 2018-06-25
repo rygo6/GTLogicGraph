@@ -27,7 +27,7 @@ namespace GeoTetra.GTGenericGraph
         ConcreteSlotValueType _slotType;
         VisualElement _control;
         VisualElement _container;
-        EdgeControl _rdgeControl;
+        EdgeControl _edgeControl;
 
         public GenericPortInputView(GenericSlot slot)
         {
@@ -38,18 +38,18 @@ namespace GeoTetra.GTGenericGraph
             _slotType = slot.concreteValueType;
             AddToClassList("type" + _slotType);
 
-            _rdgeControl = new EdgeControl
+            _edgeControl = new EdgeControl
             {
                 @from = new Vector2(212f - 21f, 11.5f),
                 to = new Vector2(212f, 11.5f),
                 edgeWidth = 2,
                 pickingMode = PickingMode.Ignore
             };
-            Add(_rdgeControl);
+            Add(_edgeControl);
 
             _container = new VisualElement { name = "container" };
             {
-                _control = this.Slot.InstantiateControl();
+                _control = _slot.InstantiateControl();
                 if (_control != null)
                     _container.Add(_control);
 
@@ -61,16 +61,16 @@ namespace GeoTetra.GTGenericGraph
             }
             Add(_container);
 
-            _container.visible = _rdgeControl.visible = _control != null;
+            _container.visible = _edgeControl.visible = _control != null;
         }
 
         protected override void OnStyleResolved(ICustomStyle styles)
         {
             base.OnStyleResolved(styles);
             styles.ApplyCustomProperty(EdgeColorProperty, ref _edgeColor);
-            _rdgeControl.UpdateLayout();
-            _rdgeControl.inputColor = EdgeColor;
-            _rdgeControl.outputColor = EdgeColor;
+            _edgeControl.UpdateLayout();
+            _edgeControl.inputColor = EdgeColor;
+            _edgeControl.outputColor = EdgeColor;
         }
 
         public void UpdateSlot(GenericSlot newSlot)
@@ -101,7 +101,7 @@ namespace GeoTetra.GTGenericGraph
             if (_control != null)
                 _container.Insert(0, _control);
 
-            _container.visible = _rdgeControl.visible = _control != null;
+            _container.visible = _edgeControl.visible = _control != null;
         }
 
         public void Dispose()
