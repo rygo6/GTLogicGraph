@@ -11,5 +11,67 @@ GenericNodeView #controls {
     background-color: rgba(63, 63, 63, 0.8);
 }
 
+GenericNodeView #controls > #items {
+    padding-top: 4;
+    padding-bottom: 4;
+}
 
-  #background-color: #FF0000;
+GenericNodeView > #resize {
+    background-image : resource("GraphView/Nodes/NodeChevronLeft.png");
+    position-type: absolute;
+    position-right: 5;
+    position-bottom: 5;
+    width: 10;
+    height: 10;
+    cursor: resize-up-left;
+}
+
+GenericNodeView > #portInputContainer {
+    position-type: absolute;
+    width: 212;
+    position-left: -200;
+    position-top: 46;
+}
+
+GenericNodeView > #settings-container {
+	background-color : rgb(63, 63, 63);
+}
+
+#settings-button {
+    width: 16;
+    align-self: center;
+    justify-content: center;
+    padding-left: 8;
+}
+
+#settings-button > #icon {
+    width : 12;
+    height : 12;
+    align-self: center;
+    visibility: hidden;
+    background-image : resource("Icons/SettingsIcons");
+}
+
+.node:hover #settings-button > #icon {
+    visibility: visible;
+}
+
+#settings-button:hover > #icon {
+    align-self: center;
+    background-color: #2B2B2B;
+    background-image : resource("Icons/SettingsIcons_hover");
+}
+
+#settings-button.clicked > #icon{
+    background-color: #2B2B2B;
+    background-image : resource("Icons/SettingsIcons_hover");
+    visibility: visible;
+}
+
+.node.collapsed > #node-border > #title > #button-container > #collapse-button > #icon {
+    background-image: resource("GraphView/Nodes/NodeChevronLeft.png");
+}
+
+.node.expanded > #node-border > #title > #button-container > #collapse-button > #icon {
+    background-image : resource("GraphView/Nodes/NodeChevronDown.png");
+}

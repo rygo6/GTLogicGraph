@@ -497,13 +497,13 @@ namespace GeoTetra.GTGenericGraph
 
         public void AddSlot(ISlot slot)
         {
-            if (!(slot is MaterialSlot))
+            if (!(slot is GenericSlot))
                 throw new ArgumentException(string.Format(
                     "Trying to add slot {0} to Material node {1}, but it is not a {2}", slot, this,
-                    typeof(MaterialSlot)));
+                    typeof(GenericSlot)));
 
-            var addingSlot = (MaterialSlot) slot;
-            var foundSlot = FindSlot<MaterialSlot>(slot.id);
+            var addingSlot = (GenericSlot) slot;
+            var foundSlot = FindSlot<GenericSlot>(slot.id);
 
             // this will remove the old slot and add a new one
             // if an old one was found. This allows updating values

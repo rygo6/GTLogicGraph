@@ -341,7 +341,7 @@ namespace GeoTetra.GTGenericGraph
             properties.Add(default(PreviewProperty));
         }
 
-        public abstract void CopyValuesFrom(MaterialSlot foundSlot);
+        public abstract void CopyValuesFrom(GenericSlot foundSlot);
 
         bool Equals(GenericSlot other)
         {
@@ -358,7 +358,7 @@ namespace GeoTetra.GTGenericGraph
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != this.GetType()) return false;
-            return Equals((MaterialSlot)obj);
+            return Equals((GenericSlot)obj);
         }
 
         public override int GetHashCode()
