@@ -4,6 +4,20 @@ The intent of this project is to provide a generic graph view based on the new G
 
 Currently this repo contains the source code of the GraphView and the source code of the visual element examples, alongside the source for the generic graph view in the GeoTetra/GTGenericGraph directory. This is done to easily cross reference and pull source from the ShaderGraph source, as much as possible the patterns of the ShaderGraph should be followed, and its classes relied upon.
 
-Currently you can open the generic graph window from Window>GenericGraph. You can then right click to create nodes, drag the nodes around, drag a box to select multiple nodes, zoom in and out and drag the view around.
-
 The intent is to create a feature filled basis off of which the new GraphView can be utilized to support any system. 
+
+Completed or Started:
+- Can open GenericGraphView from Windows > GenericGraph.
+- Can right click to create new node.
+- Can drag graph around.
+- Can zoom in/out of graph.
+- Can drag nodes around.
+- Can drag a box to multi select nodes and drag multiple nodes.
+- Can adjust default input port.
+- Can drag line off of node.
+
+Still to do:
+- Implement a whole set of common base types for data nodes can support and their corresponding UI's.
+- Enable chaining together of nodes.
+- Serializing and save of graphs.
+- Figure out way to enable plugging in of different logic to nodes so the GraphView can act like a frontend to different sets of nodes.
