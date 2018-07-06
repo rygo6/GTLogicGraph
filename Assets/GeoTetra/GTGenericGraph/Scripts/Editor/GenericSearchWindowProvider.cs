@@ -193,7 +193,7 @@ namespace GeoTetra.GTGenericGraph
                 return;
             }
 
-            var connectedSlot = connectedPort.slot;
+            var connectedSlot = connectedPort.Slot;
             m_Slots.Clear();
             node.GetSlots(m_Slots);
             var hasSingleSlot = m_Slots.Count(s => s.isOutputSlot != connectedSlot.isOutputSlot) == 1;
@@ -244,7 +244,7 @@ namespace GeoTetra.GTGenericGraph
 
             if (connectedPort != null)
             {
-                var connectedSlot = connectedPort.slot;
+                var connectedSlot = connectedPort.Slot;
                 var connectedSlotReference = connectedSlot.owner.GetSlotReference(connectedSlot.id);
                 var compatibleSlotReference = node.GetSlotReference(nodeEntry.compatibleSlotId);
 

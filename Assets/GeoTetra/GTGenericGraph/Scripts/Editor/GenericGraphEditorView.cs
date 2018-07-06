@@ -16,18 +16,19 @@ namespace GeoTetra.GTGenericGraph
 {
     public class GenericGraphEditorView : VisualElement
     {
-        private AbstractGenericGraph _genericGraph;
-        private GenericGraphView _genericGraphView;
-        private EditorWindow _editorWindow;
-        
+        private AbstractGenericGraph m_Graph;
+        private GenericGraphView m_GraphView;
+        private EditorWindow m_EditorWindow;
+
         public GenericGraphView GenericGraphView
         {
-            get { return _genericGraphView; }
+            get { return m_GraphView; }
         }
-        
-        public GenericGraphEditorView(EditorWindow editorWindow, string assetName)
+
+        public GenericGraphEditorView(EditorWindow EditorWindow,  AbstractGenericGraph graph, string assetName)
         {
-            _editorWindow = editorWindow;
+            m_EditorWindow = EditorWindow;
+            m_Graph = graph;
             
             AddStyleSheetPath("Styles/GenericGraphEditorView");
 
@@ -36,45 +37,45 @@ namespace GeoTetra.GTGenericGraph
                 GUILayout.BeginHorizontal(EditorStyles.toolbar);
                 if (GUILayout.Button("Save Asset", EditorStyles.toolbarButton))
                 {
-
                 }
+
                 GUILayout.Space(6);
                 if (GUILayout.Button("Show In Project", EditorStyles.toolbarButton))
                 {
-
                 }
+
                 GUILayout.FlexibleSpace();
                 GUILayout.EndHorizontal();
             });
             Add(toolbar);
 
-            
-            var content = new VisualElement { name = "content" };
+
+            var content = new VisualElement {name = "content"};
             {
-                _genericGraphView = new GenericGraphView() {name = "GraphView", persistenceKey = "GenericGraphView"};
+                m_GraphView = new GenericGraphView() {name = "GraphView", persistenceKey = "GenericGraphView"};
 
-                _genericGraphView.SetupZoom(0.05f, ContentZoomer.DefaultMaxScale);
-                _genericGraphView.AddManipulator(new ContentDragger());
-                _genericGraphView.AddManipulator(new SelectionDragger());
-                _genericGraphView.AddManipulator(new RectangleSelector());
-                _genericGraphView.AddManipulator(new ClickSelector());
-//            _builderGraph.AddManipulator(new GraphDropTarget(graph));
-                _genericGraphView.RegisterCallback<KeyDownEvent>(OnSpaceDown);
-                content.Add(_genericGraphView);
+                m_GraphView.SetupZoom(0.05f, ContentZoomer.DefaultMaxScale);
+                m_GraphView.AddManipulator(new ContentDragger());
+                m_GraphView.AddManipulator(new SelectionDragger());
+                m_GraphView.AddManipulator(new RectangleSelector());
+                m_GraphView.AddManipulator(new ClickSelector());
+//                _genericGraphView.AddManipulator(new GraphDropTarget(_genericGraph));
+                m_GraphView.RegisterCallback<KeyDownEvent>(OnSpaceDown);
+                content.Add(m_GraphView);
 
-                _genericGraphView.graphViewChanged = GraphViewChanged;
-                
+                m_GraphView.graphViewChanged = GraphViewChanged;
+
                 RegisterCallback<PostLayoutEvent>(OnPostLayout);
             }
-            
-            _genericGraphView.nodeCreationRequest = (c) =>
+
+            m_GraphView.nodeCreationRequest = (c) =>
             {
                 Debug.Log("Open Search Window");
-                AddNode(c.screenMousePosition);
+                AddNewNode(c.screenMousePosition);
 //                m_SearchWindowProvider.connectedPort = null;
 //                SearchWindow.Open(new SearchWindowContext(c.screenMousePosition), m_SearchWindowProvider);
             };
-            
+
             Add(content);
         }
 
@@ -87,21 +88,19 @@ namespace GeoTetra.GTGenericGraph
         {
             Debug.Log("OnPostLayout BuilderGraphView" + evt.newRect);
         }
-        
+
         private void OnSpaceDown(KeyDownEvent evt)
         {
             Debug.Log(evt);
-            if(evt.keyCode == KeyCode.Space && !evt.shiftKey && !evt.altKey && !evt.ctrlKey && !evt.commandKey)
+            if (evt.keyCode == KeyCode.Space && !evt.shiftKey && !evt.altKey && !evt.ctrlKey && !evt.commandKey)
             {
-
             }
             else if (evt.keyCode == KeyCode.F1)
             {
-
             }
         }
 
-        private void AddNode(Vector2 sceenMousePosition)
+        private void AddNewNode(Vector2 sceenMousePosition)
         {
             Debug.Log("Adding Node");
             var node = new ExampleGenericNode();
@@ -109,48 +108,74 @@ namespace GeoTetra.GTGenericGraph
             node.AddSlot(slot);
             var slot2 = new Vector1GenericSlot(1, "testBool2", "tesBoolOut", SlotType.Output, 2);
             node.AddSlot(slot2);
-            
+
             var slot3 = new Vector1GenericSlot(2, "testBool3", "tesBoolIn2", SlotType.Input, 3);
             node.AddSlot(slot3);
             var slot4 = new Vector1GenericSlot(3, "testBool4", "tesBoolOut2", SlotType.Output, 4);
             node.AddSlot(slot4);
-            
+
             var drawState = node.DrawState;
-            var windowMousePosition = _editorWindow.GetRootVisualContainer().ChangeCoordinatesTo(_editorWindow.GetRootVisualContainer().parent, sceenMousePosition - _editorWindow.position.position);
-            var graphMousePosition = _genericGraphView.contentViewContainer.WorldToLocal(windowMousePosition);
+            var windowMousePosition = m_EditorWindow.GetRootVisualContainer()
+                .ChangeCoordinatesTo(m_EditorWindow.GetRootVisualContainer().parent,
+                    sceenMousePosition - m_EditorWindow.position.position);
+            var graphMousePosition = m_GraphView.contentViewContainer.WorldToLocal(windowMousePosition);
             drawState.position = new Rect(graphMousePosition, Vector2.zero);
             node.DrawState = drawState;
+
+            m_Graph.owner.RegisterCompleteObjectUndo("Add " + node.name);
+            m_Graph.AddNode(node);
+            
+//            if (connectedPort != null)
+//            {
+//                var connectedSlot = connectedPort.slot;
+//                var connectedSlotReference = connectedSlot.owner.GetSlotReference(connectedSlot.id);
+//                var compatibleSlotReference = node.GetSlotReference(nodeEntry.compatibleSlotId);
+//
+//                var fromReference = connectedSlot.isOutputSlot ? connectedSlotReference : compatibleSlotReference;
+//                var toReference = connectedSlot.isOutputSlot ? compatibleSlotReference : connectedSlotReference;
+//                m_Graph.Connect(fromReference, toReference);
+//
+//                nodeNeedsRepositioning = true;
+//                targetSlotReference = compatibleSlotReference;
+//                targetPosition = graphMousePosition;
+//            }
             
             var nodeView = new GenericNodeView();
             nodeView.Initialize(node);
-            _genericGraphView.AddElement(nodeView);
+            m_GraphView.AddElement(nodeView);
         }
-        
+
         Edge AddEdge(IEdge edge)
         {
-            var sourceNode = _genericGraph.GetNodeFromGuid(edge.outputSlot.nodeGuid);
+            var sourceNode = m_Graph.GetNodeFromGuid(edge.outputSlot.nodeGuid);
             if (sourceNode == null)
             {
                 Debug.LogWarning("Source node is null");
                 return null;
             }
+
             var sourceSlot = sourceNode.FindOutputSlot<MaterialSlot>(edge.outputSlot.slotId);
 
-            var targetNode = _genericGraph.GetNodeFromGuid(edge.inputSlot.nodeGuid);
+            var targetNode = m_Graph.GetNodeFromGuid(edge.inputSlot.nodeGuid);
             if (targetNode == null)
             {
                 Debug.LogWarning("Target node is null");
                 return null;
             }
+
             var targetSlot = targetNode.FindInputSlot<MaterialSlot>(edge.inputSlot.slotId);
 
-            var sourceNodeView = _genericGraphView.nodes.ToList().OfType<GenericNodeView>().FirstOrDefault(x => x.Node == sourceNode);
+            var sourceNodeView = m_GraphView.nodes.ToList().OfType<GenericNodeView>()
+                .FirstOrDefault(x => x.Node == sourceNode);
             if (sourceNodeView != null)
             {
-                var sourceAnchor = sourceNodeView.outputContainer.Children().OfType<GenericPort>().FirstOrDefault(x => x.slot.Equals(sourceSlot));
+                var sourceAnchor = sourceNodeView.outputContainer.Children().OfType<GenericPort>()
+                    .FirstOrDefault(x => x.Slot.Equals(sourceSlot));
 
-                var targetNodeView = _genericGraphView.nodes.ToList().OfType<GenericNodeView>().FirstOrDefault(x => x.Node == targetNode);
-                var targetAnchor = targetNodeView.inputContainer.Children().OfType<GenericPort>().FirstOrDefault(x => x.slot.Equals(targetSlot));
+                var targetNodeView = m_GraphView.nodes.ToList().OfType<GenericNodeView>()
+                    .FirstOrDefault(x => x.Node == targetNode);
+                var targetAnchor = targetNodeView.inputContainer.Children().OfType<GenericPort>()
+                    .FirstOrDefault(x => x.Slot.Equals(targetSlot));
 
                 var edgeView = new Edge
                 {
@@ -160,7 +185,7 @@ namespace GeoTetra.GTGenericGraph
                 };
                 edgeView.output.Connect(edgeView);
                 edgeView.input.Connect(edgeView);
-                _genericGraphView.AddElement(edgeView);
+                m_GraphView.AddElement(edgeView);
                 sourceNodeView.RefreshPorts();
                 targetNodeView.RefreshPorts();
                 sourceNodeView.UpdatePortInputTypes();

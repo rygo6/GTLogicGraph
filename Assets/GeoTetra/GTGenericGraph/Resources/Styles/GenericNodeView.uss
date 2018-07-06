@@ -1,3 +1,7 @@
+GenericNodeView {
+  width: 400;
+}
+
 GenericNodeView.graphElement.node.MaterialNode {
     margin-top: 0;
     margin-bottom: 0;
@@ -5,15 +9,17 @@ GenericNodeView.graphElement.node.MaterialNode {
     margin-right: 0;
 }
 
-GenericNodeView {
-  width: 400;
-}
-
 GenericNodeView #collapsible-area {
     width: 0;
     height: 0;
 }
 
+MaterialNodeView #previewFiller.expanded {
+    width: 200;
+    padding-bottom: 200;
+}
+
+MaterialNodeView #previewFiller,
 GenericNodeView #controls {
     background-color: rgba(63, 63, 63, 0.8);
 }
@@ -22,6 +28,78 @@ GenericNodeView #controls > #items {
     padding-top: 4;
     padding-bottom: 4;
 }
+
+
+GenericNodeView > #previewContainer {
+    position-type: absolute;
+    position-bottom: 4;
+    position-left: 4;
+    border-radius: 6;
+    padding-top: 6;
+}
+
+GenericNodeView > #previewContainer > #preview  {
+    width: 200;
+    height: 200;
+    align-items:center;
+}
+
+GenericNodeView > #previewContainer > #preview > #collapse {
+    background-color: #000;
+    border-color: #F0F0F0;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    border-radius: 1;
+    border-top-width: 1;
+    border-bottom-width: 1;
+    border-left-width: 1;
+    border-right-width: 1;
+    margin-top: 4;
+    align-items:center;
+    justify-content:center;
+}
+
+
+GenericNodeView:hover > #previewContainer > #preview > #collapse {
+    width: 20;
+    height: 20;
+    opacity: 0.6;
+}
+
+GenericNodeView > #previewContainer > #preview > #collapse > #icon  {
+    background-image : resource("GraphView/Nodes/PreviewCollapse.png");
+    width: 16;
+    height: 16;
+}
+
+GenericNodeView > #previewContainer > #preview > #collapse:hover {
+    opacity: 1.0;
+}
+
+GenericNodeView #previewFiller > #expand {
+    align-self: center;
+    width: 56;
+    height: 16;
+    flex-direction: row;
+    justify-content:center;
+}
+
+GenericNodeView #previewFiller > #expand > #icon {
+    align-self: center;
+    background-image : resource("GraphView/Nodes/PreviewExpand.png");
+    width: 16;
+    height: 16;
+}
+
+GenericNodeView #previewFiller.collapsed > #expand:hover {
+    background-color: #2B2B2B;
+}
+
+GenericNodeView #previewFiller.expanded > #expand {
+    height: 0;
+}
+
 
 GenericNodeView > #resize {
     background-image : resource("GraphView/Nodes/NodeChevronLeft.png");

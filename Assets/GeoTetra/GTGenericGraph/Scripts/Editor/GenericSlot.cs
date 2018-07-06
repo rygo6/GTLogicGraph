@@ -104,46 +104,48 @@ namespace GeoTetra.GTGenericGraph
             return _displayName;
         }
 
-        public static MaterialSlot CreateGenericSlot(SlotValueType type, int slotId, string displayName, string shaderOutputName, SlotType slotType, Vector4 defaultValue, ShaderStage shaderStage = ShaderStage.Dynamic, bool hidden = false)
+        public static GenericSlot CreateGenericSlot(SlotValueType type, int slotId, string displayName, string shaderOutputName, SlotType slotType, Vector4 defaultValue, ShaderStage shaderStage = ShaderStage.Dynamic, bool hidden = false)
         {
             switch (type)
             {
-                case SlotValueType.SamplerState:
-                    return new SamplerStateMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-                case SlotValueType.DynamicMatrix:
-                    return new DynamicMatrixMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-                case SlotValueType.Matrix4:
-                    return new Matrix4MaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-                case SlotValueType.Matrix3:
-                    return new Matrix3MaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-                case SlotValueType.Matrix2:
-                    return new Matrix2MaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-                case SlotValueType.Texture2D:
-                    return slotType == SlotType.Input
-                        ? new Texture2DInputMaterialSlot(slotId, displayName, shaderOutputName, shaderStage, hidden)
-                        : new Texture2DMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-                case SlotValueType.Cubemap:
-                    return slotType == SlotType.Input
-                        ? new CubemapInputMaterialSlot(slotId, displayName, shaderOutputName, shaderStage, hidden)
-                        : new CubemapMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-                case SlotValueType.Gradient:
-                    return slotType == SlotType.Input
-                        ? new GradientInputMaterialSlot(slotId, displayName, shaderOutputName, shaderStage, hidden)
-                        : new GradientMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-                case SlotValueType.DynamicVector:
-                    return new DynamicVectorMaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue, shaderStage, hidden);
-                case SlotValueType.Vector4:
-                    return new Vector4MaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue, shaderStage, hidden: hidden);
-                case SlotValueType.Vector3:
-                    return new Vector3MaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue, shaderStage, hidden: hidden);
-                case SlotValueType.Vector2:
-                    return new Vector2MaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue, shaderStage, hidden: hidden);
+//                case SlotValueType.SamplerState:
+//                    return new SamplerStateMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
+//                case SlotValueType.DynamicMatrix:
+//                    return new DynamicMatrixMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
+//                case SlotValueType.Matrix4:
+//                    return new Matrix4MaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
+//                case SlotValueType.Matrix3:
+//                    return new Matrix3MaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
+//                case SlotValueType.Matrix2:
+//                    return new Matrix2MaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
+//                case SlotValueType.Texture2D:
+//                    return slotType == SlotType.Input
+//                        ? new Texture2DInputMaterialSlot(slotId, displayName, shaderOutputName, shaderStage, hidden)
+//                        : new Texture2DMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
+//                case SlotValueType.Cubemap:
+//                    return slotType == SlotType.Input
+//                        ? new CubemapInputMaterialSlot(slotId, displayName, shaderOutputName, shaderStage, hidden)
+//                        : new CubemapMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
+//                case SlotValueType.Gradient:
+//                    return slotType == SlotType.Input
+//                        ? new GradientInputMaterialSlot(slotId, displayName, shaderOutputName, shaderStage, hidden)
+//                        : new GradientMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
+//                case SlotValueType.DynamicVector:
+//                    return new DynamicVectorMaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue, shaderStage, hidden);
+//                case SlotValueType.Vector4:
+//                    return new Vector4MaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue, shaderStage, hidden: hidden);
+//                case SlotValueType.Vector3:
+//                    return new Vector3MaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue, shaderStage, hidden: hidden);
+//                case SlotValueType.Vector2:
+//                    return new Vector2MaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue, shaderStage, hidden: hidden);
+//                case SlotValueType.Vector1:
+//                    return new Vector1MaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue.x, shaderStage, hidden: hidden);
+//                case SlotValueType.Dynamic:
+//                    return new DynamicValueMaterialSlot(slotId, displayName, shaderOutputName, slotType, new Matrix4x4(defaultValue, Vector4.zero, Vector4.zero, Vector4.zero), shaderStage, hidden);
+//                case SlotValueType.Boolean:
+//                    return new BooleanMaterialSlot(slotId, displayName, shaderOutputName, slotType, false, shaderStage, hidden);
                 case SlotValueType.Vector1:
-                    return new Vector1MaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue.x, shaderStage, hidden: hidden);
-                case SlotValueType.Dynamic:
-                    return new DynamicValueMaterialSlot(slotId, displayName, shaderOutputName, slotType, new Matrix4x4(defaultValue, Vector4.zero, Vector4.zero, Vector4.zero), shaderStage, hidden);
-                case SlotValueType.Boolean:
-                    return new BooleanMaterialSlot(slotId, displayName, shaderOutputName, slotType, false, shaderStage, hidden);
+                    return new Vector1GenericSlot(slotId, displayName, shaderOutputName, slotType, defaultValue.x, shaderStage, hidden: hidden);
             }
 
             throw new ArgumentOutOfRangeException("type", type, null);
@@ -183,12 +185,12 @@ namespace GeoTetra.GTGenericGraph
             get { return _slotType == SlotType.Output; }
         }
 
-        public SlotType slotType
+        public SlotType SlotType
         {
             get { return _slotType; }
         }
 
-        public bool isConnected
+        public bool IsConnected
         {
             get
             {

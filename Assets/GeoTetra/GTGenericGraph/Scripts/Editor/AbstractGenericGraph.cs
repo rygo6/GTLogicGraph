@@ -178,7 +178,7 @@ namespace GeoTetra.GTGenericGraph
 
         public virtual void AddNode(INode node)
         {
-            if (node is AbstractMaterialNode)
+            if (node is AbstractGenericNode)
             {
                 AddNodeNoValidate(node);
                 ValidateGraph();
@@ -191,23 +191,23 @@ namespace GeoTetra.GTGenericGraph
 
         void AddNodeNoValidate(INode node)
         {
-            var materialNode = (AbstractGenericNode)node;
-            materialNode.owner = this;
+            var genericNode = (AbstractGenericNode)node;
+            genericNode.owner = this;
             if (m_FreeNodeTempIds.Any())
             {
                 var id = m_FreeNodeTempIds.Pop();
                 id.IncrementVersion();
-                materialNode.tempId = id;
-                m_Nodes[id.index] = materialNode;
+                genericNode.tempId = id;
+                m_Nodes[id.index] = genericNode;
             }
             else
             {
                 var id = new Identifier(m_Nodes.Count);
-                materialNode.tempId = id;
-                m_Nodes.Add(materialNode);
+                genericNode.tempId = id;
+                m_Nodes.Add(genericNode);
             }
-            m_NodeDictionary.Add(materialNode.guid, materialNode);
-            m_AddedNodes.Add(materialNode);
+            m_NodeDictionary.Add(genericNode.guid, genericNode);
+            m_AddedNodes.Add(genericNode);
         }
 
         public void RemoveNode(INode node)

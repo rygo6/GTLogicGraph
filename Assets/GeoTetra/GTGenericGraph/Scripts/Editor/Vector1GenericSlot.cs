@@ -12,12 +12,12 @@ namespace UnityEditor.ShaderGraph
     public class Vector1GenericSlot : GenericSlot, IGenericSlotHasValue<float>
     {
         [SerializeField]
-        float m_Value;
+        float _value;
 
         [SerializeField]
-        float m_DefaultValue;
+        float _defaultValue;
 
-        string[] m_Labels;
+        string[] _labels;
 
         public Vector1GenericSlot()
         {}
@@ -33,22 +33,22 @@ namespace UnityEditor.ShaderGraph
             bool hidden = false)
             : base(slotId, displayName, shaderOutputName, slotType, hidden)
         {
-            m_DefaultValue = value;
-            m_Value = value;
-            m_Labels = new[] { label1 };
+            _defaultValue = value;
+            _value = value;
+            _labels = new[] { label1 };
         }
 
-        public float defaultValue { get { return m_DefaultValue; } }
+        public float defaultValue { get { return _defaultValue; } }
 
         public float value
         {
-            get { return m_Value; }
-            set { m_Value = value; }
+            get { return _value; }
+            set { _value = value; }
         }
 
         public override VisualElement InstantiateControl()
         {
-            return new MultiFloatSlotControlView(owner, m_Labels, () => new Vector4(value, 0f, 0f, 0f), (newValue) => value = newValue.x);
+            return new MultiFloatSlotControlView(owner, _labels, () => new Vector4(value, 0f, 0f, 0f), (newValue) => value = newValue.x);
         }
 
         protected override string ConcreteSlotValueAsVariable(AbstractMaterialNode.OutputPrecision precision)
@@ -61,7 +61,7 @@ namespace UnityEditor.ShaderGraph
             if (!generationMode.IsPreview())
                 return;
 
-            var matOwner = owner as AbstractMaterialNode;
+            var matOwner = owner as AbstractGenericNode;
             if (matOwner == null)
                 throw new Exception(string.Format("Slot {0} either has no owner, or the owner is not a {1}", this, typeof(AbstractMaterialNode)));
 

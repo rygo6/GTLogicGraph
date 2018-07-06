@@ -199,7 +199,7 @@ namespace GeoTetra.GTGenericGraph
 
         public virtual void CollectGenericProperties(PropertyCollector properties, GenerationMode generationMode)
         {
-            foreach (var inputSlot in this.GetInputSlots<MaterialSlot>())
+            foreach (var inputSlot in this.GetInputSlots<GenericSlot>())
             {
                 var edges = owner.GetEdges(inputSlot.slotReference);
                 if (edges.Any())
@@ -338,9 +338,9 @@ namespace GeoTetra.GTGenericGraph
                 var edges = owner.GetEdges(inputSlot.slotReference).ToList();
                 if (!edges.Any())
                 {
-                    if (inputSlot is DynamicVectorMaterialSlot)
+//                    if (inputSlot is DynamicVectorMaterialSlot)
 //                        skippedDynamicSlots.Add(inputSlot as DynamicVectorMaterialSlot);
-                    if (inputSlot is DynamicMatrixMaterialSlot)
+//                    if (inputSlot is DynamicMatrixMaterialSlot)
 //                        skippedDynamicMatrixSlots.Add(inputSlot as DynamicMatrixMaterialSlot);
                     continue;
                 }
