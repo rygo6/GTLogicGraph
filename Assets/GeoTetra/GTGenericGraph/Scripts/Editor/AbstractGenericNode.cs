@@ -455,29 +455,6 @@ namespace GeoTetra.GTGenericGraph
             return false;
         }
 
-        public virtual void CollectPreviewMaterialProperties(List<PreviewProperty> properties)
-        {
-            TempSlots.Clear();
-            GetInputSlots(TempSlots);
-            foreach (var s in TempSlots)
-            {
-                TempPreviewProperties.Clear();
-                TempEdges.Clear();
-                owner.GetEdges(s.slotReference, TempEdges);
-                if (TempEdges.Any())
-                    continue;
-
-                s.GetPreviewProperties(TempPreviewProperties, GetVariableNameForSlot(s.id));
-                for (int i = 0; i < TempPreviewProperties.Count; i++)
-                {
-                    if (TempPreviewProperties[i].name == null)
-                        continue;
-
-                    properties.Add(TempPreviewProperties[i]);
-                }
-            }
-        }
-
         public virtual string GetVariableNameForSlot(int slotId)
         {
             var slot = FindSlot<MaterialSlot>(slotId);

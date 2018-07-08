@@ -7,12 +7,15 @@ using UnityEngine;
 
 namespace GeoTetra.GTGenericGraph
 {
+    [Title("Example", "ExampleGenericNode")]
     public class ExampleGenericNode : AbstractGenericNode
     {
         [SerializeField]
-        private bool m_Value;
+        private float m_Value;
 
-        public const int OutputSlotId = 0;
+        const int InputSlotId = 0;
+        const int OutputSlotId = 1;
+
         private const string kOutputSlotName = "Out";
 
         public ExampleGenericNode()
@@ -28,21 +31,12 @@ namespace GeoTetra.GTGenericGraph
 
         public sealed override void UpdateNodeAfterDeserialization()
         {
-//            AddSlot(new BooleanMaterialSlot(OutputSlotId, kOutputSlotName, kOutputSlotName, SlotType.Output, false));
-//            RemoveSlotsNameNotMatching(new[] {OutputSlotId});
+            AddSlot(new Vector1GenericSlot(InputSlotId, "testBool", "tesBoolIn", SlotType.Input, m_Value));
+            AddSlot(new Vector1GenericSlot(OutputSlotId, "testBool4", "tesBoolOut2", SlotType.Output, 0));
+
+            RemoveSlotsNameNotMatching(new[] {OutputSlotId, InputSlotId});
         }
 
-        public ToggleData Value
-        {
-            get { return new ToggleData(m_Value); }
-            set
-            {
-                if (m_Value == value.isOn)
-                    return;
-                m_Value = value.isOn;
-                Dirty(ModificationScope.Node);
-            }
-        }
 
 //        public override void CollectShaderProperties(PropertyCollector properties, GenerationMode generationMode)
 //        {
@@ -60,20 +54,6 @@ namespace GeoTetra.GTGenericGraph
         public override string GetVariableNameForSlot(int slotId)
         {
             return GetVariableNameForNode();
-        }
-
-        public override void CollectPreviewMaterialProperties(List<PreviewProperty> properties)
-        {
-            properties.Add(new PreviewProperty(PropertyType.Boolean)
-            {
-                name = GetVariableNameForNode(),
-                booleanValue = m_Value
-            });
-        }
-
-        public int outputSlotId
-        {
-            get { return OutputSlotId; }
         }
     }
 }

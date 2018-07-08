@@ -161,10 +161,54 @@ namespace GeoTetra.GTGenericGraph
 
             graphEditorView = null;
         }
-
-        private void Update()
+        
+        void Update()
         {
-//            _builderGraphView.HandleGraphChanges();
+            if (m_HasError)
+                return;
+
+            if (PlayerSettings.colorSpace != m_ColorSpace)
+            {
+                graphEditorView = null;
+                m_ColorSpace = PlayerSettings.colorSpace;
+            }
+
+            try
+            {
+                if (graphObject == null && selectedGuid != null)
+                {
+                    var guid = selectedGuid;
+                    selectedGuid = null;
+                    Initialize(guid);
+                }
+
+                if (graphObject == null)
+                {
+                    Close();
+                    return;
+                }
+
+                var materialGraph = graphObject.graph as AbstractGenericGraph;
+                if (materialGraph == null)
+                    return;
+                if (graphEditorView == null)
+                {
+//                    var asset = AssetDatabase.LoadAssetAtPath<Object>(AssetDatabase.GUIDToAssetPath(selectedGuid));
+                    graphEditorView = new GenericGraphEditorView(this, materialGraph, "temp") { persistenceKey = selectedGuid };
+                    m_ColorSpace = PlayerSettings.colorSpace;
+                }
+
+                graphEditorView.HandleGraphChanges();
+                graphObject.graph.ClearChanges();
+            }
+            catch (Exception e)
+            {
+                m_HasError = true;
+                m_GraphEditorView = null;
+                graphObject = null;
+                Debug.LogException(e);
+                throw;
+            }
         }
 
 //        private void OnMouseDown(MouseDownEvent evt)

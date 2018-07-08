@@ -27,11 +27,11 @@ namespace GeoTetra.GTGenericGraph
             get { return m_GraphView; }
         }
 
-        public GenericGraphEditorView(EditorWindow editorWindow,  AbstractGenericGraph graph, string assetName)
+        public GenericGraphEditorView(EditorWindow editorWindow, AbstractGenericGraph graph, string assetName)
         {
             m_EditorWindow = editorWindow;
             m_Graph = graph;
-            
+
             AddStyleSheetPath("Styles/GenericGraphEditorView");
 
             var toolbar = new IMGUIContainer(() =>
@@ -69,18 +69,24 @@ namespace GeoTetra.GTGenericGraph
 
                 RegisterCallback<PostLayoutEvent>(OnPostLayout);
             }
-            
+
             m_SearchWindowProvider = ScriptableObject.CreateInstance<GenericSearchWindowProvider>();
             m_SearchWindowProvider.Initialize(editorWindow, m_Graph, m_GraphView);
-            m_EdgeConnectorListener = new GenericEdgeConnectorListener(m_Graph, m_SearchWindowProvider );
+            m_EdgeConnectorListener = new GenericEdgeConnectorListener(m_Graph, m_SearchWindowProvider);
 
             m_GraphView.nodeCreationRequest = (c) =>
             {
                 Debug.Log("Open Search Window");
-                AddNewNode(c.screenMousePosition);
-//                m_SearchWindowProvider.connectedPort = null;
-//                SearchWindow.Open(new SearchWindowContext(c.screenMousePosition), m_SearchWindowProvider);
+//                AddNewNode(c.screenMousePosition);
+                m_SearchWindowProvider.connectedPort = null;
+                SearchWindow.Open(new SearchWindowContext(c.screenMousePosition), m_SearchWindowProvider);
             };
+
+            foreach (var node in graph.GetNodes<INode>())
+                AddNode(node);
+
+            foreach (var edge in graph.edges)
+                AddEdge(edge);
 
             Add(content);
         }
@@ -92,7 +98,7 @@ namespace GeoTetra.GTGenericGraph
 
         private void OnPostLayout(PostLayoutEvent evt)
         {
-            Debug.Log("OnPostLayout BuilderGraphView" + evt.newRect);
+//            Debug.Log("OnPostLayout BuilderGraphView" + evt.newRect);
         }
 
         private void OnSpaceDown(KeyDownEvent evt)
@@ -106,49 +112,184 @@ namespace GeoTetra.GTGenericGraph
             }
         }
 
-        private void AddNewNode(Vector2 sceenMousePosition)
+        HashSet<GenericNodeView> m_NodeViewHashSet = new HashSet<GenericNodeView>();
+
+        public void HandleGraphChanges()
         {
-            Debug.Log("Adding Node");
-            var node = new ExampleGenericNode();
-            var slot = new Vector1GenericSlot(0, "testBool", "tesBoolIn", SlotType.Input, 1);
-            node.AddSlot(slot);
-            var slot2 = new Vector1GenericSlot(1, "testBool2", "tesBoolOut", SlotType.Output, 2);
-            node.AddSlot(slot2);
+//            m_BlackboardProvider.HandleGraphChanges();
 
-            var slot3 = new Vector1GenericSlot(2, "testBool3", "tesBoolIn2", SlotType.Input, 3);
-            node.AddSlot(slot3);
-            var slot4 = new Vector1GenericSlot(3, "testBool4", "tesBoolOut2", SlotType.Output, 4);
-            node.AddSlot(slot4);
+            foreach (var node in m_Graph.removedNodes)
+            {
+                node.UnregisterCallback(OnNodeChanged);
+                var nodeView = m_GraphView.nodes.ToList().OfType<MaterialNodeView>()
+                    .FirstOrDefault(p => p.node != null && p.node.guid == node.guid);
+                if (nodeView != null)
+                {
+                    nodeView.Dispose();
+                    nodeView.userData = null;
+                    m_GraphView.RemoveElement(nodeView);
+                }
+            }
 
-            var drawState = node.DrawState;
-            var windowMousePosition = m_EditorWindow.GetRootVisualContainer()
-                .ChangeCoordinatesTo(m_EditorWindow.GetRootVisualContainer().parent,
-                    sceenMousePosition - m_EditorWindow.position.position);
-            var graphMousePosition = m_GraphView.contentViewContainer.WorldToLocal(windowMousePosition);
-            drawState.position = new Rect(graphMousePosition, Vector2.zero);
-            node.DrawState = drawState;
+            foreach (var node in m_Graph.addedNodes)
+            {
+                AddNode(node);
+            }
 
-            m_Graph.owner.RegisterCompleteObjectUndo("Add " + node.name);
-            m_Graph.AddNode(node);
-            
-//            if (connectedPort != null)
-//            {
-//                var connectedSlot = connectedPort.slot;
-//                var connectedSlotReference = connectedSlot.owner.GetSlotReference(connectedSlot.id);
-//                var compatibleSlotReference = node.GetSlotReference(nodeEntry.compatibleSlotId);
-//
-//                var fromReference = connectedSlot.isOutputSlot ? connectedSlotReference : compatibleSlotReference;
-//                var toReference = connectedSlot.isOutputSlot ? compatibleSlotReference : connectedSlotReference;
-//                m_Graph.Connect(fromReference, toReference);
-//
-//                nodeNeedsRepositioning = true;
-//                targetSlotReference = compatibleSlotReference;
-//                targetPosition = graphMousePosition;
-//            }
-            
-            var nodeView = new GenericNodeView();
-            nodeView.Initialize(node, m_EdgeConnectorListener);
+            foreach (var node in m_Graph.pastedNodes)
+            {
+                var nodeView = m_GraphView.nodes.ToList().OfType<MaterialNodeView>()
+                    .FirstOrDefault(p => p.node != null && p.node.guid == node.guid);
+                m_GraphView.AddToSelection(nodeView);
+            }
+
+            var nodesToUpdate = m_NodeViewHashSet;
+            nodesToUpdate.Clear();
+
+            foreach (var edge in m_Graph.removedEdges)
+            {
+                var edgeView = m_GraphView.graphElements.ToList().OfType<Edge>()
+                    .FirstOrDefault(p => p.userData is IEdge && Equals((IEdge) p.userData, edge));
+                if (edgeView != null)
+                {
+                    var nodeView = edgeView.input.node as GenericNodeView;
+                    if (nodeView != null && nodeView.node != null)
+                    {
+                        nodesToUpdate.Add(nodeView);
+                    }
+
+                    edgeView.output.Disconnect(edgeView);
+                    edgeView.input.Disconnect(edgeView);
+
+                    edgeView.output = null;
+                    edgeView.input = null;
+
+                    m_GraphView.RemoveElement(edgeView);
+                }
+            }
+
+            foreach (var edge in m_Graph.addedEdges)
+            {
+                var edgeView = AddEdge(edge);
+                if (edgeView != null)
+                    nodesToUpdate.Add((GenericNodeView) edgeView.input.node);
+            }
+
+            foreach (var node in nodesToUpdate)
+                node.UpdatePortInputVisibilities();
+
+            UpdateEdgeColors(nodesToUpdate);
+        }
+
+        Stack<GenericNodeView> m_NodeStack = new Stack<GenericNodeView>();
+
+        void UpdateEdgeColors(HashSet<GenericNodeView> nodeViews)
+        {
+            var nodeStack = m_NodeStack;
+            nodeStack.Clear();
+            foreach (var nodeView in nodeViews)
+                nodeStack.Push(nodeView);
+            while (nodeStack.Any())
+            {
+                var nodeView = nodeStack.Pop();
+                nodeView.UpdatePortInputTypes();
+                foreach (var anchorView in nodeView.outputContainer.Children().OfType<Port>())
+                {
+                    foreach (var edgeView in anchorView.connections.OfType<Edge>())
+                    {
+                        var targetSlot = edgeView.input.GetSlot();
+                        if (targetSlot.valueType == SlotValueType.DynamicVector ||
+                            targetSlot.valueType == SlotValueType.DynamicMatrix ||
+                            targetSlot.valueType == SlotValueType.Dynamic)
+                        {
+                            var connectedNodeView = edgeView.input.node as GenericNodeView;
+                            if (connectedNodeView != null && !nodeViews.Contains(connectedNodeView))
+                            {
+                                nodeStack.Push(connectedNodeView);
+                                nodeViews.Add(connectedNodeView);
+                            }
+                        }
+                    }
+                }
+
+                foreach (var anchorView in nodeView.inputContainer.Children().OfType<Port>())
+                {
+                    var targetSlot = anchorView.GetSlot();
+                    if (targetSlot.valueType != SlotValueType.DynamicVector)
+                        continue;
+                    foreach (var edgeView in anchorView.connections.OfType<Edge>())
+                    {
+                        var connectedNodeView = edgeView.output.node as GenericNodeView;
+                        if (connectedNodeView != null && !nodeViews.Contains(connectedNodeView))
+                        {
+                            nodeStack.Push(connectedNodeView);
+                            nodeViews.Add(connectedNodeView);
+                        }
+                    }
+                }
+            }
+        }
+
+        void OnNodeChanged(INode inNode, ModificationScope scope)
+        {
+            if (m_GraphView == null)
+                return;
+
+            var dependentNodes = new List<INode>();
+            NodeUtils.CollectNodesNodeFeedsInto(dependentNodes, inNode);
+            foreach (var node in dependentNodes)
+            {
+                var theViews = m_GraphView.nodes.ToList().OfType<MaterialNodeView>();
+                var viewsFound = theViews.Where(x => x.node.guid == node.guid).ToList();
+                foreach (var drawableNodeData in viewsFound)
+                    drawableNodeData.OnModified(scope);
+            }
+        }
+
+        void AddNode(INode node)
+        {
+            var nodeView = new GenericNodeView {userData = node};
             m_GraphView.AddElement(nodeView);
+            nodeView.Initialize(node as AbstractGenericNode, m_EdgeConnectorListener);
+            node.RegisterCallback(OnNodeChanged);
+            nodeView.Dirty(ChangeType.Repaint);
+
+            if (m_SearchWindowProvider.nodeNeedsRepositioning &&
+                m_SearchWindowProvider.targetSlotReference.nodeGuid.Equals(node.guid))
+            {
+                m_SearchWindowProvider.nodeNeedsRepositioning = false;
+                foreach (var element in nodeView.inputContainer.Union(nodeView.outputContainer))
+                {
+                    var port = element as GenericPort;
+                    if (port == null)
+                        continue;
+                    if (port.slot.slotReference.Equals(m_SearchWindowProvider.targetSlotReference))
+                    {
+                        port.RegisterCallback<PostLayoutEvent>(RepositionNode);
+                        return;
+                    }
+                }
+            }
+        }
+
+        static void RepositionNode(PostLayoutEvent evt)
+        {
+            var port = evt.target as GenericPort;
+            if (port == null)
+                return;
+            port.UnregisterCallback<PostLayoutEvent>(RepositionNode);
+            var nodeView = port.node as MaterialNodeView;
+            if (nodeView == null)
+                return;
+            var offset = nodeView.mainContainer.WorldToLocal(port.GetGlobalCenter() + new Vector3(3f, 3f, 0f));
+            var position = nodeView.GetPosition();
+            position.position -= offset;
+            nodeView.SetPosition(position);
+            var drawState = nodeView.node.DrawState;
+            drawState.position = position;
+            nodeView.node.DrawState = drawState;
+            nodeView.Dirty(ChangeType.Repaint);
+            port.Dirty(ChangeType.Repaint);
         }
 
         Edge AddEdge(IEdge edge)
@@ -160,7 +301,7 @@ namespace GeoTetra.GTGenericGraph
                 return null;
             }
 
-            var sourceSlot = sourceNode.FindOutputSlot<MaterialSlot>(edge.outputSlot.slotId);
+            var sourceSlot = sourceNode.FindOutputSlot<GenericSlot>(edge.outputSlot.slotId);
 
             var targetNode = m_Graph.GetNodeFromGuid(edge.inputSlot.nodeGuid);
             if (targetNode == null)
@@ -169,19 +310,21 @@ namespace GeoTetra.GTGenericGraph
                 return null;
             }
 
-            var targetSlot = targetNode.FindInputSlot<MaterialSlot>(edge.inputSlot.slotId);
+            var targetSlot = targetNode.FindInputSlot<GenericSlot>(edge.inputSlot.slotId);
 
+            Debug.Log(m_GraphView.nodes.ToList().OfType<GenericNodeView>().Count());
+            
             var sourceNodeView = m_GraphView.nodes.ToList().OfType<GenericNodeView>()
                 .FirstOrDefault(x => x.node == sourceNode);
             if (sourceNodeView != null)
             {
                 var sourceAnchor = sourceNodeView.outputContainer.Children().OfType<GenericPort>()
-                    .FirstOrDefault(x => x.Slot.Equals(sourceSlot));
+                    .FirstOrDefault(x => x.slot.Equals(sourceSlot));
 
                 var targetNodeView = m_GraphView.nodes.ToList().OfType<GenericNodeView>()
                     .FirstOrDefault(x => x.node == targetNode);
                 var targetAnchor = targetNodeView.inputContainer.Children().OfType<GenericPort>()
-                    .FirstOrDefault(x => x.Slot.Equals(targetSlot));
+                    .FirstOrDefault(x => x.slot.Equals(targetSlot));
 
                 var edgeView = new Edge
                 {

@@ -19,7 +19,7 @@ namespace GeoTetra.GTGenericGraph
             AddStyleSheetPath("Styles/GenericPort");
         }
 
-        GenericSlot _slot;
+        GenericSlot m_Slot;
 
         public static Port Create(GenericSlot slot, IEdgeConnectorListener connectorListener)
         {
@@ -32,26 +32,26 @@ namespace GeoTetra.GTGenericGraph
                 m_EdgeConnector = new EdgeConnector<Edge>(connectorListener),
             };
             port.AddManipulator(port.m_EdgeConnector);
-            port.Slot = slot;
+            port.slot = slot;
             port.portName = slot.displayName;
             port.visualClass = slot.concreteValueType.ToClassName();
             return port;
         }
 
-        public GenericSlot Slot
+        public GenericSlot slot
         {
-            get { return _slot; }
+            get { return m_Slot; }
             set
             {
-                if (ReferenceEquals(value, _slot))
+                if (ReferenceEquals(value, m_Slot))
                     return;
                 if (value == null)
                     throw new NullReferenceException();
-                if (_slot != null && value.isInputSlot != _slot.isInputSlot)
+                if (m_Slot != null && value.isInputSlot != m_Slot.isInputSlot)
                     throw new ArgumentException("Cannot change direction of already created port");
-                _slot = value;
-                portName = Slot.displayName;
-                visualClass = Slot.concreteValueType.ToClassName();
+                m_Slot = value;
+                portName = slot.displayName;
+                visualClass = slot.concreteValueType.ToClassName();
             }
         }
     }
@@ -61,7 +61,7 @@ namespace GeoTetra.GTGenericGraph
         public static GenericSlot GetSlot(this Port port)
         {
             var shaderPort = port as GenericPort;
-            return shaderPort != null ? shaderPort.Slot : null;
+            return shaderPort != null ? shaderPort.slot : null;
         }
     }
 }
