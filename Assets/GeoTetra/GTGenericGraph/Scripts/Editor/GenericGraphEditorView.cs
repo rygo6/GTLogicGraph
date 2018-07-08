@@ -16,18 +16,20 @@ namespace GeoTetra.GTGenericGraph
 {
     public class GenericGraphEditorView : VisualElement
     {
-        private AbstractGenericGraph m_Graph;
-        private GenericGraphView m_GraphView;
-        private EditorWindow m_EditorWindow;
+        AbstractGenericGraph m_Graph;
+        GenericGraphView m_GraphView;
+        EditorWindow m_EditorWindow;
+        GenericEdgeConnectorListener m_EdgeConnectorListener;
+        GenericSearchWindowProvider m_SearchWindowProvider;
 
         public GenericGraphView GenericGraphView
         {
             get { return m_GraphView; }
         }
 
-        public GenericGraphEditorView(EditorWindow EditorWindow,  AbstractGenericGraph graph, string assetName)
+        public GenericGraphEditorView(EditorWindow editorWindow,  AbstractGenericGraph graph, string assetName)
         {
-            m_EditorWindow = EditorWindow;
+            m_EditorWindow = editorWindow;
             m_Graph = graph;
             
             AddStyleSheetPath("Styles/GenericGraphEditorView");
@@ -52,14 +54,14 @@ namespace GeoTetra.GTGenericGraph
 
             var content = new VisualElement {name = "content"};
             {
-                m_GraphView = new GenericGraphView() {name = "GraphView", persistenceKey = "GenericGraphView"};
+                m_GraphView = new GenericGraphView(m_Graph) {name = "GraphView", persistenceKey = "GenericGraphView"};
 
                 m_GraphView.SetupZoom(0.05f, ContentZoomer.DefaultMaxScale);
                 m_GraphView.AddManipulator(new ContentDragger());
                 m_GraphView.AddManipulator(new SelectionDragger());
                 m_GraphView.AddManipulator(new RectangleSelector());
                 m_GraphView.AddManipulator(new ClickSelector());
-//                _genericGraphView.AddManipulator(new GraphDropTarget(_genericGraph));
+//                m_GraphView.AddManipulator(new GraphDropTarget(m_Graph));
                 m_GraphView.RegisterCallback<KeyDownEvent>(OnSpaceDown);
                 content.Add(m_GraphView);
 
@@ -67,6 +69,10 @@ namespace GeoTetra.GTGenericGraph
 
                 RegisterCallback<PostLayoutEvent>(OnPostLayout);
             }
+            
+            m_SearchWindowProvider = ScriptableObject.CreateInstance<GenericSearchWindowProvider>();
+            m_SearchWindowProvider.Initialize(editorWindow, m_Graph, m_GraphView);
+            m_EdgeConnectorListener = new GenericEdgeConnectorListener(m_Graph, m_SearchWindowProvider );
 
             m_GraphView.nodeCreationRequest = (c) =>
             {
@@ -141,7 +147,7 @@ namespace GeoTetra.GTGenericGraph
 //            }
             
             var nodeView = new GenericNodeView();
-            nodeView.Initialize(node);
+            nodeView.Initialize(node, m_EdgeConnectorListener);
             m_GraphView.AddElement(nodeView);
         }
 
@@ -166,14 +172,14 @@ namespace GeoTetra.GTGenericGraph
             var targetSlot = targetNode.FindInputSlot<MaterialSlot>(edge.inputSlot.slotId);
 
             var sourceNodeView = m_GraphView.nodes.ToList().OfType<GenericNodeView>()
-                .FirstOrDefault(x => x.Node == sourceNode);
+                .FirstOrDefault(x => x.node == sourceNode);
             if (sourceNodeView != null)
             {
                 var sourceAnchor = sourceNodeView.outputContainer.Children().OfType<GenericPort>()
                     .FirstOrDefault(x => x.Slot.Equals(sourceSlot));
 
                 var targetNodeView = m_GraphView.nodes.ToList().OfType<GenericNodeView>()
-                    .FirstOrDefault(x => x.Node == targetNode);
+                    .FirstOrDefault(x => x.node == targetNode);
                 var targetAnchor = targetNodeView.inputContainer.Children().OfType<GenericPort>()
                     .FirstOrDefault(x => x.Slot.Equals(targetSlot));
 

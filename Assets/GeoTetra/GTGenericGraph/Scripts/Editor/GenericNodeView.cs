@@ -16,18 +16,19 @@ namespace GeoTetra.GTGenericGraph
 {
     public class GenericNodeView : Node
     {
-        VisualElement _controlsDivider;
-        VisualElement _controlItems;
-        VisualElement _portInputContainer;
-        IEdgeConnectorListener _connectorListener;
+        VisualElement m_ControlsDivider;
+        VisualElement m_ControlItems;
+        VisualElement m_PortInputContainer;
+        IEdgeConnectorListener m_ConnectorListener;
 
-        public AbstractGenericNode Node { get; private set; }
+        public AbstractGenericNode node { get; private set; }
 
-        public void Initialize(AbstractGenericNode node)
+        public void Initialize(AbstractGenericNode node, IEdgeConnectorListener connectorListener)
         {
             AddStyleSheetPath("Styles/GenericNodeView");
 
-            this.Node = node;
+            m_ConnectorListener = connectorListener;
+            node = node;
 
             title = "Node";
 
@@ -35,22 +36,22 @@ namespace GeoTetra.GTGenericGraph
 
             var controlsContainer = new VisualElement {name = "controls"};
             {
-                _controlsDivider = new VisualElement {name = "divider"};
-                _controlsDivider.AddToClassList("horizontal");
-                controlsContainer.Add(_controlsDivider);
-                _controlItems = new VisualElement {name = "items"};
-                controlsContainer.Add(_controlItems);
+                m_ControlsDivider = new VisualElement {name = "divider"};
+                m_ControlsDivider.AddToClassList("horizontal");
+                controlsContainer.Add(m_ControlsDivider);
+                m_ControlItems = new VisualElement {name = "items"};
+                controlsContainer.Add(m_ControlItems);
 
                 //TODO replicate generic control attribute classes
                 foreach (var propertyInfo in node.GetType()
                     .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
                 foreach (IGenericControlAttribute attribute in propertyInfo.GetCustomAttributes(
                     typeof(IGenericControlAttribute), false))
-                    _controlItems.Add(attribute.InstantiateControl(node, propertyInfo));
+                    m_ControlItems.Add(attribute.InstantiateControl(node, propertyInfo));
 
                 for (int i = 0; i < 8; ++i)
                 {
-                    _controlItems.Add(new Label("controls " + i));
+                    m_ControlItems.Add(new Label("controls " + i));
 //                    outputContainer.Add(new Label("out " + i));
 //                    inputContainer.Add(new Label("in " + i));
                 }
@@ -59,13 +60,13 @@ namespace GeoTetra.GTGenericGraph
             contents.Add(controlsContainer);
 
             // Add port input container, which acts as a pixel cache for all port inputs
-            _portInputContainer = new VisualElement
+            m_PortInputContainer = new VisualElement
             {
                 name = "portInputContainer",
                 clippingOptions = ClippingOptions.ClipAndCacheContents,
                 pickingMode = PickingMode.Ignore
             };
-            Add(_portInputContainer);
+            Add(m_PortInputContainer);
 
             AddSlots(node.GetSlots<GenericSlot>());
             UpdatePortInputs();
@@ -73,7 +74,7 @@ namespace GeoTetra.GTGenericGraph
             RefreshExpandedState(); //This should not be needed. GraphView needs to improve the extension api here
 //            UpdatePortInputVisibilities();
             
-            _portInputContainer.SendToBack();
+            m_PortInputContainer.SendToBack();
 
             SetPosition(new Rect(node.DrawState.position.x, node.DrawState.position.y, 0, 0));
 
@@ -86,19 +87,19 @@ namespace GeoTetra.GTGenericGraph
 //            if (subGraphNode != null && subGraphNode.subGraphAsset != null)
 //                title = subGraphNode.subGraphAsset.name;
 //            else
-                title = Node.name;
+                title = node.name;
         }
         
         public void OnModified(ModificationScope scope)
         {
             UpdateTitle();
 
-            base.expanded = Node.DrawState.expanded;
+            base.expanded = node.DrawState.expanded;
 
             // Update slots to match node modification
             if (scope == ModificationScope.Topological)
             {
-                var slots = Node.GetSlots<GenericSlot>().ToList();
+                var slots = node.GetSlots<GenericSlot>().ToList();
 
                 var inputPorts = inputContainer.Children().OfType<GenericPort>().ToList();
                 foreach (var port in inputPorts)
@@ -111,14 +112,14 @@ namespace GeoTetra.GTGenericGraph
                         inputContainer.Remove(port);
 
                         // We also need to remove the inline input
-                        var portInputView = _portInputContainer.OfType<GenericPortInputView>().FirstOrDefault(v => Equals(v.Slot, port.Slot));
+                        var portInputView = m_PortInputContainer.OfType<GenericPortInputView>().FirstOrDefault(v => Equals(v.Slot, port.Slot));
                         if (portInputView != null)
                             portInputView.RemoveFromHierarchy();
                     }
                     else
                     {
                         port.Slot = newSlot;
-                        var portInputView = _portInputContainer.OfType<GenericPortInputView>().FirstOrDefault(x => x.Slot.id == currentSlot.id);
+                        var portInputView = m_PortInputContainer.OfType<GenericPortInputView>().FirstOrDefault(x => x.Slot.id == currentSlot.id);
                         portInputView.UpdateSlot(newSlot);
 
                         slots.Remove(newSlot);
@@ -144,7 +145,7 @@ namespace GeoTetra.GTGenericGraph
                 AddSlots(slots);
 
                 slots.Clear();
-                slots.AddRange(Node.GetSlots<GenericSlot>());
+                slots.AddRange(node.GetSlots<GenericSlot>());
 
                 if (inputContainer.childCount > 0)
                     inputContainer.Sort((x, y) => slots.IndexOf(((GenericPort)x).Slot) - slots.IndexOf(((GenericPort)y).Slot));
@@ -156,7 +157,7 @@ namespace GeoTetra.GTGenericGraph
             UpdatePortInputs();
             UpdatePortInputVisibilities();
 
-            foreach (var control in _controlItems)
+            foreach (var control in m_ControlItems)
             {
                 var listener = control as INodeModificationListener;
                 if (listener != null)
@@ -171,7 +172,7 @@ namespace GeoTetra.GTGenericGraph
                 if (slot.hidden)
                     continue;
 
-                var port = GenericPort.Create(slot, _connectorListener);
+                var port = GenericPort.Create(slot, m_ConnectorListener);
                 if (slot.isOutputSlot)
                     outputContainer.Add(port);
                 else
@@ -183,11 +184,11 @@ namespace GeoTetra.GTGenericGraph
         {
             foreach (var port in inputContainer.OfType<GenericPort>())
             {
-                if (!_portInputContainer.OfType<GenericPortInputView>().Any(a => Equals(a.Slot, port.Slot)))
+                if (!m_PortInputContainer.OfType<GenericPortInputView>().Any(a => Equals(a.Slot, port.Slot)))
                 {
                     var portInputView =
                         new GenericPortInputView(port.Slot) {style = {positionType = PositionType.Absolute}};
-                    _portInputContainer.Add(portInputView);
+                    m_PortInputContainer.Add(portInputView);
                     port.RegisterCallback<PostLayoutEvent>(evt => UpdatePortInput((GenericPort) evt.target));
                 }
             }
@@ -195,7 +196,7 @@ namespace GeoTetra.GTGenericGraph
 
         void UpdatePortInput(GenericPort port)
         {
-            var inputView = _portInputContainer.OfType<GenericPortInputView>().First(x => Equals(x.Slot, port.Slot));
+            var inputView = m_PortInputContainer.OfType<GenericPortInputView>().First(x => Equals(x.Slot, port.Slot));
 
             var currentRect = new Rect(inputView.style.positionLeft, inputView.style.positionTop, inputView.style.width,
                 inputView.style.height);
@@ -215,13 +216,13 @@ namespace GeoTetra.GTGenericGraph
 
         public void UpdatePortInputVisibilities()
         {
-            foreach (var portInputView in _portInputContainer.OfType<GenericPortInputView>())
+            foreach (var portInputView in m_PortInputContainer.OfType<GenericPortInputView>())
             {
                 var slot = portInputView.Slot;
                 var oldVisibility = portInputView.visible;
-                portInputView.visible = expanded && !Node.owner.GetEdges(Node.GetSlotReference(slot.id)).Any();
+                portInputView.visible = expanded && !node.owner.GetEdges(node.GetSlotReference(slot.id)).Any();
                 if (portInputView.visible != oldVisibility)
-                    _portInputContainer.Dirty(ChangeType.Repaint);
+                    m_PortInputContainer.Dirty(ChangeType.Repaint);
             }
         }
 
@@ -235,10 +236,10 @@ namespace GeoTetra.GTGenericGraph
                 anchor.visualClass = slot.concreteValueType.ToClassName();
             }
 
-            foreach (var portInputView in _portInputContainer.OfType<GenericPortInputView>())
+            foreach (var portInputView in m_PortInputContainer.OfType<GenericPortInputView>())
                 portInputView.UpdateSlotType();
 
-            foreach (var control in _controlItems)
+            foreach (var control in m_ControlItems)
             {
                 var listener = control as INodeModificationListener;
                 if (listener != null)

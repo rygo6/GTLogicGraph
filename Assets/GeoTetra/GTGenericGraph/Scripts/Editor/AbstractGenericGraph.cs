@@ -517,12 +517,12 @@ namespace GeoTetra.GTGenericGraph
                 var outputNode = GetNodeFromGuid(edge.outputSlot.nodeGuid);
                 var inputNode = GetNodeFromGuid(edge.inputSlot.nodeGuid);
 
-                MaterialSlot outputSlot = null;
-                MaterialSlot inputSlot = null;
+                GenericSlot outputSlot = null;
+                GenericSlot inputSlot = null;
                 if (outputNode != null && inputNode != null)
                 {
-                    outputSlot = outputNode.FindOutputSlot<MaterialSlot>(edge.outputSlot.slotId);
-                    inputSlot = inputNode.FindInputSlot<MaterialSlot>(edge.inputSlot.slotId);
+                    outputSlot = outputNode.FindOutputSlot<GenericSlot>(edge.outputSlot.slotId);
+                    inputSlot = inputNode.FindInputSlot<GenericSlot>(edge.inputSlot.slotId);
                 }
 
                 if (outputNode == null

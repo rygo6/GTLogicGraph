@@ -15,7 +15,7 @@ namespace GeoTetra.GTGenericGraph
     class GenericSearchWindowProvider : ScriptableObject, ISearchWindowProvider
     {
         EditorWindow m_EditorWindow;
-        AbstractMaterialGraph m_Graph;
+        AbstractGenericGraph m_Graph;
         GraphView m_GraphView;
         Texture2D m_Icon;
         public GenericPort connectedPort { get; set; }
@@ -23,7 +23,7 @@ namespace GeoTetra.GTGenericGraph
         public SlotReference targetSlotReference { get; private set; }
         public Vector2 targetPosition { get; private set; }
 
-        public void Initialize(EditorWindow editorWindow, AbstractMaterialGraph graph, GraphView graphView)
+        public void Initialize(EditorWindow editorWindow, AbstractGenericGraph graph, GraphView graphView)
         {
             m_EditorWindow = editorWindow;
             m_Graph = graph;
@@ -62,7 +62,7 @@ namespace GeoTetra.GTGenericGraph
             {
                 foreach (var type in assembly.GetTypesOrNothing())
                 {
-                    if (type.IsClass && !type.IsAbstract && (type.IsSubclassOf(typeof(AbstractMaterialNode)))
+                    if (type.IsClass && !type.IsAbstract && (type.IsSubclassOf(typeof(AbstractGenericNode)))
                         && type != typeof(PropertyNode)
                         && type != typeof(SubGraphNode))
                     {
