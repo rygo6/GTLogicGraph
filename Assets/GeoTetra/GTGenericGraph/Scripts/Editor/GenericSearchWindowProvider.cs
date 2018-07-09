@@ -233,11 +233,11 @@ namespace GeoTetra.GTGenericGraph
             var nodeEntry = (NodeEntry)entry.userData;
             var node = nodeEntry.node;
 
-            var drawState = node.DrawState;
+            var drawState = node.drawState;
             var windowMousePosition = m_EditorWindow.GetRootVisualContainer().ChangeCoordinatesTo(m_EditorWindow.GetRootVisualContainer().parent, context.screenMousePosition - m_EditorWindow.position.position);
             var graphMousePosition = m_GraphView.contentViewContainer.WorldToLocal(windowMousePosition);
             drawState.position = new Rect(graphMousePosition, Vector2.zero);
-            node.DrawState = drawState;
+            node.drawState = drawState;
 
             m_Graph.owner.RegisterCompleteObjectUndo("Add " + node.name);
             m_Graph.AddNode(node);

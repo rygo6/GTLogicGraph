@@ -285,9 +285,9 @@ namespace GeoTetra.GTGenericGraph
             var position = nodeView.GetPosition();
             position.position -= offset;
             nodeView.SetPosition(position);
-            var drawState = nodeView.node.DrawState;
+            var drawState = nodeView.node.drawState;
             drawState.position = position;
-            nodeView.node.DrawState = drawState;
+            nodeView.node.drawState = drawState;
             nodeView.Dirty(ChangeType.Repaint);
             port.Dirty(ChangeType.Repaint);
         }

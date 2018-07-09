@@ -16,58 +16,58 @@ namespace GeoTetra.GTGenericGraph
         protected static List<PreviewProperty> TempPreviewProperties = new List<PreviewProperty>();
 
         [NonSerialized]
-        private Guid _guid;
+        private Guid m_Guid;
 
         [SerializeField]
-        private string _guidSerialized;
+        private string m_GuidSerialized;
 
         [SerializeField]
-        private string _name;
+        private string m_Name;
 
         [SerializeField]
-        private DrawState _drawState;
+        private DrawState m_DrawState;
 
         [NonSerialized]
-        private List<ISlot> _slots = new List<ISlot>();
+        private List<ISlot> m_Slots = new List<ISlot>();
 
         [SerializeField]
-        List<SerializationHelper.JSONSerializedElement> _serializableSlots =
+        List<SerializationHelper.JSONSerializedElement> m_SerializableSlots =
             new List<SerializationHelper.JSONSerializedElement>();
 
         [NonSerialized]
-        private bool _hasError;
+        private bool m_HasError;
 
         public Identifier tempId { get; set; }
 
         public IGraph owner { get; set; }
 
-        private OnNodeModified _onModified;
+        private OnNodeModified m_OnModified;
 
         public void RegisterCallback(OnNodeModified callback)
         {
-            _onModified += callback;
+            m_OnModified += callback;
         }
 
         public void UnregisterCallback(OnNodeModified callback)
         {
-            _onModified -= callback;
+            m_OnModified -= callback;
         }
 
         public void Dirty(ModificationScope scope)
         {
-            if (_onModified != null)
-                _onModified(this, scope);
+            if (m_OnModified != null)
+                m_OnModified(this, scope);
         }
 
         public Guid guid
         {
-            get { return _guid; }
+            get { return m_Guid; }
         }
 
         public string name
         {
-            get { return _name; }
-            set { _name = value; }
+            get { return m_Name; }
+            set { m_Name = value; }
         }
 
         public virtual string DocumentationUrl
@@ -80,12 +80,12 @@ namespace GeoTetra.GTGenericGraph
             get { return true; }
         }
 
-        public DrawState DrawState
+        public DrawState drawState
         {
-            get { return _drawState; }
+            get { return m_DrawState; }
             set
             {
-                _drawState = value;
+                m_DrawState = value;
                 Dirty(ModificationScope.Node);
             }
         }
@@ -133,8 +133,8 @@ namespace GeoTetra.GTGenericGraph
 
         public virtual bool hasError
         {
-            get { return _hasError; }
-            protected set { _hasError = value; }
+            get { return m_HasError; }
+            protected set { m_HasError = value; }
         }
 
         private string _defaultVariableName;
@@ -159,20 +159,20 @@ namespace GeoTetra.GTGenericGraph
 
         protected AbstractGenericNode()
         {
-            _drawState.expanded = true;
-            _guid = Guid.NewGuid();
+            m_DrawState.expanded = true;
+            m_Guid = Guid.NewGuid();
             Version = 0;
         }
 
         public Guid RewriteGuid()
         {
-            _guid = Guid.NewGuid();
-            return _guid;
+            m_Guid = Guid.NewGuid();
+            return m_Guid;
         }
 
         public void GetInputSlots<T>(List<T> foundSlots) where T : ISlot
         {
-            foreach (var slot in _slots)
+            foreach (var slot in m_Slots)
             {
                 if (slot.isInputSlot && slot is T)
                     foundSlots.Add((T) slot);
@@ -181,7 +181,7 @@ namespace GeoTetra.GTGenericGraph
 
         public void GetOutputSlots<T>(List<T> foundSlots) where T : ISlot
         {
-            foreach (var slot in _slots)
+            foreach (var slot in m_Slots)
             {
                 if (slot.isOutputSlot && slot is T)
                     foundSlots.Add((T) slot);
@@ -190,7 +190,7 @@ namespace GeoTetra.GTGenericGraph
 
         public void GetSlots<T>(List<T> foundSlots) where T : ISlot
         {
-            foreach (var slot in _slots)
+            foreach (var slot in m_Slots)
             {
                 if (slot is T)
                     foundSlots.Add((T) slot);
@@ -484,8 +484,8 @@ namespace GeoTetra.GTGenericGraph
 
             // this will remove the old slot and add a new one
             // if an old one was found. This allows updating values
-            _slots.RemoveAll(x => x.id == slot.id);
-            _slots.Add(slot);
+            m_Slots.RemoveAll(x => x.id == slot.id);
+            m_Slots.Add(slot);
             slot.owner = this;
 
             Dirty(ModificationScope.Topological);
@@ -510,14 +510,14 @@ namespace GeoTetra.GTGenericGraph
             }
 
             //remove slots
-            _slots.RemoveAll(x => x.id == slotId);
+            m_Slots.RemoveAll(x => x.id == slotId);
 
             Dirty(ModificationScope.Topological);
         }
 
         public void RemoveSlotsNameNotMatching(IEnumerable<int> slotIds, bool supressWarnings = false)
         {
-            var invalidSlots = _slots.Select(x => x.id).Except(slotIds);
+            var invalidSlots = m_Slots.Select(x => x.id).Except(slotIds);
 
             foreach (var invalidSlot in invalidSlots.ToArray())
             {
@@ -537,7 +537,7 @@ namespace GeoTetra.GTGenericGraph
 
         public T FindSlot<T>(int slotId) where T : ISlot
         {
-            foreach (var slot in _slots)
+            foreach (var slot in m_Slots)
             {
                 if (slot.id == slotId && slot is T)
                     return (T) slot;
@@ -548,7 +548,7 @@ namespace GeoTetra.GTGenericGraph
 
         public T FindInputSlot<T>(int slotId) where T : ISlot
         {
-            foreach (var slot in _slots)
+            foreach (var slot in m_Slots)
             {
                 if (slot.isInputSlot && slot.id == slotId && slot is T)
                     return (T) slot;
@@ -559,7 +559,7 @@ namespace GeoTetra.GTGenericGraph
 
         public T FindOutputSlot<T>(int slotId) where T : ISlot
         {
-            foreach (var slot in _slots)
+            foreach (var slot in m_Slots)
             {
                 if (slot.isOutputSlot && slot.id == slotId && slot is T)
                     return (T) slot;
@@ -575,20 +575,20 @@ namespace GeoTetra.GTGenericGraph
 
         public virtual void OnBeforeSerialize()
         {
-            _guidSerialized = _guid.ToString();
-            _serializableSlots = SerializationHelper.Serialize<ISlot>(_slots);
+            m_GuidSerialized = m_Guid.ToString();
+            m_SerializableSlots = SerializationHelper.Serialize<ISlot>(m_Slots);
         }
 
         public virtual void OnAfterDeserialize()
         {
-            if (!string.IsNullOrEmpty(_guidSerialized))
-                _guid = new Guid(_guidSerialized);
+            if (!string.IsNullOrEmpty(m_GuidSerialized))
+                m_Guid = new Guid(m_GuidSerialized);
             else
-                _guid = Guid.NewGuid();
+                m_Guid = Guid.NewGuid();
 
-            _slots = SerializationHelper.Deserialize<ISlot>(_serializableSlots, GraphUtil.GetLegacyTypeRemapping());
-            _serializableSlots = null;
-            foreach (var s in _slots)
+            m_Slots = SerializationHelper.Deserialize<ISlot>(m_SerializableSlots, GraphUtil.GetLegacyTypeRemapping());
+            m_SerializableSlots = null;
+            foreach (var s in m_Slots)
                 s.owner = this;
             UpdateNodeAfterDeserialization();
         }

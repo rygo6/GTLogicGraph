@@ -86,8 +86,6 @@ namespace GeoTetra.GTGenericGraph
                     return "(T)";
                 case ConcreteSlotValueType.Cubemap:
                     return "(C)";
-                case ConcreteSlotValueType.Gradient:
-                    return "(G)";
                 default:
                     return "(E)";
             }
@@ -246,8 +244,6 @@ namespace GeoTetra.GTGenericGraph
                     return inputType == SlotValueType.Texture2D;
                 case SlotValueType.Cubemap:
                     return inputType == SlotValueType.Cubemap;
-                case SlotValueType.Gradient:
-                    return inputType == SlotValueType.Gradient;
                 case SlotValueType.DynamicVector:
                 case SlotValueType.Vector4:
                 case SlotValueType.Vector3:
@@ -313,8 +309,6 @@ namespace GeoTetra.GTGenericGraph
                     return PropertyType.Texture;
                 case ConcreteSlotValueType.Cubemap:
                     return PropertyType.Cubemap;
-                case ConcreteSlotValueType.Gradient:
-                    return PropertyType.Gradient;
                 case ConcreteSlotValueType.Boolean:
                     return PropertyType.Boolean;
                 case ConcreteSlotValueType.Vector1:

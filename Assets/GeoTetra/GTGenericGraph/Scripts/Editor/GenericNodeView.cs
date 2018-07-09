@@ -63,13 +63,13 @@ namespace GeoTetra.GTGenericGraph
 
             AddSlots(node.GetSlots<GenericSlot>());
             UpdatePortInputs();
-            base.expanded = node.DrawState.expanded;
+            base.expanded = node.drawState.expanded;
             RefreshExpandedState(); //This should not be needed. GraphView needs to improve the extension api here
             UpdatePortInputVisibilities();
             
             m_PortInputContainer.SendToBack();
 
-            SetPosition(new Rect(node.DrawState.position.x, node.DrawState.position.y, 0, 0));
+            SetPosition(new Rect(node.drawState.position.x, node.drawState.position.y, 0, 0));
 
             RefreshExpandedState();
         }
@@ -87,7 +87,7 @@ namespace GeoTetra.GTGenericGraph
         {
             UpdateTitle();
 
-            base.expanded = node.DrawState.expanded;
+            base.expanded = node.drawState.expanded;
 
             // Update slots to match node modification
             if (scope == ModificationScope.Topological)

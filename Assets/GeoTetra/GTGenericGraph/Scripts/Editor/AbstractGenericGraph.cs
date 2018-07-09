@@ -492,7 +492,7 @@ namespace GeoTetra.GTGenericGraph
             if (newSlot == null)
                 return;
 
-            node.DrawState = propertyNode.DrawState;
+            node.drawState = propertyNode.drawState;
             AddNodeNoValidate(node);
 
             foreach (var edge in this.GetEdges(slot.slotReference))
