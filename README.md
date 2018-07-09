@@ -15,9 +15,10 @@ Completed or Started:
 - Can drag a box to multi select nodes and drag multiple nodes.
 - Can adjust default input port.
 - Can drag line off of node.
+- Can chain together nodes.
+- Can open search menu.
 
 Still to do:
 - Implement a whole set of common base types for data nodes can support and their corresponding UI's.
-- Enable chaining together of nodes.
 - Serializing and save of graphs.
 - Figure out way to enable plugging in of different logic to nodes so the GraphView can act like a frontend to different sets of nodes.
