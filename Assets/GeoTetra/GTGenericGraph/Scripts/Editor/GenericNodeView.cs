@@ -48,13 +48,6 @@ namespace GeoTetra.GTGenericGraph
                 foreach (IGenericControlAttribute attribute in propertyInfo.GetCustomAttributes(
                     typeof(IGenericControlAttribute), false))
                     m_ControlItems.Add(attribute.InstantiateControl(node, propertyInfo));
-
-                for (int i = 0; i < 8; ++i)
-                {
-                    m_ControlItems.Add(new Label("controls " + i));
-//                    outputContainer.Add(new Label("out " + i));
-//                    inputContainer.Add(new Label("in " + i));
-                }
             }
 
             contents.Add(controlsContainer);
@@ -72,7 +65,7 @@ namespace GeoTetra.GTGenericGraph
             UpdatePortInputs();
             base.expanded = node.DrawState.expanded;
             RefreshExpandedState(); //This should not be needed. GraphView needs to improve the extension api here
-//            UpdatePortInputVisibilities();
+            UpdatePortInputVisibilities();
             
             m_PortInputContainer.SendToBack();
 

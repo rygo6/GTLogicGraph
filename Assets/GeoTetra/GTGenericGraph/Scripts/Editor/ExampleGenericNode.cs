@@ -16,11 +16,25 @@ namespace GeoTetra.GTGenericGraph
         const int InputSlotId = 0;
         const int OutputSlotId = 1;
 
-        private const string kOutputSlotName = "Out";
+        [SerializeField]
+        private bool m_ToggleTest;
+        
+        [GenericToggleControl("Red")]
+        public GenericToggleData toggleTest
+        {
+            get { return new GenericToggleData(m_ToggleTest); }
+            set
+            {
+                if (m_ToggleTest == value.isOn)
+                    return;
+                m_ToggleTest = value.isOn;
+                Dirty(ModificationScope.Node);
+            }
+        }
 
         public ExampleGenericNode()
         {
-            name = "Boolean";
+            name = "Example";
             UpdateNodeAfterDeserialization();
         }
 
@@ -36,20 +50,6 @@ namespace GeoTetra.GTGenericGraph
 
             RemoveSlotsNameNotMatching(new[] {OutputSlotId, InputSlotId});
         }
-
-
-//        public override void CollectShaderProperties(PropertyCollector properties, GenerationMode generationMode)
-//        {
-//            if (!generationMode.IsPreview())
-//                return;
-//
-//            properties.AddShaderProperty(new BooleanShaderProperty()
-//            {
-//                overrideReferenceName = GetVariableNameForNode(),
-//                generatePropertyBlock = false,
-//                value = m_Value
-//            });
-//        }
 
         public override string GetVariableNameForSlot(int slotId)
         {
