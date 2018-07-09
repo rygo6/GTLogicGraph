@@ -239,7 +239,7 @@ namespace GeoTetra.GTGenericGraph
             NodeUtils.CollectNodesNodeFeedsInto(dependentNodes, inNode);
             foreach (var node in dependentNodes)
             {
-                var theViews = m_GraphView.nodes.ToList().OfType<MaterialNodeView>();
+                var theViews = m_GraphView.nodes.ToList().OfType<GenericNodeView>();
                 var viewsFound = theViews.Where(x => x.node.guid == node.guid).ToList();
                 foreach (var drawableNodeData in viewsFound)
                     drawableNodeData.OnModified(scope);
