@@ -17,8 +17,9 @@ Completed or Started:
 - Can drag line off of node.
 - Can chain together nodes.
 - Can open search menu.
+- Serializing and save of graphs. Loading graph.
 
 Still to do:
 - Implement a whole set of common base types for data nodes can support and their corresponding UI's.
-- Serializing and save of graphs.
+- Implement file importer. Allow creating multiple files.
 - Figure out way to enable plugging in of different logic to nodes so the GraphView can act like a frontend to different sets of nodes.

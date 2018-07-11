@@ -551,7 +551,7 @@ namespace GeoTetra.GTGenericGraph
 
         public void ReplaceWith(IGraph other)
         {
-            var otherMg = other as AbstractMaterialGraph;
+            var otherMg = other as AbstractGenericGraph;
             if (otherMg == null)
                 throw new ArgumentException("Can only replace with another AbstractMaterialGraph", "other");
 

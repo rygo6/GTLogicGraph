@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -21,6 +22,8 @@ namespace GeoTetra.GTGenericGraph
         EditorWindow m_EditorWindow;
         GenericEdgeConnectorListener m_EdgeConnectorListener;
         GenericSearchWindowProvider m_SearchWindowProvider;
+        
+        public Action saveRequested { get; set; }
 
         public GenericGraphView GenericGraphView
         {
@@ -39,6 +42,8 @@ namespace GeoTetra.GTGenericGraph
                 GUILayout.BeginHorizontal(EditorStyles.toolbar);
                 if (GUILayout.Button("Save Asset", EditorStyles.toolbarButton))
                 {
+                    if (saveRequested != null)
+                        saveRequested();
                 }
 
                 GUILayout.Space(6);
@@ -66,8 +71,6 @@ namespace GeoTetra.GTGenericGraph
                 content.Add(m_GraphView);
 
                 m_GraphView.graphViewChanged = GraphViewChanged;
-
-                RegisterCallback<PostLayoutEvent>(OnPostLayout);
             }
 
             m_SearchWindowProvider = ScriptableObject.CreateInstance<GenericSearchWindowProvider>();
@@ -76,8 +79,6 @@ namespace GeoTetra.GTGenericGraph
 
             m_GraphView.nodeCreationRequest = (c) =>
             {
-                Debug.Log("Open Search Window");
-//                AddNewNode(c.screenMousePosition);
                 m_SearchWindowProvider.connectedPort = null;
                 SearchWindow.Open(new SearchWindowContext(c.screenMousePosition), m_SearchWindowProvider);
             };
@@ -91,16 +92,71 @@ namespace GeoTetra.GTGenericGraph
             Add(content);
         }
 
-        private GraphViewChange GraphViewChanged(GraphViewChange graphViewChange)
+        GraphViewChange GraphViewChanged(GraphViewChange graphViewChange)
         {
+            if (graphViewChange.edgesToCreate != null)
+            {
+                foreach (var edge in graphViewChange.edgesToCreate)
+                {
+                    var leftSlot = edge.output.GetSlot();
+                    var rightSlot = edge.input.GetSlot();
+                    if (leftSlot != null && rightSlot != null)
+                    {
+                        m_Graph.owner.RegisterCompleteObjectUndo("Connect Edge");
+                        m_Graph.Connect(leftSlot.slotReference, rightSlot.slotReference);
+                    }
+                }
+                graphViewChange.edgesToCreate.Clear();
+            }
+
+            if (graphViewChange.movedElements != null)
+            {
+                foreach (var element in graphViewChange.movedElements)
+                {
+                    var node = element.userData as INode;
+                    if (node == null)
+                        continue;
+
+                    var drawState = node.drawState;
+                    drawState.position = element.GetPosition();
+                    node.drawState = drawState;
+                }
+            }
+
+            var nodesToUpdate = m_NodeViewHashSet;
+            nodesToUpdate.Clear();
+
+            if (graphViewChange.elementsToRemove != null)
+            {
+                m_Graph.owner.RegisterCompleteObjectUndo("Remove Elements");
+                m_Graph.RemoveElements(graphViewChange.elementsToRemove.OfType<GenericNodeView>().Select(v => (INode) v.node),
+                    graphViewChange.elementsToRemove.OfType<Edge>().Select(e => (IEdge) e.userData));
+                foreach (var edge in graphViewChange.elementsToRemove.OfType<Edge>())
+                {
+                    if (edge.input != null)
+                    {
+                        var materialNodeView = edge.input.node as GenericNodeView;
+                        if (materialNodeView != null)
+                            nodesToUpdate.Add(materialNodeView);
+                    }
+                    if (edge.output != null)
+                    {
+                        var materialNodeView = edge.output.node as GenericNodeView;
+                        if (materialNodeView != null)
+                            nodesToUpdate.Add(materialNodeView);
+                    }
+                }
+            }
+
+            foreach (var node in nodesToUpdate)
+                node.UpdatePortInputVisibilities();
+
+            UpdateEdgeColors(nodesToUpdate);
+
             return graphViewChange;
         }
 
-        private void OnPostLayout(PostLayoutEvent evt)
-        {
-//            Debug.Log("OnPostLayout BuilderGraphView" + evt.newRect);
-        }
-
+        
         private void OnSpaceDown(KeyDownEvent evt)
         {
             Debug.Log(evt);

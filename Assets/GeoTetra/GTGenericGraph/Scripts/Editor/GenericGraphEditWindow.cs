@@ -16,14 +16,11 @@ namespace GeoTetra.GTGenericGraph
 {
     public class GenericGraphEditWindow : EditorWindow
     {
-        [SerializeField]
-        GraphObject m_GraphObject;
+        [SerializeField] GraphObject m_GraphObject;
 
-        [SerializeField]
-        private string m_Selected;
+        [SerializeField] private string m_Selected;
 
-        [NonSerialized]
-        bool m_HasError;
+        [NonSerialized] bool m_HasError;
 
         ColorSpace m_ColorSpace;
 
@@ -55,7 +52,7 @@ namespace GeoTetra.GTGenericGraph
 
                 if (m_GraphEditorView != null)
                 {
-//                    _builderGraphView.saveRequested += UpdateAsset;//
+                    m_GraphEditorView.saveRequested += UpdateAsset;
 //                    _builderGraphView.convertToSubgraphRequested += ToSubGraph;//
 //                    _builderGraphView.showInProjectRequested += PingAsset;
                     this.GetRootVisualContainer().Add(m_GraphEditorView);
@@ -73,7 +70,9 @@ namespace GeoTetra.GTGenericGraph
         private static void CreateFromMenu()
         {
             GenericGraphEditWindow window = GetWindow<GenericGraphEditWindow>();
-            window.Initialize("temp");
+            string guid = AssetDatabase.AssetPathToGUID("Assets/GeoTetra/GTGenericGraph/TestGenericGraph.GenericGraph");
+            Debug.Log(guid);
+            window.Initialize(guid);
             window.wantsMouseMove = true;
             window.Show();
         }
@@ -84,54 +83,54 @@ namespace GeoTetra.GTGenericGraph
             {
                 m_ColorSpace = PlayerSettings.colorSpace;
 
-//                var asset = AssetDatabase.LoadAssetAtPath<Object>(AssetDatabase.GUIDToAssetPath(assetGuid));
-//                if (asset == null)
-//                    return;
-//
-//                if (!EditorUtility.IsPersistent(asset))
-//                    return;
-//
-//                if (selectedGuid == assetGuid)
-//                    return;
+                var asset = AssetDatabase.LoadAssetAtPath<Object>(AssetDatabase.GUIDToAssetPath(assetGuid));
+                if (asset == null)
+                    return;
 
-//                var path = AssetDatabase.GetAssetPath(asset);
-//                var extension = Path.GetExtension(path);
-//                Type graphType;
-//                switch (extension)
-//                {
-//                    case ".ShaderGraph":
-//                        graphType = typeof(MaterialGraph);
-//                        break;
-//                    case ".ShaderSubGraph":
-//                        graphType = typeof(SubGraph);
-//                        break;
-//                    default:
-//                        return;
-//                }
+                if (!EditorUtility.IsPersistent(asset))
+                    return;
+
+                if (selectedGuid == assetGuid)
+                    return;
+
+                var path = AssetDatabase.GetAssetPath(asset);
+                var extension = Path.GetExtension(path);
+                Type graphType;
+                switch (extension)
+                {
+                    case ".GenericGraph":
+                        graphType = typeof(GenericGraph);
+                        break;
+                    case ".GenericSubGraph":
+                        graphType = typeof(SubGraph);
+                        break;
+                    default:
+                        return;
+                }
 
                 selectedGuid = assetGuid;
 
-//                var textGraph = File.ReadAllText(path, Encoding.UTF8);
+                var textGraph = File.ReadAllText(path, Encoding.UTF8);
                 graphObject = CreateInstance<GraphObject>();
                 graphObject.hideFlags = HideFlags.HideAndDontSave;
-//                graphObject.graph = JsonUtility.FromJson(textGraph, graphType) as IGraph;
-                graphObject.graph = new GenericGraph();
+                graphObject.graph = JsonUtility.FromJson(textGraph, graphType) as IGraph;
+//                graphObject.graph = new GenericGraph();
                 graphObject.graph.OnEnable();
                 graphObject.graph.ValidateGraph();
 
                 graphEditorView =
-//                    new GenericGraphEditorView(this, m_GraphObject.graph as AbstractGenericGraph, asset.name)
-//                    {
-//                        persistenceKey = selectedGuid
-//                    };
-                new GenericGraphEditorView(this, m_GraphObject.graph as AbstractGenericGraph, "temp")
-                {
-                    persistenceKey = selectedGuid
-                };
+                    new GenericGraphEditorView(this, m_GraphObject.graph as AbstractGenericGraph, asset.name)
+                    {
+                        persistenceKey = selectedGuid
+                    };
+//                new GenericGraphEditorView(this, m_GraphObject.graph as AbstractGenericGraph, "temp")
+//                {
+//                    persistenceKey = selectedGuid
+//                };
                 graphEditorView.RegisterCallback<PostLayoutEvent>(OnPostLayout);
 
-//                titleContent = new GUIContent(asset.name);
-                titleContent = new GUIContent("temp");
+                titleContent = new GUIContent(asset.name);
+//                titleContent = new GUIContent("temp");
 
                 Repaint();
             }
@@ -161,7 +160,7 @@ namespace GeoTetra.GTGenericGraph
 
             graphEditorView = null;
         }
-        
+
         void Update()
         {
             if (m_HasError)
@@ -194,7 +193,8 @@ namespace GeoTetra.GTGenericGraph
                 if (graphEditorView == null)
                 {
 //                    var asset = AssetDatabase.LoadAssetAtPath<Object>(AssetDatabase.GUIDToAssetPath(selectedGuid));
-                    graphEditorView = new GenericGraphEditorView(this, materialGraph, "temp") { persistenceKey = selectedGuid };
+                    graphEditorView =
+                        new GenericGraphEditorView(this, materialGraph, "temp") {persistenceKey = selectedGuid};
                     m_ColorSpace = PlayerSettings.colorSpace;
                 }
 
@@ -211,12 +211,53 @@ namespace GeoTetra.GTGenericGraph
             }
         }
 
-//        private void OnMouseDown(MouseDownEvent evt)
-//        {
-//            Debug.Log("Mouse Down " + evt);
-//        }
-//
-        private void OnPostLayout(PostLayoutEvent evt)
+
+        public void UpdateAsset()
+        {
+            if (selectedGuid != null && graphObject != null)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(selectedGuid);
+                if (string.IsNullOrEmpty(path) || graphObject == null)
+                    return;
+
+                if (m_GraphObject.graph.GetType() == typeof(GenericGraph))
+                    UpdateShaderGraphOnDisk(path);
+
+//                if (m_GraphObject.graph.GetType() == typeof(SubGraph))
+//                    UpdateAbstractSubgraphOnDisk<SubGraph>(path);
+
+                graphObject.isDirty = false;
+//                var windows = Resources.FindObjectsOfTypeAll<GenericGraphEditWindow>();
+//                foreach (var materialGraphEditWindow in windows)
+//                {
+//                    materialGraphEditWindow.Rebuild();
+//                }
+            }
+        }
+
+        void UpdateShaderGraphOnDisk(string path)
+        {
+            var graph = graphObject.graph as IGraph;
+            if (graph == null)
+                return;
+
+            UpdateShaderGraphOnDisk(path, graph);
+        }
+
+        static void UpdateShaderGraphOnDisk(string path, IGraph graph)
+        {
+//            var shaderImporter = AssetImporter.GetAtPath(path) as ShaderGraphImporter;
+//            if (shaderImporter == null)
+//                return;
+
+            File.WriteAllText(path, EditorJsonUtility.ToJson(graph, true));
+//            shaderImporter.SaveAndReimport();
+            AssetDatabase.ImportAsset(path);
+
+            Debug.Log("Saving to disk " + path + " " + graph);
+        }
+
+        void OnPostLayout(PostLayoutEvent evt)
         {
             Debug.Log("OnGeometryChanged");
             graphEditorView.UnregisterCallback<PostLayoutEvent>(OnPostLayout);
