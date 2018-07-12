@@ -321,19 +321,19 @@ namespace GeoTetra.GTGenericGraph
                         continue;
                     if (port.slot.slotReference.Equals(m_SearchWindowProvider.targetSlotReference))
                     {
-                        port.RegisterCallback<PostLayoutEvent>(RepositionNode);
+                        port.RegisterCallback<GeometryChangedEvent>(RepositionNode);
                         return;
                     }
                 }
             }
         }
 
-        static void RepositionNode(PostLayoutEvent evt)
+        static void RepositionNode(GeometryChangedEvent evt)
         {
             var port = evt.target as GenericPort;
             if (port == null)
                 return;
-            port.UnregisterCallback<PostLayoutEvent>(RepositionNode);
+            port.UnregisterCallback<GeometryChangedEvent>(RepositionNode);
             var nodeView = port.node as MaterialNodeView;
             if (nodeView == null)
                 return;

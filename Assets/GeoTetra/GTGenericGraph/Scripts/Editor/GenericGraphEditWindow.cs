@@ -127,7 +127,7 @@ namespace GeoTetra.GTGenericGraph
 //                {
 //                    persistenceKey = selectedGuid
 //                };
-                graphEditorView.RegisterCallback<PostLayoutEvent>(OnPostLayout);
+                graphEditorView.RegisterCallback<GeometryChangedEvent>(OnPostLayout);
 
                 titleContent = new GUIContent(asset.name);
 //                titleContent = new GUIContent("temp");
@@ -257,10 +257,10 @@ namespace GeoTetra.GTGenericGraph
             Debug.Log("Saving to disk " + path + " " + graph);
         }
 
-        void OnPostLayout(PostLayoutEvent evt)
+        void OnPostLayout(GeometryChangedEvent evt)
         {
             Debug.Log("OnGeometryChanged");
-            graphEditorView.UnregisterCallback<PostLayoutEvent>(OnPostLayout);
+            graphEditorView.UnregisterCallback<GeometryChangedEvent>(OnPostLayout);
             graphEditorView.GenericGraphView.FrameAll();
         }
     }

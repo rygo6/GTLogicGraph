@@ -182,7 +182,7 @@ namespace GeoTetra.GTGenericGraph
                     var portInputView =
                         new GenericPortInputView(port.slot) {style = {positionType = PositionType.Absolute}};
                     m_PortInputContainer.Add(portInputView);
-                    port.RegisterCallback<PostLayoutEvent>(evt => UpdatePortInput((GenericPort) evt.target));
+                    port.RegisterCallback<GeometryChangedEvent>(evt => UpdatePortInput((GenericPort) evt.target));
                 }
             }
         }

@@ -12,7 +12,7 @@ namespace GeoTetra.GTGenericGraph
         GenericPort(Orientation portOrientation, Direction portDirection, Type type)
             : base(portOrientation, portDirection, type)
 #else
-        ShaderPort(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type)
+        GenericPort(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type)
             : base(portOrientation, portDirection, portCapacity, type)
 #endif
         {
