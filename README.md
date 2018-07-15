@@ -21,5 +21,4 @@ Completed or Started:
 
 Still to do:
 - Implement a whole set of common base types for data nodes can support and their corresponding UI's.
-- Implement file importer. Allow creating multiple files.
 - Figure out way to enable plugging in of different logic to nodes so the GraphView can act like a frontend to different sets of nodes.

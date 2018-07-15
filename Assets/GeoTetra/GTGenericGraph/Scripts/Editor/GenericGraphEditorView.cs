@@ -24,6 +24,8 @@ namespace GeoTetra.GTGenericGraph
         GenericSearchWindowProvider m_SearchWindowProvider;
         
         public Action saveRequested { get; set; }
+        
+        public Action showInProjectRequested { get; set; }
 
         public GenericGraphView GenericGraphView
         {
@@ -49,6 +51,8 @@ namespace GeoTetra.GTGenericGraph
                 GUILayout.Space(6);
                 if (GUILayout.Button("Show In Project", EditorStyles.toolbarButton))
                 {
+                    if (showInProjectRequested != null)
+                        showInProjectRequested();
                 }
 
                 GUILayout.FlexibleSpace();

@@ -210,6 +210,15 @@ namespace GeoTetra.GTGenericGraph
             }
         }
 
+        public void PingAsset()
+        {
+            if (selectedGuid != null)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(selectedGuid);
+                var asset = AssetDatabase.LoadAssetAtPath<Object>(path);
+                EditorGUIUtility.PingObject(asset);
+            }
+        }
 
         public void UpdateAsset()
         {
