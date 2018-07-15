@@ -1,7 +1,12 @@
 fileFormatVersion: 2
 guid: 33ce9b207e2a7dc4a841580b9036671c
-DefaultImporter:
+ScriptedImporter:
+  fileIDToRecycleName:
+    100000: MainAsset/GenericGraph
+    400000: MainAsset/GenericGraph/Transform
+    100100000: MainAsset
   externalObjects: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 
+  script: {fileID: 11500000, guid: 9ae1acdd3a2459d47a845814e61a1679, type: 3}

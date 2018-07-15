@@ -54,7 +54,7 @@ namespace GeoTetra.GTGenericGraph
                 {
                     m_GraphEditorView.saveRequested += UpdateAsset;
 //                    _builderGraphView.convertToSubgraphRequested += ToSubGraph;//
-//                    _builderGraphView.showInProjectRequested += PingAsset;
+                    m_GraphEditorView.showInProjectRequested += PingAsset;
                     this.GetRootVisualContainer().Add(m_GraphEditorView);
                 }
             }
@@ -67,10 +67,9 @@ namespace GeoTetra.GTGenericGraph
         }
 
         [MenuItem("Window/GenericGraph")]
-        private static void CreateFromMenu()
+        public static void CreateWindow(string guid)
         {
             GenericGraphEditWindow window = GetWindow<GenericGraphEditWindow>();
-            string guid = AssetDatabase.AssetPathToGUID("Assets/GeoTetra/GTGenericGraph/TestGenericGraph.GenericGraph");
             Debug.Log(guid);
             window.Initialize(guid);
             window.wantsMouseMove = true;
