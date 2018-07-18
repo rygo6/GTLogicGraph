@@ -8,16 +8,16 @@ using UnityEngine;
 namespace GeoTetra.GTGenericGraph
 {
     [Title("Example", "ExampleGenericNode")]
-    public class ExampleGenericNode : AbstractGenericNode
+    public class ExampleGenericNode : AbstractGenericNode, IGeneratesGraphLogic
     {
         [SerializeField]
-        private float m_Value;
+        float m_Value;
 
         const int InputSlotId = 0;
         const int OutputSlotId = 1;
 
         [SerializeField]
-        private bool m_ToggleTest;
+        bool m_ToggleTest;
         
         [GenericToggleControl("Red")]
         public GenericToggleData toggleTest
@@ -38,6 +38,11 @@ namespace GeoTetra.GTGenericGraph
             UpdateNodeAfterDeserialization();
         }
 
+        public void GenerateNodeLogic(GraphLogicGenerator visitor)
+        {
+
+        }
+        
         public override string DocumentationUrl
         {
             get { return "https://github.com/Unity-Technologies/ShaderGraph/wiki/Boolean-Node"; }

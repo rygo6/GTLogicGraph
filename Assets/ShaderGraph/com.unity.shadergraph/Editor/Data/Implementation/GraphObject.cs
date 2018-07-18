@@ -41,12 +41,14 @@ namespace UnityEditor.Graphing
 
         public void OnBeforeSerialize()
         {
+            Debug.Log("OnBeforeSerialize GraphObject");
             if (graph != null)
                 m_SerializedGraph = SerializationHelper.Serialize(graph);
         }
 
         public void OnAfterDeserialize()
         {
+            Debug.Log("OnAfterDeserialize GraphObject");
             var deserializedGraph = SerializationHelper.Deserialize<IGraph>(m_SerializedGraph, null);
             if (graph == null)
                 graph = deserializedGraph;
@@ -78,6 +80,7 @@ namespace UnityEditor.Graphing
 
         void UndoRedoPerformed()
         {
+            Debug.Log("UndoRedoPerformed");
             if (m_DeserializedGraph != null)
             {
                 graph.ReplaceWith(m_DeserializedGraph);

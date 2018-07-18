@@ -389,7 +389,7 @@ namespace GeoTetra.GTGenericGraph
                 collector.AddShaderProperty(prop);
         }
 
-        public void AddShaderProperty(IShaderProperty property)
+        public void AddGenericProperty(IShaderProperty property)
         {
             if (property == null)
                 return;
@@ -424,7 +424,7 @@ namespace GeoTetra.GTGenericGraph
 
         public void RemoveShaderProperty(Guid guid)
         {
-            var propertyNodes = GetNodes<PropertyNode>().Where(x => x.propertyGuid == guid).ToList();
+            var propertyNodes = GetNodes<GenericPropertyNode>().Where(x => x.propertyGuid == guid).ToList();
             foreach (var propNode in propertyNodes)
                 ReplacePropertyNodeWithConcreteNodeNoValidate(propNode);
 
@@ -471,15 +471,15 @@ namespace GeoTetra.GTGenericGraph
 
         static List<IEdge> s_TempEdges = new List<IEdge>();
 
-        public void ReplacePropertyNodeWithConcreteNode(PropertyNode propertyNode)
+        public void ReplacePropertyNodeWithConcreteNode(GenericPropertyNode genericPropertyNode)
         {
-            ReplacePropertyNodeWithConcreteNodeNoValidate(propertyNode);
+            ReplacePropertyNodeWithConcreteNodeNoValidate(genericPropertyNode);
             ValidateGraph();
         }
 
-        void ReplacePropertyNodeWithConcreteNodeNoValidate(PropertyNode propertyNode)
+        void ReplacePropertyNodeWithConcreteNodeNoValidate(GenericPropertyNode genericPropertyNode)
         {
-            var property = properties.FirstOrDefault(x => x.guid == propertyNode.propertyGuid);
+            var property = properties.FirstOrDefault(x => x.guid == genericPropertyNode.propertyGuid);
             if (property == null)
                 return;
 
@@ -487,23 +487,23 @@ namespace GeoTetra.GTGenericGraph
             if (!(node is AbstractMaterialNode))
                 return;
 
-            var slot = propertyNode.FindOutputSlot<MaterialSlot>(PropertyNode.OutputSlotId);
+            var slot = genericPropertyNode.FindOutputSlot<MaterialSlot>(GenericPropertyNode.OutputSlotId);
             var newSlot = node.GetOutputSlots<MaterialSlot>().FirstOrDefault(s => s.valueType == slot.valueType);
             if (newSlot == null)
                 return;
 
-            node.drawState = propertyNode.drawState;
+            node.drawState = genericPropertyNode.drawState;
             AddNodeNoValidate(node);
 
             foreach (var edge in this.GetEdges(slot.slotReference))
                 ConnectNoValidate(newSlot.slotReference, edge.inputSlot);
 
-            RemoveNodeNoValidate(propertyNode);
+            RemoveNodeNoValidate(genericPropertyNode);
         }
 
         public void ValidateGraph()
         {
-            var propertyNodes = GetNodes<PropertyNode>().Where(n => !m_Properties.Any(p => p.guid == n.propertyGuid)).ToArray();
+            var propertyNodes = GetNodes<GenericPropertyNode>().Where(n => !m_Properties.Any(p => p.guid == n.propertyGuid)).ToArray();
             foreach (var pNode in propertyNodes)
                 ReplacePropertyNodeWithConcreteNodeNoValidate(pNode);
 
@@ -566,7 +566,7 @@ namespace GeoTetra.GTGenericGraph
             foreach (var otherProperty in otherMg.properties)
             {
                 if (!properties.Any(p => p.guid == otherProperty.guid))
-                    AddShaderProperty(otherProperty);
+                    AddGenericProperty(otherProperty);
             }
 
             other.ValidateGraph();

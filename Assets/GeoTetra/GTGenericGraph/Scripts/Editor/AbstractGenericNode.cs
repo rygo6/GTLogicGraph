@@ -575,12 +575,14 @@ namespace GeoTetra.GTGenericGraph
 
         public virtual void OnBeforeSerialize()
         {
+            Debug.Log("OnBeforeSerialize AbstractGenericNode");
             m_GuidSerialized = m_Guid.ToString();
             m_SerializableSlots = SerializationHelper.Serialize<ISlot>(m_Slots);
         }
 
         public virtual void OnAfterDeserialize()
         {
+            Debug.Log("OnAfterDeserialize AbstractGenericNode");
             if (!string.IsNullOrEmpty(m_GuidSerialized))
                 m_Guid = new Guid(m_GuidSerialized);
             else

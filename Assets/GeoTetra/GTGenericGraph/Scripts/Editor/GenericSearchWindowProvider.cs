@@ -63,7 +63,7 @@ namespace GeoTetra.GTGenericGraph
                 foreach (var type in assembly.GetTypesOrNothing())
                 {
                     if (type.IsClass && !type.IsAbstract && (type.IsSubclassOf(typeof(AbstractGenericNode)))
-                        && type != typeof(PropertyNode)
+                        && type != typeof(GenericPropertyNode)
                         && type != typeof(SubGraphNode))
                     {
                         var attrs = type.GetCustomAttributes(typeof(TitleAttribute), false) as TitleAttribute[];
@@ -91,7 +91,7 @@ namespace GeoTetra.GTGenericGraph
 
             foreach (var property in m_Graph.properties)
             {
-                var node = new PropertyNode();
+                var node = new GenericPropertyNode();
                 var property1 = property;
                 node.owner = m_Graph;
                 node.propertyGuid = property1.guid;

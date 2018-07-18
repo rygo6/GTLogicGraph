@@ -66,7 +66,7 @@ namespace GeoTetra.GTGenericGraph
             private set { m_Selected = value; }
         }
 
-        [MenuItem("Window/GenericGraph")]
+//        [MenuItem("Window/GenericGraph")]
         public static void CreateWindow(string guid)
         {
             GenericGraphEditWindow window = GetWindow<GenericGraphEditWindow>();
