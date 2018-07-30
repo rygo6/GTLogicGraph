@@ -5,22 +5,22 @@ using UnityEditor.ShaderGraph.Drawing;
 
 namespace GeoTetra.GTGenericGraph
 {
-	class GenericEdgeConnectorListener : IEdgeConnectorListener
+	public class GenericEdgeConnectorListener : IEdgeConnectorListener
 	{
-		readonly AbstractGenericGraph m_Graph;
-		readonly GenericSearchWindowProvider m_SearchWindowProvider;
+		private readonly GenericGraph _graph;
+		private readonly GenericSearchWindowProvider _searchWindowProvider;
 
-		public GenericEdgeConnectorListener(AbstractGenericGraph graph, GenericSearchWindowProvider searchWindowProvider)
+		public GenericEdgeConnectorListener(GenericGraph graph, GenericSearchWindowProvider searchWindowProvider)
 		{
-			m_Graph = graph;
-			m_SearchWindowProvider = searchWindowProvider;
+			_graph = graph;
+			_searchWindowProvider = searchWindowProvider;
 		}
 
 		public void OnDropOutsidePort(Edge edge, Vector2 position)
 		{
 			var draggedPort = (edge.output != null ? edge.output.edgeConnector.edgeDragHelper.draggedPort : null) ?? (edge.input != null ? edge.input.edgeConnector.edgeDragHelper.draggedPort : null);
-			m_SearchWindowProvider.connectedPort = (GenericPort) draggedPort;
-			SearchWindow.Open(new SearchWindowContext(GUIUtility.GUIToScreenPoint(Event.current.mousePosition)), m_SearchWindowProvider);
+			_searchWindowProvider.connectedPort = (GenericPort) draggedPort;
+			SearchWindow.Open(new SearchWindowContext(GUIUtility.GUIToScreenPoint(Event.current.mousePosition)), _searchWindowProvider);
 		}
 
 		public void OnDrop(GraphView graphView, Edge edge)
@@ -29,8 +29,8 @@ namespace GeoTetra.GTGenericGraph
 			var rightSlot = edge.input.GetSlot();
 			if (leftSlot != null && rightSlot != null)
 			{
-				m_Graph.owner.RegisterCompleteObjectUndo("Connect Edge");
-				m_Graph.Connect(leftSlot.slotReference, rightSlot.slotReference);
+				_graph.RegisterCompleteObjectUndo("Connect Edge");
+//				m_Graph.Connect(leftSlot.slotReference, rightSlot.slotReference);
 			}
 		}
 	}

@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using GeoTetra.GTGenericGraph;
 using UnityEditor.Graphing;
-using UnityEditor.ShaderGraph.Drawing.Slots;
+using UnityEditor.ShaderGraph;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 
-namespace UnityEditor.ShaderGraph
+namespace GeoTetra.GTGenericGraph.Slots
 {
     [Serializable]
     public class Vector1GenericSlot : GenericSlot, IGenericSlotHasValue<float>
@@ -25,13 +23,12 @@ namespace UnityEditor.ShaderGraph
         public Vector1GenericSlot(
             int slotId,
             string displayName,
-            string shaderOutputName,
+            string outputName,
             SlotType slotType,
             float value,
-            ShaderStage shaderStage = ShaderStage.Dynamic,
             string label1 = "X",
             bool hidden = false)
-            : base(slotId, displayName, shaderOutputName, slotType, hidden)
+            : base(slotId, displayName, slotType, hidden)
         {
             _defaultValue = value;
             _value = value;
@@ -48,7 +45,11 @@ namespace UnityEditor.ShaderGraph
 
         public override VisualElement InstantiateControl()
         {
-            return new MultiFloatSlotControlView(owner, _labels, () => new Vector4(value, 0f, 0f, 0f), (newValue) => value = newValue.x);
+            return new MultiFloatSlotControlView(
+                Owner, 
+                _labels, 
+                () => new Vector4(value, 0f, 0f, 0f), 
+                (newValue) => value = newValue.x);
         }
 
         protected override string ConcreteSlotValueAsVariable(AbstractMaterialNode.OutputPrecision precision)
@@ -56,36 +57,8 @@ namespace UnityEditor.ShaderGraph
             return NodeUtils.FloatToShaderValue(value);
         }
 
-        public override void AddDefaultProperty(PropertyCollector properties, GenerationMode generationMode)
-        {
-            if (!generationMode.IsPreview())
-                return;
-
-            var matOwner = owner as AbstractGenericNode;
-            if (matOwner == null)
-                throw new Exception(string.Format("Slot {0} either has no owner, or the owner is not a {1}", this, typeof(AbstractMaterialNode)));
-
-            var property = new Vector1ShaderProperty()
-            {
-                overrideReferenceName = matOwner.GetVariableNameForSlot(id),
-                generatePropertyBlock = false,
-                value = value
-            };
-            properties.AddShaderProperty(property);
-        }
-
         public override SlotValueType valueType { get { return SlotValueType.Vector1; } }
         public override ConcreteSlotValueType concreteValueType { get { return ConcreteSlotValueType.Vector1; } }
-
-        public override void GetPreviewProperties(List<PreviewProperty> properties, string name)
-        {
-            var pp = new PreviewProperty(PropertyType.Vector1)
-            {
-                name = name,
-                floatValue = value,
-            };
-            properties.Add(pp);
-        }
 
         public override void CopyValuesFrom(GenericSlot foundSlot)
         {

@@ -3,40 +3,8 @@
     "m_GUID": {
         "m_GuidSerialized": "b710126b-64dc-4c19-8194-3d098e2e210c"
     },
-    "m_SerializableNodes": [
-        {
-            "typeInfo": {
-                "fullName": "GeoTetra.GTGenericGraph.ExampleGenericNode"
-            },
-            "JSONnodeData": "{\n    \"m_GuidSerialized\": \"21f15c7b-832b-4518-81da-c7d3c12b128c\",\n    \"m_Name\": \"Example\",\n    \"m_DrawState\": {\n        \"m_Expanded\": true,\n        \"m_Position\": {\n            \"serializedVersion\": \"2\",\n            \"x\": 4770.0,\n            \"y\": 64.0,\n            \"width\": 0.0,\n            \"height\": 0.0\n        }\n    },\n    \"m_SerializableSlots\": [\n        {\n            \"typeInfo\": {\n                \"fullName\": \"UnityEditor.ShaderGraph.Vector1GenericSlot\"\n            },\n            \"JSONnodeData\": \"{\\n    \\\"_id\\\": 0,\\n    \\\"_displayName\\\": \\\"testBool\\\",\\n    \\\"_slotType\\\": 0,\\n    \\\"_priority\\\": 2147483647,\\n    \\\"_hidden\\\": false,\\n    \\\"_shaderOutputName\\\": \\\"tesBoolIn\\\",\\n    \\\"_value\\\": 0.0,\\n    \\\"_defaultValue\\\": 0.0\\n}\"\n        },\n        {\n            \"typeInfo\": {\n                \"fullName\": \"UnityEditor.ShaderGraph.Vector1GenericSlot\"\n            },\n            \"JSONnodeData\": \"{\\n    \\\"_id\\\": 1,\\n    \\\"_displayName\\\": \\\"testBool4\\\",\\n    \\\"_slotType\\\": 1,\\n    \\\"_priority\\\": 2147483647,\\n    \\\"_hidden\\\": false,\\n    \\\"_shaderOutputName\\\": \\\"tesBoolOut2\\\",\\n    \\\"_value\\\": 0.0,\\n    \\\"_defaultValue\\\": 0.0\\n}\"\n        }\n    ],\n    \"_previewExpanded\": true,\n    \"m_Value\": 0.0,\n    \"m_ToggleTest\": false\n}"
-        },
-        {
-            "typeInfo": {
-                "fullName": "GeoTetra.GTGenericGraph.ExampleGenericNode"
-            },
-            "JSONnodeData": "{\n    \"m_GuidSerialized\": \"72b78707-93e7-4346-b4fd-e77399480520\",\n    \"m_Name\": \"Example\",\n    \"m_DrawState\": {\n        \"m_Expanded\": true,\n        \"m_Position\": {\n            \"serializedVersion\": \"2\",\n            \"x\": 5347.255859375,\n            \"y\": -129.38479614257813,\n            \"width\": 400.0,\n            \"height\": 125.0\n        }\n    },\n    \"m_SerializableSlots\": [\n        {\n            \"typeInfo\": {\n                \"fullName\": \"UnityEditor.ShaderGraph.Vector1GenericSlot\"\n            },\n            \"JSONnodeData\": \"{\\n    \\\"_id\\\": 0,\\n    \\\"_displayName\\\": \\\"testBool\\\",\\n    \\\"_slotType\\\": 0,\\n    \\\"_priority\\\": 2147483647,\\n    \\\"_hidden\\\": false,\\n    \\\"_shaderOutputName\\\": \\\"tesBoolIn\\\",\\n    \\\"_value\\\": 0.0,\\n    \\\"_defaultValue\\\": 0.0\\n}\"\n        },\n        {\n            \"typeInfo\": {\n                \"fullName\": \"UnityEditor.ShaderGraph.Vector1GenericSlot\"\n            },\n            \"JSONnodeData\": \"{\\n    \\\"_id\\\": 1,\\n    \\\"_displayName\\\": \\\"testBool4\\\",\\n    \\\"_slotType\\\": 1,\\n    \\\"_priority\\\": 2147483647,\\n    \\\"_hidden\\\": false,\\n    \\\"_shaderOutputName\\\": \\\"tesBoolOut2\\\",\\n    \\\"_value\\\": 0.0,\\n    \\\"_defaultValue\\\": 0.0\\n}\"\n        }\n    ],\n    \"_previewExpanded\": true,\n    \"m_Value\": 0.0,\n    \"m_ToggleTest\": true\n}"
-        },
-        {
-            "typeInfo": {
-                "fullName": "GeoTetra.GTGenericGraph.OutputNode"
-            },
-            "JSONnodeData": "{\n    \"m_GuidSerialized\": \"e2252415-c72f-4d8b-8422-c522248465d5\",\n    \"m_Name\": \"Output\",\n    \"m_DrawState\": {\n        \"m_Expanded\": true,\n        \"m_Position\": {\n            \"serializedVersion\": \"2\",\n            \"x\": 5909.5224609375,\n            \"y\": 114.91653442382813,\n            \"width\": 400.0,\n            \"height\": 86.0\n        }\n    },\n    \"m_SerializableSlots\": [\n        {\n            \"typeInfo\": {\n                \"fullName\": \"UnityEditor.ShaderGraph.Vector1GenericSlot\"\n            },\n            \"JSONnodeData\": \"{\\n    \\\"_id\\\": 0,\\n    \\\"_displayName\\\": \\\"testBool\\\",\\n    \\\"_slotType\\\": 0,\\n    \\\"_priority\\\": 2147483647,\\n    \\\"_hidden\\\": false,\\n    \\\"_shaderOutputName\\\": \\\"tesBoolIn\\\",\\n    \\\"_value\\\": 0.0,\\n    \\\"_defaultValue\\\": 0.0\\n}\"\n        }\n    ],\n    \"_previewExpanded\": true,\n    \"m_Value\": 0.0\n}"
-        }
-    ],
-    "m_SerializableEdges": [
-        {
-            "typeInfo": {
-                "fullName": "UnityEditor.Graphing.Edge"
-            },
-            "JSONnodeData": "{\n    \"m_OutputSlot\": {\n        \"m_SlotId\": 1,\n        \"m_NodeGUIDSerialized\": \"21f15c7b-832b-4518-81da-c7d3c12b128c\"\n    },\n    \"m_InputSlot\": {\n        \"m_SlotId\": 0,\n        \"m_NodeGUIDSerialized\": \"72b78707-93e7-4346-b4fd-e77399480520\"\n    }\n}"
-        },
-        {
-            "typeInfo": {
-                "fullName": "UnityEditor.Graphing.Edge"
-            },
-            "JSONnodeData": "{\n    \"m_OutputSlot\": {\n        \"m_SlotId\": 1,\n        \"m_NodeGUIDSerialized\": \"72b78707-93e7-4346-b4fd-e77399480520\"\n    },\n    \"m_InputSlot\": {\n        \"m_SlotId\": 0,\n        \"m_NodeGUIDSerialized\": \"e2252415-c72f-4d8b-8422-c522248465d5\"\n    }\n}"
-        }
-    ],
+    "m_SerializableNodes": [],
+    "m_SerializableEdges": [],
     "m_PreviewData": {
         "serializedMesh": {
             "m_SerializedMesh": "",

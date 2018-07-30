@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using GeoTetra.GTGenericGraph.Slots;
 using UnityEngine;
 using UnityEditor.Graphing;
 using UnityEditor.ShaderGraph;
@@ -10,7 +11,7 @@ using UnityEngine.Experimental.UIElements;
 namespace GeoTetra.GTGenericGraph
 {
     [Serializable]
-    public abstract class GenericSlot : ISlot
+    public abstract class GenericSlot
     {
         const string NotInit =  "Not Initilaized";
 
@@ -24,35 +25,18 @@ namespace GeoTetra.GTGenericGraph
         SlotType _slotType = SlotType.Input;
 
         [SerializeField]
-        int _priority = int.MaxValue;
-
-        [SerializeField]
         bool _hidden;
-
-        [SerializeField]
-        string _shaderOutputName;
 
         bool _hasError;
 
         protected GenericSlot() {}
 
-        protected GenericSlot(int slotId, string displayName, string shaderOutputName, SlotType slotType, bool hidden = false)
+        protected GenericSlot(int slotId, string displayName, SlotType slotType, bool hidden = false)
         {
             _id = slotId;
             _displayName = displayName;
             _slotType = slotType;
             _hidden = hidden;
-            _shaderOutputName = shaderOutputName;
-        }
-
-        protected GenericSlot(int slotId, string displayName, string shaderOutputName, SlotType slotType, int priority, bool hidden = false)
-        {
-            _id = slotId;
-            _displayName = displayName;
-            _slotType = slotType;
-            _priority = priority;
-            _hidden = hidden;
-            _shaderOutputName = shaderOutputName;
         }
 
         public virtual VisualElement InstantiateControl()
@@ -143,18 +127,13 @@ namespace GeoTetra.GTGenericGraph
 //                case SlotValueType.Boolean:
 //                    return new BooleanMaterialSlot(slotId, displayName, shaderOutputName, slotType, false, shaderStage, hidden);
                 case SlotValueType.Vector1:
-                    return new Vector1GenericSlot(slotId, displayName, shaderOutputName, slotType, defaultValue.x, shaderStage, hidden: hidden);
+                    return new Vector1GenericSlot(slotId, displayName, shaderOutputName, slotType, defaultValue.x, hidden: hidden);
             }
 
             throw new ArgumentOutOfRangeException("type", type, null);
         }
 
-        public SlotReference slotReference
-        {
-            get { return new SlotReference(owner.guid, _id); }
-        }
-
-        public INode owner { get; set; }
+        public NodeEditor Owner { get; set; }
 
         public bool hidden
         {
@@ -165,12 +144,6 @@ namespace GeoTetra.GTGenericGraph
         public int id
         {
             get { return _id; }
-        }
-
-        public int priority
-        {
-            get { return _priority; }
-            set { _priority = value; }
         }
 
         public bool isInputSlot
@@ -188,29 +161,9 @@ namespace GeoTetra.GTGenericGraph
             get { return _slotType; }
         }
 
-        public bool IsConnected
-        {
-            get
-            {
-                // node and graph respectivly
-                if (owner == null || owner.owner == null)
-                    return false;
-
-                var graph = owner.owner;
-                var edges = graph.GetEdges(slotReference);
-                return edges.Any();
-            }
-        }
-
         public abstract SlotValueType valueType { get; }
 
         public abstract ConcreteSlotValueType concreteValueType { get; }
-
-        public string shaderOutputName
-        {
-            get { return _shaderOutputName; }
-            private set { _shaderOutputName = value; }
-        }
 
         public bool hasError
         {
@@ -275,31 +228,17 @@ namespace GeoTetra.GTGenericGraph
         public bool IsCompatibleWith(GenericSlot otherSlot)
         {
             return otherSlot != null
-                && otherSlot.owner != owner
+                && otherSlot.Owner != Owner
                 && otherSlot.isInputSlot != isInputSlot
                 && ((isInputSlot
                      ? otherSlot.IsCompatibleWithInputSlotType(valueType)
                      : IsCompatibleWithInputSlotType(otherSlot.valueType)));
         }
 
-        public virtual string GetDefaultValue(GenerationMode generationMode)
-        {
-            var matOwner = owner as AbstractMaterialNode;
-            if (matOwner == null)
-                throw new Exception(string.Format("Slot {0} either has no owner, or the owner is not a {1}", this, typeof(AbstractMaterialNode)));
-
-            if (generationMode.IsPreview())
-                return matOwner.GetVariableNameForSlot(id);
-
-            return ConcreteSlotValueAsVariable(matOwner.precision);
-        }
-
         protected virtual string ConcreteSlotValueAsVariable(AbstractMaterialNode.OutputPrecision precision)
         {
             return "error";
         }
-
-        public abstract void AddDefaultProperty(PropertyCollector properties, GenerationMode generationMode);
 
         protected static PropertyType ConvertConcreteSlotValueTypeToPropertyType(ConcreteSlotValueType slotValue)
         {
@@ -332,17 +271,12 @@ namespace GeoTetra.GTGenericGraph
             }
         }
 
-        public virtual void GetPreviewProperties(List<PreviewProperty> properties, string name)
-        {
-            properties.Add(default(PreviewProperty));
-        }
-
         public abstract void CopyValuesFrom(GenericSlot foundSlot);
 
-        bool Equals(GenericSlot other)
-        {
-            return _id == other._id && owner.guid.Equals(other.owner.guid);
-        }
+//        bool Equals(GenericSlot other)
+//        {
+//            return _id == other._id && owner.guid.Equals(other.owner.guid);
+//        }
 
         public bool Equals(ISlot other)
         {
@@ -361,7 +295,7 @@ namespace GeoTetra.GTGenericGraph
         {
             unchecked
             {
-                return (_id * 397) ^ (owner != null ? owner.GetHashCode() : 0);
+                return (_id * 397) ^ (Owner != null ? Owner.GetHashCode() : 0);
             }
         }
     }

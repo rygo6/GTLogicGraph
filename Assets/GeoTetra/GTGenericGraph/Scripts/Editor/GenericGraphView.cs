@@ -2,27 +2,23 @@
 using System.Collections.Generic;
 using UnityEditor.Experimental.UIElements.GraphView;
 using UnityEngine;
+using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTGenericGraph
 {
 	public class GenericGraphView : GraphView
-	{
-		public AbstractGenericGraph graph { get; private set; }
+	{		
+		public GenericGraph Graph { get; private set; }
 		
 		public GenericGraphView()
 		{
 			AddStyleSheetPath("Styles/GenericGraphView");
 			Debug.Log("GenericGraphView Constructor");
-//			AddStyleSheetPath("Styles/MaterialGraphView");
-//			serializeGraphElements = SerializeGraphElementsImplementation;
-//			canPasteSerializedData = CanPasteSerializedDataImplementation;
-//			unserializeAndPaste = UnserializeAndPasteImplementation;
-//			deleteSelection = DeleteSelectionImplementation;
 		}
 		
-		public GenericGraphView(AbstractGenericGraph graph) : this()
+		public GenericGraphView(GenericGraph graph) : this()
 		{
-			this.graph = graph;
+			Graph = graph;
 		}
 		
 		public override List<Port> GetCompatiblePorts(Port startAnchor, NodeAdapter nodeAdapter)

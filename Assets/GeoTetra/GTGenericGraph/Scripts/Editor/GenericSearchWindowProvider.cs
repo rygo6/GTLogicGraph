@@ -12,23 +12,25 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTGenericGraph
 {
-    class GenericSearchWindowProvider : ScriptableObject, ISearchWindowProvider
+    public class GenericSearchWindowProvider : ScriptableObject, ISearchWindowProvider
     {
-        EditorWindow m_EditorWindow;
-        AbstractGenericGraph m_Graph;
-        GraphView m_GraphView;
-        Texture2D m_Icon;
+        private EditorWindow _editorWindow;
+        private GenericGraphEditorView _graphEditorView;
+        private GenericGraphView _graphView;
+        private Texture2D m_Icon;
         public GenericPort connectedPort { get; set; }
         public bool nodeNeedsRepositioning { get; set; }
         public SlotReference targetSlotReference { get; private set; }
         public Vector2 targetPosition { get; private set; }
 
-        public void Initialize(EditorWindow editorWindow, AbstractGenericGraph graph, GraphView graphView)
+        public void Initialize(EditorWindow editorWindow, 
+            GenericGraphEditorView graphEditorView, 
+            GenericGraphView graphView)
         {
-            m_EditorWindow = editorWindow;
-            m_Graph = graph;
-            m_GraphView = graphView;
-
+            _editorWindow = editorWindow;
+            _graphEditorView = graphEditorView;
+            _graphView = graphView;
+            
             // Transparent icon to trick search window into indenting items
             m_Icon = new Texture2D(1, 1);
             m_Icon.SetPixel(0, 0, new Color(0, 0, 0, 0));
@@ -47,12 +49,12 @@ namespace GeoTetra.GTGenericGraph
         struct NodeEntry
         {
             public string[] title;
-            public AbstractGenericNode node;
+            public NodeEditor NodeEditor;
             public int compatibleSlotId;
         }
 
         List<int> m_Ids;
-        List<ISlot> m_Slots = new List<ISlot>();
+        List<GenericSlot> m_Slots = new List<GenericSlot>();
 
         public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
         {
@@ -62,41 +64,16 @@ namespace GeoTetra.GTGenericGraph
             {
                 foreach (var type in assembly.GetTypesOrNothing())
                 {
-                    if (type.IsClass && !type.IsAbstract && (type.IsSubclassOf(typeof(AbstractGenericNode)))
-                        && type != typeof(GenericPropertyNode)
-                        && type != typeof(SubGraphNode))
+                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(NodeEditor)))
                     {
                         var attrs = type.GetCustomAttributes(typeof(TitleAttribute), false) as TitleAttribute[];
                         if (attrs != null && attrs.Length > 0)
                         {
-                            var node = (AbstractGenericNode)Activator.CreateInstance(type);
+                            var node = (NodeEditor)Activator.CreateInstance(type);
                             AddEntries(node, attrs[0].title, nodeEntries);
                         }
                     }
                 }
-            }
-
-//            if (!(m_Graph is SubGraph))
-//            {
-//                foreach (var guid in AssetDatabase.FindAssets(string.Format("t:{0}", typeof(MaterialSubGraphAsset))))
-//                {
-//                    var asset = AssetDatabase.LoadAssetAtPath<MaterialSubGraphAsset>(AssetDatabase.GUIDToAssetPath(guid));
-//                    var path = asset.subGraph.path ?? "";
-//                    var title = path.Split('/').ToList();
-//                    title.Add(asset.name);
-//                    var node = new SubGraphNode { subGraphAsset = asset };
-//                    AddEntries(node, title.ToArray(), nodeEntries);
-//                }
-//            }
-
-            foreach (var property in m_Graph.properties)
-            {
-                var node = new GenericPropertyNode();
-                var property1 = property;
-                node.owner = m_Graph;
-                node.propertyGuid = property1.guid;
-                node.owner = null;
-                AddEntries(node, new [] { "Properties", "Property: " + property.displayName }, nodeEntries);
             }
 
             // Sort the entries lexicographically by group then title with the requirement that items always comes before sub-groups in the same group.
@@ -176,17 +153,13 @@ namespace GeoTetra.GTGenericGraph
             return tree;
         }
 
-        void AddEntries(AbstractGenericNode node, string[] title, List<NodeEntry> nodeEntries)
+        void AddEntries(NodeEditor nodeEditor, string[] title, List<NodeEntry> nodeEntries)
         {
-            if (m_Graph is SubGraph && !node.AllowedInSubGraph)
-                return;
-            if (m_Graph is MaterialGraph && !node.AllowedInMainGraph)
-                return;
             if (connectedPort == null)
             {
                 nodeEntries.Add(new NodeEntry
                 {
-                    node = node,
+                    NodeEditor = nodeEditor,
                     title = title,
                     compatibleSlotId = -1
                 });
@@ -195,7 +168,7 @@ namespace GeoTetra.GTGenericGraph
 
             var connectedSlot = connectedPort.slot;
             m_Slots.Clear();
-            node.GetSlots(m_Slots);
+            nodeEditor.GetSlots(m_Slots);
             var hasSingleSlot = m_Slots.Count(s => s.isOutputSlot != connectedSlot.isOutputSlot) == 1;
             m_Slots.RemoveAll(slot =>
             {
@@ -207,7 +180,7 @@ namespace GeoTetra.GTGenericGraph
             {
                 nodeEntries.Add(new NodeEntry
                 {
-                    node = node,
+                    NodeEditor = nodeEditor,
                     title = title,
                     compatibleSlotId = m_Slots.First().id
                 });
@@ -222,7 +195,7 @@ namespace GeoTetra.GTGenericGraph
                 nodeEntries.Add(new NodeEntry
                 {
                     title = entryTitle,
-                    node = node,
+                    NodeEditor = nodeEditor,
                     compatibleSlotId = slot.id
                 });
             }
@@ -231,31 +204,29 @@ namespace GeoTetra.GTGenericGraph
         public bool OnSelectEntry(SearchTreeEntry entry, SearchWindowContext context)
         {
             var nodeEntry = (NodeEntry)entry.userData;
-            var node = nodeEntry.node;
+            var node = nodeEntry.NodeEditor;
 
-            var drawState = node.drawState;
-            var windowMousePosition = m_EditorWindow.GetRootVisualContainer().ChangeCoordinatesTo(m_EditorWindow.GetRootVisualContainer().parent, context.screenMousePosition - m_EditorWindow.position.position);
-            var graphMousePosition = m_GraphView.contentViewContainer.WorldToLocal(windowMousePosition);
-            drawState.position = new Rect(graphMousePosition, Vector2.zero);
-            node.drawState = drawState;
+            LogicNode logicNode = node.CreateLogicInstance();
+            var windowMousePosition = _editorWindow.GetRootVisualContainer().ChangeCoordinatesTo(_editorWindow.GetRootVisualContainer().parent, context.screenMousePosition - _editorWindow.position.position);
+            var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);
+            logicNode.Position = new Vector3(graphMousePosition.x, graphMousePosition.y, 0);
 
-            m_Graph.owner.RegisterCompleteObjectUndo("Add " + node.name);
-            m_Graph.AddNode(node);
+            _graphEditorView.AddNode(node);
 
-            if (connectedPort != null)
-            {
-                var connectedSlot = connectedPort.slot;
-                var connectedSlotReference = connectedSlot.owner.GetSlotReference(connectedSlot.id);
-                var compatibleSlotReference = node.GetSlotReference(nodeEntry.compatibleSlotId);
-
-                var fromReference = connectedSlot.isOutputSlot ? connectedSlotReference : compatibleSlotReference;
-                var toReference = connectedSlot.isOutputSlot ? compatibleSlotReference : connectedSlotReference;
-                m_Graph.Connect(fromReference, toReference);
-
-                nodeNeedsRepositioning = true;
-                targetSlotReference = compatibleSlotReference;
-                targetPosition = graphMousePosition;
-            }
+//            if (connectedPort != null)
+//            {
+//                var connectedSlot = connectedPort.slot;
+//                var connectedSlotReference = connectedSlot.owner.GetSlotReference(connectedSlot.id);
+//                var compatibleSlotReference = node.GetSlotReference(nodeEntry.compatibleSlotId);
+//
+//                var fromReference = connectedSlot.isOutputSlot ? connectedSlotReference : compatibleSlotReference;
+//                var toReference = connectedSlot.isOutputSlot ? compatibleSlotReference : connectedSlotReference;
+//                m_Graph.Connect(fromReference, toReference);
+//
+//                nodeNeedsRepositioning = true;
+//                targetSlotReference = compatibleSlotReference;
+//                targetPosition = graphMousePosition;
+//            }
 
             return true;
         }

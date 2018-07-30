@@ -5,6 +5,6 @@ namespace GeoTetra.GTGenericGraph
 {
 	public interface IGenericControlAttribute
 	{
-		VisualElement InstantiateControl(AbstractGenericNode node, PropertyInfo propertyInfo);
+		VisualElement InstantiateControl(NodeEditor nodeEditor, PropertyInfo propertyInfo);
 	}
 }

@@ -22,11 +22,10 @@ namespace GeoTetra.GTGenericGraph
         public BooleanGenericSlot(
             int slotId,
             string displayName,
-            string shaderOutputName,
             SlotType slotType,
             bool value,
             bool hidden = false)
-            : base(slotId, displayName, shaderOutputName, slotType, hidden)
+            : base(slotId, displayName, slotType, hidden)
         {
             m_DefaultValue = value;
             m_Value = value;
@@ -50,36 +49,8 @@ namespace GeoTetra.GTGenericGraph
             return (value ? 1 : 0).ToString();
         }
 
-        public override void AddDefaultProperty(PropertyCollector properties, GenerationMode generationMode)
-        {
-            if (!generationMode.IsPreview())
-                return;
-
-            var matOwner = owner as AbstractMaterialNode;
-            if (matOwner == null)
-                throw new Exception(string.Format("Slot {0} either has no owner, or the owner is not a {1}", this, typeof(AbstractMaterialNode)));
-
-            var property = new BooleanShaderProperty()
-            {
-                overrideReferenceName = matOwner.GetVariableNameForSlot(id),
-                generatePropertyBlock = false,
-                value = value
-            };
-            properties.AddShaderProperty(property);
-        }
-
         public override SlotValueType valueType { get { return SlotValueType.Boolean; } }
         public override ConcreteSlotValueType concreteValueType { get { return ConcreteSlotValueType.Boolean; } }
-
-        public override void GetPreviewProperties(List<PreviewProperty> properties, string name)
-        {
-            var pp = new PreviewProperty(PropertyType.Boolean)
-            {
-                name = name,
-                booleanValue = value
-            };
-            properties.Add(pp);
-        }
 
         public override void CopyValuesFrom(GenericSlot foundSlot)
         {
