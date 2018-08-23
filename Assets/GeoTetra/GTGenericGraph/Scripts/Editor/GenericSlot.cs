@@ -26,22 +26,18 @@ namespace GeoTetra.GTGenericGraph
 
         [SerializeField]
         bool _hidden;
-
-        bool _hasError;
+        
+        public NodeEditor Owner { get; private set; }
 
         protected GenericSlot() {}
 
-        protected GenericSlot(int slotId, string displayName, SlotType slotType, bool hidden = false)
+        protected GenericSlot(NodeEditor owner, int slotId, string displayName, SlotType slotType, bool hidden = false)
         {
+            Owner = owner;
             _id = slotId;
             _displayName = displayName;
             _slotType = slotType;
             _hidden = hidden;
-        }
-
-        public virtual VisualElement InstantiateControl()
-        {
-            return null;
         }
 
         static string ConcreteSlotValueTypeAsString(ConcreteSlotValueType type)
@@ -75,65 +71,11 @@ namespace GeoTetra.GTGenericGraph
             }
         }
 
-        public virtual string displayName
+        public virtual string DisplayName
         {
             get { return _displayName + ConcreteSlotValueTypeAsString(concreteValueType); }
             set { _displayName = value; }
-        }
-
-        public string RawDisplayName()
-        {
-            return _displayName;
-        }
-
-        public static GenericSlot CreateGenericSlot(SlotValueType type, int slotId, string displayName, string shaderOutputName, SlotType slotType, Vector4 defaultValue, ShaderStage shaderStage = ShaderStage.Dynamic, bool hidden = false)
-        {
-            switch (type)
-            {
-//                case SlotValueType.SamplerState:
-//                    return new SamplerStateMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-//                case SlotValueType.DynamicMatrix:
-//                    return new DynamicMatrixMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-//                case SlotValueType.Matrix4:
-//                    return new Matrix4MaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-//                case SlotValueType.Matrix3:
-//                    return new Matrix3MaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-//                case SlotValueType.Matrix2:
-//                    return new Matrix2MaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-//                case SlotValueType.Texture2D:
-//                    return slotType == SlotType.Input
-//                        ? new Texture2DInputMaterialSlot(slotId, displayName, shaderOutputName, shaderStage, hidden)
-//                        : new Texture2DMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-//                case SlotValueType.Cubemap:
-//                    return slotType == SlotType.Input
-//                        ? new CubemapInputMaterialSlot(slotId, displayName, shaderOutputName, shaderStage, hidden)
-//                        : new CubemapMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-//                case SlotValueType.Gradient:
-//                    return slotType == SlotType.Input
-//                        ? new GradientInputMaterialSlot(slotId, displayName, shaderOutputName, shaderStage, hidden)
-//                        : new GradientMaterialSlot(slotId, displayName, shaderOutputName, slotType, shaderStage, hidden);
-//                case SlotValueType.DynamicVector:
-//                    return new DynamicVectorMaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue, shaderStage, hidden);
-//                case SlotValueType.Vector4:
-//                    return new Vector4MaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue, shaderStage, hidden: hidden);
-//                case SlotValueType.Vector3:
-//                    return new Vector3MaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue, shaderStage, hidden: hidden);
-//                case SlotValueType.Vector2:
-//                    return new Vector2MaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue, shaderStage, hidden: hidden);
-//                case SlotValueType.Vector1:
-//                    return new Vector1MaterialSlot(slotId, displayName, shaderOutputName, slotType, defaultValue.x, shaderStage, hidden: hidden);
-//                case SlotValueType.Dynamic:
-//                    return new DynamicValueMaterialSlot(slotId, displayName, shaderOutputName, slotType, new Matrix4x4(defaultValue, Vector4.zero, Vector4.zero, Vector4.zero), shaderStage, hidden);
-//                case SlotValueType.Boolean:
-//                    return new BooleanMaterialSlot(slotId, displayName, shaderOutputName, slotType, false, shaderStage, hidden);
-                case SlotValueType.Vector1:
-                    return new Vector1GenericSlot(slotId, displayName, shaderOutputName, slotType, defaultValue.x, hidden: hidden);
-            }
-
-            throw new ArgumentOutOfRangeException("type", type, null);
-        }
-
-        public NodeEditor Owner { get; set; }
+       }
 
         public bool hidden
         {
@@ -164,12 +106,6 @@ namespace GeoTetra.GTGenericGraph
         public abstract SlotValueType valueType { get; }
 
         public abstract ConcreteSlotValueType concreteValueType { get; }
-
-        public bool hasError
-        {
-            get { return _hasError; }
-            set { _hasError = value; }
-        }
 
         bool IsCompatibleWithInputSlotType(SlotValueType inputType)
         {
@@ -272,24 +208,6 @@ namespace GeoTetra.GTGenericGraph
         }
 
         public abstract void CopyValuesFrom(GenericSlot foundSlot);
-
-//        bool Equals(GenericSlot other)
-//        {
-//            return _id == other._id && owner.guid.Equals(other.owner.guid);
-//        }
-
-        public bool Equals(ISlot other)
-        {
-            return Equals(other as object);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(null, obj)) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != this.GetType()) return false;
-            return Equals((GenericSlot)obj);
-        }
 
         public override int GetHashCode()
         {

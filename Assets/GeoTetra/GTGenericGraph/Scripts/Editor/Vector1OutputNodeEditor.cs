@@ -31,7 +31,7 @@ namespace GeoTetra.GTGenericGraph
 
         public override void ConstructNode()
         {
-            AddSlot(new Vector1GenericSlot(InputSlotId, InputSlotXName, InputSlotXName, SlotType.Input, _serializedValue.floatValue));
+            AddSlot(new Vector1GenericSlot(this, InputSlotId, InputSlotXName, SlotType.Input, null));
         }
 
         public override string DisplayName()

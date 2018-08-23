@@ -8,6 +8,7 @@ namespace GeoTetra.GTGenericGraph
     [Serializable]
     public class Vector1LogicNode : LogicNode
     {
+        //output id 1 - change to attibute?
         public event Action<float> output;
 
         [SerializeField] 
@@ -18,13 +19,14 @@ namespace GeoTetra.GTGenericGraph
             get { return _value; }
         }
 
+        //input id 0
         public void SetValue(float value)
         {
             _value = value;
             if (output != null) output(_value);
         }
 
-        public Action<float> InputSlot(int id)
+        public override Action<float> InputSlot(int id)
         {
             switch (id)
             {
@@ -35,7 +37,7 @@ namespace GeoTetra.GTGenericGraph
             return null;
         }
         
-        public Action<float> OutputSlot(int id)
+        public override Action<float> OutputSlot(int id)
         {
             switch (id)
             {

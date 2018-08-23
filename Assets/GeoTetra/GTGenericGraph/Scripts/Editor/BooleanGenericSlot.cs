@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEditor.Graphing;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
@@ -8,45 +9,23 @@ using UnityEngine.Experimental.UIElements;
 namespace GeoTetra.GTGenericGraph
 {
     [Serializable]
-    public class BooleanGenericSlot : GenericSlot, IMaterialSlotHasValue<bool>
+    public class BooleanGenericSlot : GenericSlot
     {
-        [SerializeField]
-        private bool m_Value;
-
-        [SerializeField]
-        private bool m_DefaultValue;
+        SerializedProperty _serializedValue;
 
         public BooleanGenericSlot()
         {}
 
         public BooleanGenericSlot(
+            NodeEditor owner,
             int slotId,
             string displayName,
             SlotType slotType,
-            bool value,
+            SerializedProperty serializedValue,
             bool hidden = false)
-            : base(slotId, displayName, slotType, hidden)
+            : base(owner, slotId, displayName, slotType, hidden)
         {
-            m_DefaultValue = value;
-            m_Value = value;
-        }
-
-        public override VisualElement InstantiateControl()
-        {
-            return new BooleanGenericSlotControlView(this);
-        }
-
-        public bool defaultValue { get { return m_DefaultValue; } }
-
-        public bool value
-        {
-            get { return m_Value; }
-            set { m_Value = value; }
-        }
-
-        protected override string ConcreteSlotValueAsVariable(AbstractMaterialNode.OutputPrecision precision)
-        {
-            return (value ? 1 : 0).ToString();
+            _serializedValue = serializedValue;
         }
 
         public override SlotValueType valueType { get { return SlotValueType.Boolean; } }
@@ -54,9 +33,9 @@ namespace GeoTetra.GTGenericGraph
 
         public override void CopyValuesFrom(GenericSlot foundSlot)
         {
-            var slot = foundSlot as BooleanGenericSlot;
-            if (slot != null)
-                value = slot.value;
+//            var slot = foundSlot as BooleanGenericSlot;
+//            if (slot != null)
+//                value = slot.value;
         }
     }
 }

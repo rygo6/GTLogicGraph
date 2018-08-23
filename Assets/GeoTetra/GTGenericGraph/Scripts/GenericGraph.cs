@@ -28,14 +28,16 @@ namespace GeoTetra.GTGenericGraph
 
 		public void AddEdge(GraphEdge edge)
 		{
+			Debug.Log("adding edge");
 			_edges.Add(edge);
 		}
 	}
 
-
 	public class GraphEdge
 	{
 		public LogicNode Source;
+		public int SourceIndex;
 		public LogicNode Target;
+		public int TargetIndex;
 	}
 }

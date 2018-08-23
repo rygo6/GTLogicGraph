@@ -6,8 +6,10 @@ using UnityEngine;
 namespace GeoTetra.GTGenericGraph
 {
     [Serializable]
-    public class LogicNode : ScriptableObject
+    public abstract class LogicNode : ScriptableObject, ISerializationCallbackReceiver
     {
+        public event Action<LogicNode> Changed;
+        
         [SerializeField] 
         private Vector3 _position;
         
@@ -25,5 +27,20 @@ namespace GeoTetra.GTGenericGraph
             get { return _expanded; }
             set { _expanded = value; }
         }
+
+        public void OnBeforeSerialize()
+        {
+//            Debug.Log("OnBeforeSerialize");
+        }
+
+        public void OnAfterDeserialize()
+        {
+//            Debug.Log("OnAfterDeserialize");
+            if (Changed != null) Changed(this);
+        }
+
+        public abstract Action<float> InputSlot(int id);
+        
+        public abstract Action<float> OutputSlot(int id);
     }
 }

@@ -92,6 +92,7 @@ namespace GeoTetra.GTGenericGraph
                     outputContainer.Add(port);
                 else
                     inputContainer.Add(port);
+                Debug.Log(port.portType);
             }
         }
 

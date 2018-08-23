@@ -81,8 +81,9 @@ namespace GeoTetra.GTGenericGraph
             }
 
             _searchWindowProvider = ScriptableObject.CreateInstance<GenericSearchWindowProvider>();
-            _edgeConnectorListener = new GenericEdgeConnectorListener(_graph, _searchWindowProvider);
             _searchWindowProvider.Initialize(editorWindow, this, _graphView);
+            
+            _edgeConnectorListener = new GenericEdgeConnectorListener(this, _graph, _searchWindowProvider);
 
             _graphView.nodeCreationRequest = (c) =>
             {
@@ -205,8 +206,27 @@ namespace GeoTetra.GTGenericGraph
 //            }
         }
 
-        Edge AddEdge(IEdge edge)
+        public void AddEdge(Edge edge)
         {
+            var leftSlot = (edge.output as GenericPort).slot;
+            var rightSlot = (edge.input as GenericPort).slot;
+            if (leftSlot == null || rightSlot == null)
+            {
+                Debug.Log("an edge is null");
+                return;
+            }
+
+            _graph.RegisterCompleteObjectUndo("Connect Edge");
+            GraphEdge graphEdge = new GraphEdge
+            {
+                Source = leftSlot.Owner.TargetLogicNode,
+                SourceIndex = leftSlot.id,
+                Target = rightSlot.Owner.TargetLogicNode,
+                TargetIndex = rightSlot.id
+            };
+           
+            _graph.AddEdge(graphEdge);
+            
 //            var sourceNode = m_Graph.GetNodeFromGuid(edge.outputSlot.nodeGuid);
 //            if (sourceNode == null)
 //            {
@@ -224,39 +244,35 @@ namespace GeoTetra.GTGenericGraph
 //            }
 //
 //            var targetSlot = targetNode.FindInputSlot<GenericSlot>(edge.inputSlot.slotId);
-//
-//            Debug.Log(m_GraphView.nodes.ToList().OfType<GenericNodeView>().Count());
-//            
-//            var sourceNodeView = m_GraphView.nodes.ToList().OfType<GenericNodeView>()
-//                .FirstOrDefault(x => x.node == sourceNode);
-//            if (sourceNodeView != null)
-//            {
-//                var sourceAnchor = sourceNodeView.outputContainer.Children().OfType<GenericPort>()
-//                    .FirstOrDefault(x => x.slot.Equals(sourceSlot));
-//
-//                var targetNodeView = m_GraphView.nodes.ToList().OfType<GenericNodeView>()
-//                    .FirstOrDefault(x => x.node == targetNode);
-//                var targetAnchor = targetNodeView.inputContainer.Children().OfType<GenericPort>()
-//                    .FirstOrDefault(x => x.slot.Equals(targetSlot));
-//
-//                var edgeView = new Edge
-//                {
-//                    userData = edge,
-//                    output = sourceAnchor,
-//                    input = targetAnchor
-//                };
-//                edgeView.output.Connect(edgeView);
-//                edgeView.input.Connect(edgeView);
-//                m_GraphView.AddElement(edgeView);
-//                sourceNodeView.RefreshPorts();
-//                targetNodeView.RefreshPorts();
+
+
+            
+            GenericNodeView sourceNodeView = _graphView.nodes.ToList().OfType<GenericNodeView>()
+                .FirstOrDefault(x => x.NodeEditor == leftSlot.Owner);
+            if (sourceNodeView != null)
+            {
+                GenericPort sourceAnchor = sourceNodeView.outputContainer.Children().OfType<GenericPort>()
+                    .FirstOrDefault(x => x.slot.Equals(leftSlot));
+
+                GenericNodeView targetNodeView = _graphView.nodes.ToList().OfType<GenericNodeView>()
+                    .FirstOrDefault(x => x.NodeEditor == rightSlot.Owner);
+                GenericPort targetAnchor = targetNodeView.inputContainer.Children().OfType<GenericPort>()
+                    .FirstOrDefault(x => x.slot.Equals(rightSlot));
+
+                var edgeView = new Edge
+                {
+                    userData = edge,
+                    output = sourceAnchor,
+                    input = targetAnchor
+                };
+                edgeView.output.Connect(edgeView);
+                edgeView.input.Connect(edgeView);
+                _graphView.AddElement(edgeView);
+                sourceNodeView.RefreshPorts();
+                targetNodeView.RefreshPorts();
 //                sourceNodeView.UpdatePortInputTypes();
 //                targetNodeView.UpdatePortInputTypes();
-//
-//                return edgeView;
-//            }
-
-            return null;
+            }
         }
     }
 }

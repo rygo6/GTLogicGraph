@@ -20,9 +20,9 @@ namespace GeoTetra.GTGenericGraph
 		void OnChangeToggle()
 		{
 			_slot.Owner.Owner.Graph.RegisterCompleteObjectUndo("Toggle Change");
-			var value = _slot.value;
-			value = !value;
-			_slot.value = value;
+//			var value = _slot.value;
+//			value = !value;
+//			_slot.value = value;
 			_slot.Owner.SetDirty();
 		}
 	}

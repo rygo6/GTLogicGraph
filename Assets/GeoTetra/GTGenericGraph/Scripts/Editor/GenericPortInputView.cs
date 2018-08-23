@@ -49,10 +49,6 @@ namespace GeoTetra.GTGenericGraph
 
             _container = new VisualElement { name = "container" };
             {
-                _control = _slot.InstantiateControl();
-                if (_control != null)
-                    _container.Add(_control);
-
                 var slotElement = new VisualElement { name = "slot" };
                 {
                     slotElement.Add(new VisualElement { name = "dot" });
@@ -71,37 +67,6 @@ namespace GeoTetra.GTGenericGraph
             _edgeControl.UpdateLayout();
             _edgeControl.inputColor = EdgeColor;
             _edgeControl.outputColor = EdgeColor;
-        }
-
-        public void UpdateSlot(GenericSlot newSlot)
-        {
-            _slot = newSlot;
-            Recreate();
-        }
-
-        public void UpdateSlotType()
-        {
-            if (Slot.concreteValueType != _slotType)
-                Recreate();
-        }
-
-        void Recreate()
-        {
-            RemoveFromClassList("type" + _slotType);
-            _slotType = Slot.concreteValueType;
-            AddToClassList("type" + _slotType);
-            if (_control != null)
-            {
-                var disposable = _control as IDisposable;
-                if (disposable != null)
-                    disposable.Dispose();
-                _container.Remove(_control);
-            }
-            _control = Slot.InstantiateControl();
-            if (_control != null)
-                _container.Insert(0, _control);
-
-            _container.visible = _edgeControl.visible = _control != null;
         }
 
         public void Dispose()

@@ -72,7 +72,6 @@ namespace GeoTetra.GTGenericGraph
             // if an old one was found. This allows updating values
             m_Slots.RemoveAll(x => x.id == slot.id);
             m_Slots.Add(slot);
-            slot.Owner = this;
 
             if (foundSlot == null)
                 return;

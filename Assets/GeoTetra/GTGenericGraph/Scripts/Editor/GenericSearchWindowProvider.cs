@@ -191,7 +191,7 @@ namespace GeoTetra.GTGenericGraph
             {
                 var entryTitle = new string[title.Length];
                 title.CopyTo(entryTitle, 0);
-                entryTitle[entryTitle.Length - 1] += ": " + slot.displayName;
+                entryTitle[entryTitle.Length - 1] += ": " + slot.DisplayName;
                 nodeEntries.Add(new NodeEntry
                 {
                     title = entryTitle,

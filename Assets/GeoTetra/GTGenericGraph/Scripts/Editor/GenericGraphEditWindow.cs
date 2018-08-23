@@ -16,7 +16,7 @@ namespace GeoTetra.GTGenericGraph
 {
     public class GenericGraphEditWindow : EditorWindow
     {
-        [SerializeField] private GenericGraph _graph;
+        private GenericGraph _graph;
 
         GenericGraph Graph
         {
