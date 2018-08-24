@@ -27,7 +27,7 @@ namespace GeoTetra.GTGenericGraph
 
         public override LogicNode CreateLogicInstance()
         {
-            TargetLogicNode = ScriptableObject.CreateInstance<Vector1LogicNode>();
+            TargetLogicNode = ScriptableObject.CreateInstance<Vector1LogicNode>() as LogicNode;
             _serializedLogicNode = new SerializedObject(TargetLogicNode);
             _serializedValue = _serializedLogicNode.FindProperty(ValueName);
             _serializedValue.floatValue = 3;

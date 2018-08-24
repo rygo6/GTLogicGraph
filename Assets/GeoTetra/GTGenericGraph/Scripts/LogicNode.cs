@@ -6,7 +6,7 @@ using UnityEngine;
 namespace GeoTetra.GTGenericGraph
 {
     [Serializable]
-    public abstract class LogicNode : ScriptableObject, ISerializationCallbackReceiver
+    public abstract class LogicNode : ScriptableObject
     {
         public event Action<LogicNode> Changed;
         

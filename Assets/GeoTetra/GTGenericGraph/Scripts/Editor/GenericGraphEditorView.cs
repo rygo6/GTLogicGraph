@@ -226,6 +226,7 @@ namespace GeoTetra.GTGenericGraph
             };
            
             _graph.AddEdge(graphEdge);
+            EditorUtility.SetDirty(_graph);
             
 //            var sourceNode = m_Graph.GetNodeFromGuid(edge.outputSlot.nodeGuid);
 //            if (sourceNode == null)
