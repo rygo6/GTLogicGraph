@@ -204,14 +204,13 @@ namespace GeoTetra.GTGenericGraph
         public bool OnSelectEntry(SearchTreeEntry entry, SearchWindowContext context)
         {
             var nodeEntry = (NodeEntry)entry.userData;
-            var node = nodeEntry.NodeEditor;
-
-            LogicNode logicNode = node.CreateLogicInstance();
+            var nodeEditor = nodeEntry.NodeEditor;
+            
             var windowMousePosition = _editorWindow.GetRootVisualContainer().ChangeCoordinatesTo(_editorWindow.GetRootVisualContainer().parent, context.screenMousePosition - _editorWindow.position.position);
             var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);
-            logicNode.Position = new Vector3(graphMousePosition.x, graphMousePosition.y, 0);
-
-            _graphEditorView.AddNode(node);
+            nodeEditor.Position = new Vector3(graphMousePosition.x, graphMousePosition.y, 0);
+            
+            _graphEditorView.AddNode(nodeEditor);
 
 //            if (connectedPort != null)
 //            {

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEditor.Graphing;
 using UnityEditor.ShaderGraph;
@@ -15,17 +16,42 @@ namespace GeoTetra.GTGenericGraph
     [Serializable]
     public abstract class NodeEditor
     {
-        [NonSerialized]
-        private List<GenericSlot> m_Slots = new List<GenericSlot>();
+        [NonSerialized] private List<GenericSlot> m_Slots = new List<GenericSlot>();
+
+        [SerializeField] private Vector3 _position;
+
+        [SerializeField] private bool _expanded = true;
+
+        [SerializeField] private string _nodeGuid;
 
         public GenericGraphView Owner { get; set; }
-        public LogicNode TargetLogicNode { get; protected set; }
-        
-        public abstract LogicNode SetLogicInstance();
-        public abstract LogicNode CreateLogicInstance();
+
+        public Vector3 Position
+        {
+            get { return _position; }
+            set { _position = value; }
+        }
+
+        public bool Expanded
+        {
+            get { return _expanded; }
+            set { _expanded = value; }
+        }
+
+        public string NodeGuid
+        {
+            get { return _nodeGuid; }
+        }
+
+        public NodeEditor()
+        {
+            _nodeGuid = System.Guid.NewGuid().ToString();
+            ConstructNode();
+        }
+
         public abstract void ConstructNode();
-        public abstract string DisplayName();
-        
+        public abstract string NodeType();
+
         public void GetInputSlots<T>(List<T> foundSlots) where T : GenericSlot
         {
             foreach (var slot in m_Slots)
@@ -55,7 +81,7 @@ namespace GeoTetra.GTGenericGraph
 
         public void SetDirty()
         {
-            EditorUtility.SetDirty(TargetLogicNode);
+            EditorUtility.SetDirty(Owner.Graph);
         }
 
         public void AddSlot(GenericSlot slot)

@@ -32,7 +32,7 @@ namespace GeoTetra.GTGenericGraph
 
             _connectorListener = connectorListener;
             NodeEditor = nodeEditor;
-            title = NodeEditor.DisplayName();
+            title = NodeEditor.NodeType();
 
             title = "Node";
 
@@ -69,13 +69,13 @@ namespace GeoTetra.GTGenericGraph
             nodeEditor.GetSlots(foundSlots);
             AddSlots(foundSlots);
             UpdatePortInputs();
-            expanded = nodeEditor.TargetLogicNode.Expanded;
+            expanded = nodeEditor.Expanded;
             RefreshExpandedState(); //This should not be needed. GraphView needs to improve the extension api here
             UpdatePortInputVisibilities();
 
             _portInputContainer.SendToBack();
 
-            SetPosition(new Rect(nodeEditor.TargetLogicNode.Position.x, nodeEditor.TargetLogicNode.Position.y, 0, 0));
+            SetPosition(new Rect(nodeEditor.Position.x, nodeEditor.Position.y, 0, 0));
 
             RefreshExpandedState();
         }
@@ -92,7 +92,6 @@ namespace GeoTetra.GTGenericGraph
                     outputContainer.Add(port);
                 else
                     inputContainer.Add(port);
-                Debug.Log(port.portType);
             }
         }
 

@@ -11,6 +11,7 @@ using UnityEditor.ShaderGraph.Drawing;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 using UnityEngine.Experimental.UIElements.StyleEnums;
+using UnityEngine.UI;
 using Edge = UnityEditor.Experimental.UIElements.GraphView.Edge;
 
 namespace GeoTetra.GTGenericGraph
@@ -82,7 +83,7 @@ namespace GeoTetra.GTGenericGraph
 
             _searchWindowProvider = ScriptableObject.CreateInstance<GenericSearchWindowProvider>();
             _searchWindowProvider.Initialize(editorWindow, this, _graphView);
-            
+
             _edgeConnectorListener = new GenericEdgeConnectorListener(this, _graph, _searchWindowProvider);
 
             _graphView.nodeCreationRequest = (c) =>
@@ -91,18 +92,28 @@ namespace GeoTetra.GTGenericGraph
                 SearchWindow.Open(new SearchWindowContext(c.screenMousePosition), _searchWindowProvider);
             };
 
-            Debug.Log(_graph.GetInstanceID());
-//            foreach (var node in graph.GetNodes<INode>())
-//                AddNode(node);
-//
-//            foreach (var edge in graph.edges)
-//                AddEdge(edge);
+            for (int i = 0; i < graph.SerializedLogicNodes.Count; ++i)
+            {
+                AddNodeFromload(graph.SerializedLogicNodes[i]);
+            }
+
+            for (int i = 0; i < graph.SerializedEdges.Count; ++i)
+            {
+                AddEdgeFromLoad(graph.SerializedEdges[i]);
+            }
 
             Add(content);
         }
 
         GraphViewChange GraphViewChanged(GraphViewChange graphViewChange)
         {
+            if (graphViewChange.edgesToCreate != null)
+                Debug.Log(graphViewChange.edgesToCreate.Count);
+            if (graphViewChange.elementsToRemove != null)
+                Debug.Log(graphViewChange.elementsToRemove.Count);
+            if (graphViewChange.movedElements != null)
+                Debug.Log(graphViewChange.movedElements.Count);
+            
 //            if (graphViewChange.edgesToCreate != null)
 //            {
 //                foreach (var edge in graphViewChange.edgesToCreate)
@@ -177,102 +188,119 @@ namespace GeoTetra.GTGenericGraph
             }
         }
 
-        public void AddNode(NodeEditor node)
+        public void AddNode(NodeEditor nodeEditor)
         {
-            _graph.RegisterCompleteObjectUndo("Add Node " + node.DisplayName());
-            _graph.AddNode(node.TargetLogicNode);
-            EditorUtility.SetDirty(_graph);
-            node.Owner = _graphView;
-            var nodeView = new GenericNodeView {userData = node};
-            _graphView.AddElement(nodeView);
-            nodeView.Initialize(node, _edgeConnectorListener);
-            nodeView.Dirty(ChangeType.Repaint);
+            Undo.RegisterCompleteObjectUndo(_graph, "Add Node " + nodeEditor.NodeType());
 
-//            if (m_SearchWindowProvider.nodeNeedsRepositioning &&
-//                m_SearchWindowProvider.targetSlotReference.nodeGuid.Equals(node.guid))
-//            {
-//                m_SearchWindowProvider.nodeNeedsRepositioning = false;
-//                foreach (var element in nodeView.inputContainer.Union(nodeView.outputContainer))
-//                {
-//                    var port = element as GenericPort;
-//                    if (port == null)
-//                        continue;
-//                    if (port.slot.slotReference.Equals(m_SearchWindowProvider.targetSlotReference))
-//                    {
-//                        port.RegisterCallback<GeometryChangedEvent>(RepositionNode);
-//                        return;
-//                    }
-//                }
-//            }
+            SerializedLogicNode serializedLogicNode = new SerializedLogicNode
+            {
+                NodeType = nodeEditor.NodeType(),
+                JSON = JsonUtility.ToJson(nodeEditor)
+            };
+
+            _graph.AddNode(serializedLogicNode);
+            EditorUtility.SetDirty(_graph);
+
+            nodeEditor.Owner = _graphView;
+            var nodeView = new GenericNodeView {userData = nodeEditor};
+            _graphView.AddElement(nodeView);
+            nodeView.Initialize(nodeEditor, _edgeConnectorListener);
+            nodeView.Dirty(ChangeType.Repaint);
         }
 
-        public void AddEdge(Edge edge)
+        private void AddNodeFromload(SerializedLogicNode serializedLogicNode)
         {
-            var leftSlot = (edge.output as GenericPort).slot;
-            var rightSlot = (edge.input as GenericPort).slot;
-            if (leftSlot == null || rightSlot == null)
+            NodeEditor nodeEditor = null;
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
-                Debug.Log("an edge is null");
-                return;
+                foreach (var type in assembly.GetTypes())
+                {
+                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(NodeEditor)))
+                    {
+                        var attrs = type.GetCustomAttributes(typeof(NodeType), false) as NodeType[];
+                        if (attrs != null && attrs.Length > 0)
+                        {
+                            if (attrs[0].Name == serializedLogicNode.NodeType)
+                            {
+                                nodeEditor = (NodeEditor) Activator.CreateInstance(type);
+                            }
+                        }
+                    }
+                }
             }
 
-            _graph.RegisterCompleteObjectUndo("Connect Edge");
-            GraphEdge graphEdge = new GraphEdge
+            if (nodeEditor != null)
             {
-                Source = leftSlot.Owner.TargetLogicNode,
+                JsonUtility.FromJsonOverwrite(serializedLogicNode.JSON, nodeEditor);
+                var nodeView = new GenericNodeView {userData = nodeEditor};
+                _graphView.AddElement(nodeView);
+                nodeView.Initialize(nodeEditor, _edgeConnectorListener);
+                nodeView.Dirty(ChangeType.Repaint);
+            }
+            else
+            {
+                Debug.LogWarning("No NodeEditor found for " + serializedLogicNode);
+            }
+        }
+
+        public void AddEdge(Edge edgeView)
+        {
+            GenericSlot leftSlot;
+            GenericSlot rightSlot;
+            GetSlots(edgeView, out leftSlot, out rightSlot);
+
+            _graph.RegisterCompleteObjectUndo("Connect Edge");
+            SerializedEdge serializedEdge = new SerializedEdge
+            {
+                Source = leftSlot.Owner.NodeGuid,
                 SourceIndex = leftSlot.id,
-                Target = rightSlot.Owner.TargetLogicNode,
+                Target = rightSlot.Owner.NodeGuid,
                 TargetIndex = rightSlot.id
             };
-           
-            _graph.AddEdge(graphEdge);
+
+            _graph.AddEdge(serializedEdge);
             EditorUtility.SetDirty(_graph);
-            
-//            var sourceNode = m_Graph.GetNodeFromGuid(edge.outputSlot.nodeGuid);
-//            if (sourceNode == null)
-//            {
-//                Debug.LogWarning("Source node is null");
-//                return null;
-//            }
-//
-//            var sourceSlot = sourceNode.FindOutputSlot<GenericSlot>(edge.outputSlot.slotId);
-//
-//            var targetNode = m_Graph.GetNodeFromGuid(edge.inputSlot.nodeGuid);
-//            if (targetNode == null)
-//            {
-//                Debug.LogWarning("Target node is null");
-//                return null;
-//            }
-//
-//            var targetSlot = targetNode.FindInputSlot<GenericSlot>(edge.inputSlot.slotId);
 
+            edgeView.userData = serializedEdge;
+            edgeView.output.Connect(edgeView);
+            edgeView.input.Connect(edgeView);
+            _graphView.AddElement(edgeView);
+        }
 
-            
+        private void AddEdgeFromLoad(SerializedEdge serializedEdge)
+        {
             GenericNodeView sourceNodeView = _graphView.nodes.ToList().OfType<GenericNodeView>()
-                .FirstOrDefault(x => x.NodeEditor == leftSlot.Owner);
+                .FirstOrDefault(x => x.NodeEditor.NodeGuid == serializedEdge.Source);
             if (sourceNodeView != null)
             {
                 GenericPort sourceAnchor = sourceNodeView.outputContainer.Children().OfType<GenericPort>()
-                    .FirstOrDefault(x => x.slot.Equals(leftSlot));
+                    .FirstOrDefault(x => x.slot.id == serializedEdge.SourceIndex);
 
                 GenericNodeView targetNodeView = _graphView.nodes.ToList().OfType<GenericNodeView>()
-                    .FirstOrDefault(x => x.NodeEditor == rightSlot.Owner);
+                    .FirstOrDefault(x => x.NodeEditor.NodeGuid == serializedEdge.Target);
                 GenericPort targetAnchor = targetNodeView.inputContainer.Children().OfType<GenericPort>()
-                    .FirstOrDefault(x => x.slot.Equals(rightSlot));
+                    .FirstOrDefault(x => x.slot.id == serializedEdge.TargetIndex);
 
                 var edgeView = new Edge
                 {
-                    userData = edge,
+                    userData = serializedEdge,
                     output = sourceAnchor,
                     input = targetAnchor
                 };
                 edgeView.output.Connect(edgeView);
                 edgeView.input.Connect(edgeView);
                 _graphView.AddElement(edgeView);
-                sourceNodeView.RefreshPorts();
-                targetNodeView.RefreshPorts();
-//                sourceNodeView.UpdatePortInputTypes();
-//                targetNodeView.UpdatePortInputTypes();
+            }
+        }
+
+
+        private void GetSlots(Edge edge, out GenericSlot leftSlot, out GenericSlot rightSlot)
+        {
+            leftSlot = (edge.output as GenericPort).slot;
+            rightSlot = (edge.input as GenericPort).slot;
+            if (leftSlot == null || rightSlot == null)
+            {
+                Debug.Log("an edge is null");
             }
         }
     }

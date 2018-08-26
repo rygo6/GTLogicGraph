@@ -10,7 +10,7 @@ namespace GeoTetra.GTGenericGraph.Slots
     [Serializable]
     public class Vector1GenericSlot : GenericSlot
     {
-        SerializedProperty _serializedValue;
+        float _value;
 
         string[] _labels;
 
@@ -22,12 +22,12 @@ namespace GeoTetra.GTGenericGraph.Slots
             int slotId,
             string displayName,
             SlotType slotType,
-            SerializedProperty serializedValue,
+            float value,
             string label1 = "X",
             bool hidden = false)
             : base(owner, slotId, displayName, slotType, hidden)
         {
-            _serializedValue = serializedValue;
+            _value = value;
             _labels = new[] { label1 };
         }
 

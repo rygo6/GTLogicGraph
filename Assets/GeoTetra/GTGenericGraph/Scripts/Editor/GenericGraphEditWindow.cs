@@ -18,17 +18,6 @@ namespace GeoTetra.GTGenericGraph
     {
         private GenericGraph _graph;
 
-        GenericGraph Graph
-        {
-            get { return _graph; }
-            set
-            {
-                if (_graph != null)
-                    DestroyImmediate(_graph);
-                _graph = value;
-            }
-        }
-
         private GenericGraphEditorView m_GraphEditorView;
 
         private GenericGraphEditorView graphEditorView
@@ -66,21 +55,21 @@ namespace GeoTetra.GTGenericGraph
         {
             try
             {
-                Graph = graph;
-                graphEditorView = new GenericGraphEditorView(this, Graph, Graph.name)
+                _graph = graph;
+                graphEditorView = new GenericGraphEditorView(this, _graph, _graph.name)
                 {
                     persistenceKey = graph.GetInstanceID().ToString()
                 };
                 graphEditorView.RegisterCallback<GeometryChangedEvent>(OnPostLayout);
 
-                titleContent = new GUIContent(Graph.name);
+                titleContent = new GUIContent(_graph.name);
 
                 Repaint();
             }
             catch (Exception)
             {
                 m_GraphEditorView = null;
-                Graph = null;
+                _graph = null;
                 throw;
             }
         }

@@ -11,6 +11,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f95f83cc89a661348b8e65536939083b, type: 3}
   m_Name: GenericGraphLogic
   m_EditorClassIdentifier: 
-  _logicNodes:
-  - {fileID: 0}
-  _edges: []
+  _serializedLogicNodes: []
+  _serializedEdges: []

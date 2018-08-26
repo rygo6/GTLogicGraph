@@ -6,7 +6,7 @@ using UnityEngine;
 namespace GeoTetra.GTGenericGraph
 {
     [Serializable]
-    public abstract class LogicNode : ScriptableObject
+    public abstract class LogicNode
     {
         public event Action<LogicNode> Changed;
         
@@ -16,17 +16,17 @@ namespace GeoTetra.GTGenericGraph
         [SerializeField] 
         private bool _expanded = true;
 
-        public Vector3 Position
-        {
-            get { return _position; }
-            set { _position = value; }
-        }
-
-        public bool Expanded
-        {
-            get { return _expanded; }
-            set { _expanded = value; }
-        }
+//        public Vector3 Position
+//        {
+//            get { return _position; }
+//            set { _position = value; }
+//        }
+//
+//        public bool Expanded
+//        {
+//            get { return _expanded; }
+//            set { _expanded = value; }
+//        }
 
         public void OnBeforeSerialize()
         {
@@ -39,8 +39,14 @@ namespace GeoTetra.GTGenericGraph
             if (Changed != null) Changed(this);
         }
 
-        public abstract Action<float> InputSlot(int id);
-        
-        public abstract Action<float> OutputSlot(int id);
+        public virtual Action<float> InputSlot(int id)
+        {
+            return null;
+        }
+
+        public virtual Action<float> OutputSlot(int id)
+        {
+            return  null;
+        }
     }
 }
