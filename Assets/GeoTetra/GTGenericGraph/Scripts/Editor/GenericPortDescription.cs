@@ -11,33 +11,23 @@ using UnityEngine.Experimental.UIElements;
 namespace GeoTetra.GTGenericGraph
 {
     [Serializable]
-    public abstract class GenericSlot
+    public abstract class GenericPortDescription
     {
-        const string NotInit =  "Not Initilaized";
+        private readonly int _id;
+        private readonly string _displayName = "";
+        private readonly SlotType _slotType = SlotType.Input;
 
-        [SerializeField]
-        int _id;
+        public NodeDescription Owner { get; private set; }
 
-        [SerializeField]
-        string _displayName = NotInit;
+        protected GenericPortDescription() {}
 
-        [SerializeField]
-        SlotType _slotType = SlotType.Input;
-
-        [SerializeField]
-        bool _hidden;
-        
-        public NodeEditor Owner { get; private set; }
-
-        protected GenericSlot() {}
-
-        protected GenericSlot(NodeEditor owner, int slotId, string displayName, SlotType slotType, bool hidden = false)
+        protected GenericPortDescription(NodeDescription owner, int slotId, string displayName, SlotType slotType)
         {
             Owner = owner;
             _id = slotId;
             _displayName = displayName;
             _slotType = slotType;
-            _hidden = hidden;
+
         }
 
         static string ConcreteSlotValueTypeAsString(ConcreteSlotValueType type)
@@ -74,14 +64,7 @@ namespace GeoTetra.GTGenericGraph
         public virtual string DisplayName
         {
             get { return _displayName + ConcreteSlotValueTypeAsString(concreteValueType); }
-            set { _displayName = value; }
        }
-
-        public bool hidden
-        {
-            get { return _hidden; }
-            set { _hidden = value; }
-        }
 
         public int id
         {
@@ -161,60 +144,14 @@ namespace GeoTetra.GTGenericGraph
             return false;
         }
 
-        public bool IsCompatibleWith(GenericSlot otherSlot)
+        public bool IsCompatibleWith(GenericPortDescription otherPortDescription)
         {
-            return otherSlot != null
-                && otherSlot.Owner != Owner
-                && otherSlot.isInputSlot != isInputSlot
+            return otherPortDescription != null
+                && otherPortDescription.Owner != Owner
+                && otherPortDescription.isInputSlot != isInputSlot
                 && ((isInputSlot
-                     ? otherSlot.IsCompatibleWithInputSlotType(valueType)
-                     : IsCompatibleWithInputSlotType(otherSlot.valueType)));
-        }
-
-        protected virtual string ConcreteSlotValueAsVariable(AbstractMaterialNode.OutputPrecision precision)
-        {
-            return "error";
-        }
-
-        protected static PropertyType ConvertConcreteSlotValueTypeToPropertyType(ConcreteSlotValueType slotValue)
-        {
-            switch (slotValue)
-            {
-                case ConcreteSlotValueType.Texture2D:
-                    return PropertyType.Texture;
-                case ConcreteSlotValueType.Cubemap:
-                    return PropertyType.Cubemap;
-                case ConcreteSlotValueType.Boolean:
-                    return PropertyType.Boolean;
-                case ConcreteSlotValueType.Vector1:
-                    return PropertyType.Vector1;
-                case ConcreteSlotValueType.Vector2:
-                    return PropertyType.Vector2;
-                case ConcreteSlotValueType.Vector3:
-                    return PropertyType.Vector3;
-                case ConcreteSlotValueType.Vector4:
-                    return PropertyType.Vector4;
-                case ConcreteSlotValueType.Matrix2:
-                    return PropertyType.Matrix2;
-                case ConcreteSlotValueType.Matrix3:
-                    return PropertyType.Matrix3;
-                case ConcreteSlotValueType.Matrix4:
-                    return PropertyType.Matrix4;
-                case ConcreteSlotValueType.SamplerState:
-                    return PropertyType.SamplerState;
-                default:
-                    return PropertyType.Vector4;
-            }
-        }
-
-        public abstract void CopyValuesFrom(GenericSlot foundSlot);
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                return (_id * 397) ^ (Owner != null ? Owner.GetHashCode() : 0);
-            }
+                     ? otherPortDescription.IsCompatibleWithInputSlotType(valueType)
+                     : IsCompatibleWithInputSlotType(otherPortDescription.valueType)));
         }
     }
 }

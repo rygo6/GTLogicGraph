@@ -6,12 +6,12 @@ namespace GeoTetra.GTGenericGraph
 {
 	public class BooleanGenericSlotControlView : VisualElement
 	{
-		BooleanGenericSlot _slot;
+		BooleanGenericPortDescription _portDescription;
 
-		public BooleanGenericSlotControlView(BooleanGenericSlot slot)
+		public BooleanGenericSlotControlView(BooleanGenericPortDescription portDescription)
 		{
 			AddStyleSheetPath("Styles/Controls/BooleanSlotControlView");
-			_slot = slot;
+			_portDescription = portDescription;
 			Action changedToggle = () => { OnChangeToggle(); };
 			var toggleField = new UnityEngine.Experimental.UIElements.Toggle(changedToggle);
 			Add(toggleField);
@@ -19,11 +19,11 @@ namespace GeoTetra.GTGenericGraph
 
 		void OnChangeToggle()
 		{
-			_slot.Owner.Owner.Graph.RegisterCompleteObjectUndo("Toggle Change");
+			_portDescription.Owner.Owner.GraphData.RegisterCompleteObjectUndo("Toggle Change");
 //			var value = _slot.value;
 //			value = !value;
 //			_slot.value = value;
-			_slot.Owner.SetDirty();
+			_portDescription.Owner.SetDirty();
 		}
 	}
 }

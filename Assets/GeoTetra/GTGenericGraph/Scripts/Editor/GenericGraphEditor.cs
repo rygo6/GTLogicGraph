@@ -7,15 +7,15 @@ using UnityEngine;
 
 namespace GeoTetra.GTGenericGraph
 {
-	[CustomEditor(typeof(GenericGraph))]
+	[CustomEditor(typeof(GraphData))]
 	public class GenericGraphEditor : Editor
 	{
 		public override void OnInspectorGUI()
 		{
 			if (GUILayout.Button("Open Generic Graph Editor"))
 			{
-				GenericGraph graph = target as GenericGraph;
-				GenericGraphEditWindow.CreateWindow(graph);
+				GraphData graphData = target as GraphData;
+				GenericGraphEditorWindow.CreateWindow(graphData);
 //				ShowGraphEditWindow(graph);
 			}
 		}

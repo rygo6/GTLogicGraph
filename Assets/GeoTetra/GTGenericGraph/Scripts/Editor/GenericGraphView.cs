@@ -8,7 +8,7 @@ namespace GeoTetra.GTGenericGraph
 {
 	public class GenericGraphView : GraphView
 	{		
-		public GenericGraph Graph { get; private set; }
+		public GraphData GraphData { get; private set; }
 		
 		public GenericGraphView()
 		{
@@ -16,21 +16,21 @@ namespace GeoTetra.GTGenericGraph
 			Debug.Log("GenericGraphView Constructor");
 		}
 		
-		public GenericGraphView(GenericGraph graph) : this()
+		public GenericGraphView(GraphData graphData) : this()
 		{
-			Graph = graph;
+			GraphData = graphData;
 		}
 		
 		public override List<Port> GetCompatiblePorts(Port startAnchor, NodeAdapter nodeAdapter)
 		{
 			var compatibleAnchors = new List<Port>();
-			var startSlot = (startAnchor as GenericPort).slot;
+			var startSlot = (startAnchor as GenericPort).PortDescription;
 			if (startSlot == null)
 				return compatibleAnchors;
 
 			foreach (var candidateAnchor in ports.ToList())
 			{
-				var candidateSlot = (candidateAnchor as GenericPort).slot;
+				var candidateSlot = (candidateAnchor as GenericPort).PortDescription;
 				if (!startSlot.IsCompatibleWith(candidateSlot))
 					continue;
 

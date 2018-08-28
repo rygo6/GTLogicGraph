@@ -8,7 +8,7 @@ using UnityEditor.ShaderGraph;
 namespace GeoTetra.GTGenericGraph
 {
     [Title("Output", "Vector1")]
-    public class Vector1OutputNodeEditor : NodeEditor
+    public class Vector1OutputNodeDescription : NodeDescription
     {
         private const string ValueName = "_value";
 
@@ -17,7 +17,7 @@ namespace GeoTetra.GTGenericGraph
 
         public override void ConstructNode()
         {
-            AddSlot(new Vector1GenericSlot(this, InputSlotId, InputSlotXName, SlotType.Input, 0));
+            AddSlot(new Vector1GenericPortDescription(this, InputSlotId, InputSlotXName, SlotType.Input));
         }
 
         public override string NodeType()

@@ -39,22 +39,22 @@ namespace GeoTetra.GTGenericGraph
             m_Label = label;
         }
 
-        public VisualElement InstantiateControl(NodeEditor nodeEditor, PropertyInfo propertyInfo)
+        public VisualElement InstantiateControl(NodeDescription nodeDescription, PropertyInfo propertyInfo)
         {
-            return new GenericToggleControlView(m_Label, nodeEditor, propertyInfo);
+            return new GenericToggleControlView(m_Label, nodeDescription, propertyInfo);
         }
     }
 
     public class GenericToggleControlView : VisualElement, INodeModificationListener
     {
-        NodeEditor _nodeEditor;
+        NodeDescription _nodeDescription;
         PropertyInfo m_PropertyInfo;
 
         UnityEngine.Experimental.UIElements.Toggle m_Toggle;
 
-        public GenericToggleControlView(string label, NodeEditor nodeEditor, PropertyInfo propertyInfo)
+        public GenericToggleControlView(string label, NodeDescription nodeDescription, PropertyInfo propertyInfo)
         {
-            _nodeEditor = nodeEditor;
+            _nodeDescription = nodeDescription;
             m_PropertyInfo = propertyInfo;
             AddStyleSheetPath("Styles/Controls/ToggleControlView");
 
@@ -63,7 +63,7 @@ namespace GeoTetra.GTGenericGraph
 
             label = label ?? ObjectNames.NicifyVariableName(propertyInfo.Name);
 
-            var value = (GenericToggleData)m_PropertyInfo.GetValue(_nodeEditor, null);
+            var value = (GenericToggleData)m_PropertyInfo.GetValue(_nodeDescription, null);
             var panel = new VisualElement { name = "togglePanel" };
             if (!string.IsNullOrEmpty(label))
                 panel.Add(new Label(label));
@@ -77,7 +77,7 @@ namespace GeoTetra.GTGenericGraph
 
         public void OnNodeModified(ModificationScope scope)
         {
-            var value = (GenericToggleData)m_PropertyInfo.GetValue(_nodeEditor, null);
+            var value = (GenericToggleData)m_PropertyInfo.GetValue(_nodeDescription, null);
             m_Toggle.SetEnabled(value.isEnabled);
 
             if (scope == ModificationScope.Graph)
@@ -88,10 +88,10 @@ namespace GeoTetra.GTGenericGraph
 
         void OnChangeToggle()
         {
-            _nodeEditor.Owner.Graph.RegisterCompleteObjectUndo("Toggle Change");
-            var value = (GenericToggleData)m_PropertyInfo.GetValue(_nodeEditor, null);
+            _nodeDescription.Owner.GraphData.RegisterCompleteObjectUndo("Toggle Change");
+            var value = (GenericToggleData)m_PropertyInfo.GetValue(_nodeDescription, null);
             value.isOn = !value.isOn;
-            m_PropertyInfo.SetValue(_nodeEditor, value, null);
+            m_PropertyInfo.SetValue(_nodeDescription, value, null);
             this.Dirty(ChangeType.Repaint);
         }
     }

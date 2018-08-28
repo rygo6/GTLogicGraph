@@ -15,7 +15,7 @@ namespace GeoTetra.GTGenericGraph
     public class GenericSearchWindowProvider : ScriptableObject, ISearchWindowProvider
     {
         private EditorWindow _editorWindow;
-        private GenericGraphEditorView _graphEditorView;
+        private GenericGraphEditorView _genericGraphEditorView;
         private GenericGraphView _graphView;
         private Texture2D m_Icon;
         public GenericPort connectedPort { get; set; }
@@ -24,11 +24,11 @@ namespace GeoTetra.GTGenericGraph
         public Vector2 targetPosition { get; private set; }
 
         public void Initialize(EditorWindow editorWindow, 
-            GenericGraphEditorView graphEditorView, 
+            GenericGraphEditorView genericGraphEditorView, 
             GenericGraphView graphView)
         {
             _editorWindow = editorWindow;
-            _graphEditorView = graphEditorView;
+            _genericGraphEditorView = genericGraphEditorView;
             _graphView = graphView;
             
             // Transparent icon to trick search window into indenting items
@@ -49,12 +49,12 @@ namespace GeoTetra.GTGenericGraph
         struct NodeEntry
         {
             public string[] title;
-            public NodeEditor NodeEditor;
+            public NodeDescription NodeDescription;
             public int compatibleSlotId;
         }
 
         List<int> m_Ids;
-        List<GenericSlot> m_Slots = new List<GenericSlot>();
+        List<GenericPortDescription> m_Slots = new List<GenericPortDescription>();
 
         public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
         {
@@ -64,12 +64,12 @@ namespace GeoTetra.GTGenericGraph
             {
                 foreach (var type in assembly.GetTypesOrNothing())
                 {
-                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(NodeEditor)))
+                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(NodeDescription)))
                     {
                         var attrs = type.GetCustomAttributes(typeof(TitleAttribute), false) as TitleAttribute[];
                         if (attrs != null && attrs.Length > 0)
                         {
-                            var node = (NodeEditor)Activator.CreateInstance(type);
+                            var node = (NodeDescription)Activator.CreateInstance(type);
                             AddEntries(node, attrs[0].title, nodeEntries);
                         }
                     }
@@ -153,26 +153,26 @@ namespace GeoTetra.GTGenericGraph
             return tree;
         }
 
-        void AddEntries(NodeEditor nodeEditor, string[] title, List<NodeEntry> nodeEntries)
+        void AddEntries(NodeDescription nodeDescription, string[] title, List<NodeEntry> nodeEntries)
         {
             if (connectedPort == null)
             {
                 nodeEntries.Add(new NodeEntry
                 {
-                    NodeEditor = nodeEditor,
+                    NodeDescription = nodeDescription,
                     title = title,
                     compatibleSlotId = -1
                 });
                 return;
             }
 
-            var connectedSlot = connectedPort.slot;
+            var connectedSlot = connectedPort.PortDescription;
             m_Slots.Clear();
-            nodeEditor.GetSlots(m_Slots);
+            nodeDescription.GetSlots(m_Slots);
             var hasSingleSlot = m_Slots.Count(s => s.isOutputSlot != connectedSlot.isOutputSlot) == 1;
             m_Slots.RemoveAll(slot =>
             {
-                var materialSlot = (GenericSlot)slot;
+                var materialSlot = (GenericPortDescription)slot;
                 return !materialSlot.IsCompatibleWith(connectedSlot);
             });
 
@@ -180,7 +180,7 @@ namespace GeoTetra.GTGenericGraph
             {
                 nodeEntries.Add(new NodeEntry
                 {
-                    NodeEditor = nodeEditor,
+                    NodeDescription = nodeDescription,
                     title = title,
                     compatibleSlotId = m_Slots.First().id
                 });
@@ -195,7 +195,7 @@ namespace GeoTetra.GTGenericGraph
                 nodeEntries.Add(new NodeEntry
                 {
                     title = entryTitle,
-                    NodeEditor = nodeEditor,
+                    NodeDescription = nodeDescription,
                     compatibleSlotId = slot.id
                 });
             }
@@ -204,13 +204,13 @@ namespace GeoTetra.GTGenericGraph
         public bool OnSelectEntry(SearchTreeEntry entry, SearchWindowContext context)
         {
             var nodeEntry = (NodeEntry)entry.userData;
-            var nodeEditor = nodeEntry.NodeEditor;
+            var nodeEditor = nodeEntry.NodeDescription;
             
             var windowMousePosition = _editorWindow.GetRootVisualContainer().ChangeCoordinatesTo(_editorWindow.GetRootVisualContainer().parent, context.screenMousePosition - _editorWindow.position.position);
             var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);
             nodeEditor.Position = new Vector3(graphMousePosition.x, graphMousePosition.y, 0);
             
-            _graphEditorView.AddNode(nodeEditor);
+            _genericGraphEditorView.AddNode(nodeEditor);
 
 //            if (connectedPort != null)
 //            {

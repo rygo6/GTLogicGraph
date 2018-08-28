@@ -7,22 +7,24 @@ using UnityEngine;
 namespace GeoTetra.GTGenericGraph
 {
 	[CreateAssetMenu( fileName = "GenericGraphLogic", menuName = "Generic Graph Logic", order = 0)]
-	public class GenericGraph : ScriptableObject, ISerializationCallbackReceiver
+	public class GraphData : ScriptableObject, ISerializationCallbackReceiver
 	{
+		public event Action Deserialized;
+		
 		[SerializeField]
-		private List<SerializedLogicNode> _serializedLogicNodes = new List<SerializedLogicNode>();
+		private List<SerializedNode> _serializedNodes = new List<SerializedNode>();
 		
 		[SerializeField]
 		private List<SerializedEdge> _serializedEdges = new List<SerializedEdge>();
-
+		
 		public List<SerializedEdge> SerializedEdges
 		{
 			get { return _serializedEdges; }
 		}
 
-		public List<SerializedLogicNode> SerializedLogicNodes
+		public List<SerializedNode> SerializedNodes
 		{
-			get { return _serializedLogicNodes; }
+			get { return _serializedNodes; }
 		}
 
 		public void RegisterCompleteObjectUndo(string name)
@@ -30,16 +32,33 @@ namespace GeoTetra.GTGenericGraph
 			Undo.RegisterCompleteObjectUndo(this, name);
 		}
 		
-		public void AddNode(SerializedLogicNode node)
+		public void AddNode(SerializedNode node)
 		{
 			Debug.Log("adding node" + node);
-			SerializedLogicNodes.Add(node);
+			_serializedNodes.Add(node);
 		}
 
+		public void RemoveNode(SerializedNode node)
+		{
+			Debug.Log("removing node" + node);
+			_serializedNodes.Remove(node);
+		}
+
+		public void UpdateNode()
+		{
+//			SerializedNodes.Find(n => n.)
+		}
+		
 		public void AddEdge(SerializedEdge edge)
 		{
 			Debug.Log("adding edge");
 			_serializedEdges.Add(edge);
+		}
+		
+		public void RemoveEdge(SerializedEdge edge)
+		{
+			Debug.Log("removing edge");
+			_serializedEdges.Remove(edge);
 		}
 
 		public void OnBeforeSerialize()
@@ -49,14 +68,16 @@ namespace GeoTetra.GTGenericGraph
 
 		public void OnAfterDeserialize()
 		{
-//			Debug.Log("OnAfterDeserialize");
+			Debug.Log("OnAfterDeserialize");
+			if (Deserialized != null) Deserialized();
 		}
 	}
 
 	[Serializable]
-	public class SerializedLogicNode
+	public class SerializedNode
 	{
 		public string NodeType;
+		public string NodeGuid;
 		public string JSON;
 	}
 	

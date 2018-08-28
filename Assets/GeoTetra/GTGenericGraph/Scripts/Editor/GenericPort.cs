@@ -14,38 +14,39 @@ namespace GeoTetra.GTGenericGraph
             AddStyleSheetPath("Styles/GenericPort");
         }
 
-        GenericSlot _slot;
+        GenericPortDescription _portDescription;
 
-        public static Port Create(GenericSlot slot, IEdgeConnectorListener connectorListener)
+        public static Port Create(GenericPortDescription portDescription, IEdgeConnectorListener connectorListener)
         {
             var port = new GenericPort(Orientation.Horizontal, 
-                slot.isInputSlot ? Direction.Input : Direction.Output,
-                slot.isInputSlot ? Capacity.Single : Capacity.Multi,
+                portDescription.isInputSlot ? Direction.Input : Direction.Output,
+                portDescription.isInputSlot ? Capacity.Single : Capacity.Multi,
                 null)
             {
                 m_EdgeConnector = new EdgeConnector<Edge>(connectorListener),
             };
             port.AddManipulator(port.m_EdgeConnector);
-            port.slot = slot;
-            port.portName = slot.DisplayName;
-            port.visualClass = slot.concreteValueType.ToClassName();
+            port.PortDescription = portDescription;
+            port.portName = portDescription.DisplayName;
+            port.portType = typeof(float);
+            port.visualClass = portDescription.concreteValueType.ToClassName();
             return port;
         }
 
-        public GenericSlot slot
+        public GenericPortDescription PortDescription
         {
-            get { return _slot; }
+            get { return _portDescription; }
             set
             {
-                if (ReferenceEquals(value, _slot))
+                if (ReferenceEquals(value, _portDescription))
                     return;
                 if (value == null)
                     throw new NullReferenceException();
-                if (_slot != null && value.isInputSlot != _slot.isInputSlot)
+                if (_portDescription != null && value.isInputSlot != _portDescription.isInputSlot)
                     throw new ArgumentException("Cannot change direction of already created port");
-                _slot = value;
-                portName = slot.DisplayName;
-                visualClass = slot.concreteValueType.ToClassName();
+                _portDescription = value;
+                portName = PortDescription.DisplayName;
+                visualClass = PortDescription.concreteValueType.ToClassName();
             }
         }
     }

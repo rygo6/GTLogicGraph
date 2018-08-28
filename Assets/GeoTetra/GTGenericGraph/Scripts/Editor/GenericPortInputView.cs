@@ -18,24 +18,24 @@ namespace GeoTetra.GTGenericGraph
             get { return _edgeColor.GetSpecifiedValueOrDefault(Color.red); }
         }
 
-        public GenericSlot Slot
+        public GenericPortDescription PortDescription
         {
-            get { return _slot; }
+            get { return _portDescription; }
         }
 
-        GenericSlot _slot;
+        GenericPortDescription _portDescription;
         ConcreteSlotValueType _slotType;
         VisualElement _control;
         VisualElement _container;
         EdgeControl _edgeControl;
 
-        public GenericPortInputView(GenericSlot slot)
+        public GenericPortInputView(GenericPortDescription portDescription)
         {
             AddStyleSheetPath("Styles/GenericPortInputView");
             pickingMode = PickingMode.Ignore;
             ClearClassList();
-            _slot = slot;
-            _slotType = slot.concreteValueType;
+            _portDescription = portDescription;
+            _slotType = portDescription.concreteValueType;
             AddToClassList("type" + _slotType);
 
             _edgeControl = new EdgeControl
