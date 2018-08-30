@@ -45,11 +45,17 @@ namespace GeoTetra.GTGenericGraph
                 controlsContainer.Add(_controlItems);
 
                 //TODO replicate generic control attribute classes
-                foreach (var propertyInfo in nodeDescription.GetType()
-                    .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic))
-                foreach (IGenericControlAttribute attribute in propertyInfo.GetCustomAttributes(
-                    typeof(IGenericControlAttribute), false))
-                    _controlItems.Add(attribute.InstantiateControl(nodeDescription, propertyInfo));
+                foreach (var propertyInfo in
+                    nodeDescription.GetType().GetProperties(BindingFlags.Instance |
+                                                            BindingFlags.Public |
+                                                            BindingFlags.NonPublic))
+                {
+                    foreach (IGenericControlAttribute attribute in
+                        propertyInfo.GetCustomAttributes(typeof(IGenericControlAttribute), false))
+                    {
+                        _controlItems.Add(attribute.InstantiateControl(nodeDescription, propertyInfo));
+                    }
+                }
             }
             contents.Add(controlsContainer);
 

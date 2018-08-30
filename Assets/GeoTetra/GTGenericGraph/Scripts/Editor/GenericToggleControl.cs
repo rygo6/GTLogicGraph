@@ -14,48 +14,39 @@ namespace GeoTetra.GTGenericGraph
     public struct GenericToggleData
     {
         public bool isOn;
-        public bool isEnabled;
-
-        public GenericToggleData(bool on, bool enabled)
-        {
-            isOn = on;
-            isEnabled = enabled;
-        }
 
         public GenericToggleData(bool on)
         {
             isOn = on;
-            isEnabled = true;
         }
     }
 
     [AttributeUsage(AttributeTargets.Property)]
     public class GenericToggleControlAttribute : Attribute, IGenericControlAttribute
     {
-        string m_Label;
+        string _label;
 
         public GenericToggleControlAttribute(string label = null)
         {
-            m_Label = label;
+            _label = label;
         }
 
         public VisualElement InstantiateControl(NodeDescription nodeDescription, PropertyInfo propertyInfo)
         {
-            return new GenericToggleControlView(m_Label, nodeDescription, propertyInfo);
+            return new GenericToggleControlView(_label, nodeDescription, propertyInfo);
         }
     }
 
-    public class GenericToggleControlView : VisualElement, INodeModificationListener
+    public class GenericToggleControlView : VisualElement
     {
-        NodeDescription _nodeDescription;
-        PropertyInfo m_PropertyInfo;
-
-        UnityEngine.Experimental.UIElements.Toggle m_Toggle;
+        private NodeDescription _nodeDescription;
+        private PropertyInfo _propertyInfo;
+        private UnityEngine.Experimental.UIElements.Toggle _toggle;
 
         public GenericToggleControlView(string label, NodeDescription nodeDescription, PropertyInfo propertyInfo)
         {
             _nodeDescription = nodeDescription;
-            m_PropertyInfo = propertyInfo;
+            _propertyInfo = propertyInfo;
             AddStyleSheetPath("Styles/Controls/ToggleControlView");
 
             if (propertyInfo.PropertyType != typeof(GenericToggleData))
@@ -63,36 +54,25 @@ namespace GeoTetra.GTGenericGraph
 
             label = label ?? ObjectNames.NicifyVariableName(propertyInfo.Name);
 
-            var value = (GenericToggleData)m_PropertyInfo.GetValue(_nodeDescription, null);
+            var value = (GenericToggleData)_propertyInfo.GetValue(_nodeDescription, null);
             var panel = new VisualElement { name = "togglePanel" };
             if (!string.IsNullOrEmpty(label))
                 panel.Add(new Label(label));
             Action changedToggle = () => { OnChangeToggle(); };
-            m_Toggle = new UnityEngine.Experimental.UIElements.Toggle(changedToggle);
-            m_Toggle.SetEnabled(value.isEnabled);
-            m_Toggle.on = value.isOn;
-            panel.Add(m_Toggle);
+            _toggle = new UnityEngine.Experimental.UIElements.Toggle(changedToggle);
+  
+            _toggle.on = value.isOn;
+            panel.Add(_toggle);
             Add(panel);
-        }
-
-        public void OnNodeModified(ModificationScope scope)
-        {
-            var value = (GenericToggleData)m_PropertyInfo.GetValue(_nodeDescription, null);
-            m_Toggle.SetEnabled(value.isEnabled);
-
-            if (scope == ModificationScope.Graph)
-            {
-                this.Dirty(ChangeType.Repaint);
-            }
         }
 
         void OnChangeToggle()
         {
             _nodeDescription.Owner.GraphData.RegisterCompleteObjectUndo("Toggle Change");
-            var value = (GenericToggleData)m_PropertyInfo.GetValue(_nodeDescription, null);
+            var value = (GenericToggleData)_propertyInfo.GetValue(_nodeDescription, null);
             value.isOn = !value.isOn;
-            m_PropertyInfo.SetValue(_nodeDescription, value, null);
-            this.Dirty(ChangeType.Repaint);
+            _propertyInfo.SetValue(_nodeDescription, value, null);
+            Dirty(ChangeType.Repaint);
         }
     }
 }
