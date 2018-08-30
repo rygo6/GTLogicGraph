@@ -148,7 +148,7 @@ GenericPort.typeGameObject {
     port-color:#8FC1DF;
 }
 
-GenericPort.typeFloat {
+GenericPort.Vector1 {
     port-color:#84E4E7;
 }
 

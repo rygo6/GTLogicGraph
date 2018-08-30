@@ -36,18 +36,12 @@ namespace GeoTetra.GTGenericGraph
             }
         }
         
-        public override string NodeType()
-        {
-            return "Vector1";
-        }
-        
         public override void ConstructNode()
         {
-            AddSlot(new Vector1GenericPortDescription(this, InputSlotXId, kInputSlotXName, SlotType.Input));
-            AddSlot(new Vector1GenericPortDescription(this, OutputSlotId, kOutputSlotName, SlotType.Output));
-            AddSlot(new BooleanGenericPortDescription(this, 3, kInputSlotXName, SlotType.Input));
-            AddSlot(new Vector1GenericPortDescription(this, 4, kInputSlotXName, SlotType.Input));
-            
+            AddSlot(new Vector1GenericPortDescription(this, InputSlotXId, kInputSlotXName, PortDirection.Input));
+            AddSlot(new Vector1GenericPortDescription(this, OutputSlotId, kOutputSlotName, PortDirection.Output));
+            AddSlot(new BooleanGenericPortDescription(this, 3, kInputSlotXName, PortDirection.Input));
+            AddSlot(new BooleanGenericPortDescription(this, 4, kOutputSlotName, PortDirection.Output));
         }
     }
 }

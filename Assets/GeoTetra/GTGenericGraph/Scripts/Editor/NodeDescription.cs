@@ -51,7 +51,20 @@ namespace GeoTetra.GTGenericGraph
         }
 
         public abstract void ConstructNode();
-        public abstract string NodeType();
+
+        public string NodeType()
+        {
+            var attrs = GetType().GetCustomAttributes(typeof(NodeType), false) as NodeType[];
+            if (attrs != null && attrs.Length > 0)
+            {
+                return attrs[0].Name;
+            }
+            else
+            {
+                Debug.LogWarning(this.GetType() + " requires a NodeType attribute");
+                return "";
+            }
+        }
 
         public void GetInputSlots<T>(List<T> foundSlots) where T : GenericPortDescription
         {
@@ -82,6 +95,7 @@ namespace GeoTetra.GTGenericGraph
 
         public void SetDirty()
         {
+            SerializedNode.JSON = JsonUtility.ToJson(this);
             EditorUtility.SetDirty(Owner.GraphData);
         }
 

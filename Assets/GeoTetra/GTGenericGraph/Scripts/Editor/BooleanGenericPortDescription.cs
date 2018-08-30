@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.Experimental.UIElements.GraphView;
 using UnityEditor.Graphing;
 using UnityEditor.ShaderGraph;
 using UnityEngine;
@@ -11,20 +12,16 @@ namespace GeoTetra.GTGenericGraph
     [Serializable]
     public class BooleanGenericPortDescription : GenericPortDescription
     {
-        public BooleanGenericPortDescription()
-        {}
+        public override PortValueType ValueType { get { return PortValueType.Boolean; } }
 
-        public BooleanGenericPortDescription(
-            NodeDescription owner,
-            int slotId,
-            string displayName,
-            SlotType slotType)
-            : base(owner, slotId, displayName, slotType)
+        public BooleanGenericPortDescription(NodeDescription owner, int slotId, string displayName,
+            PortDirection portDirection) : base(owner, slotId, displayName, portDirection)
         {
-
         }
 
-        public override SlotValueType valueType { get { return SlotValueType.Boolean; } }
-        public override ConcreteSlotValueType concreteValueType { get { return ConcreteSlotValueType.Boolean; } }
+        public override bool IsCompatibleWithInputSlotType(PortValueType inputType)
+        {
+            return inputType == PortValueType.Boolean;
+        }
     }
 }

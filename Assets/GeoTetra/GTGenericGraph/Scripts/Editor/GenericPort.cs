@@ -28,8 +28,7 @@ namespace GeoTetra.GTGenericGraph
             port.AddManipulator(port.m_EdgeConnector);
             port.PortDescription = portDescription;
             port.portName = portDescription.DisplayName;
-            port.portType = typeof(float);
-            port.visualClass = portDescription.concreteValueType.ToClassName();
+            port.visualClass = portDescription.ValueType.ToString();
             return port;
         }
 
@@ -46,7 +45,7 @@ namespace GeoTetra.GTGenericGraph
                     throw new ArgumentException("Cannot change direction of already created port");
                 _portDescription = value;
                 portName = PortDescription.DisplayName;
-                visualClass = PortDescription.concreteValueType.ToClassName();
+                visualClass = PortDescription.ValueType.ToString();
             }
         }
     }

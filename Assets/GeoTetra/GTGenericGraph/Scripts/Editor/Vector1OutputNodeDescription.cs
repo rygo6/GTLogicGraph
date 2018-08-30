@@ -17,14 +17,8 @@ namespace GeoTetra.GTGenericGraph
 
         public override void ConstructNode()
         {
-            AddSlot(new Vector1GenericPortDescription(this, InputSlotId, InputSlotXName, SlotType.Input));
+            AddSlot(new Vector1GenericPortDescription(this, InputSlotId, InputSlotXName, PortDirection.Input));
         }
-
-        public override string NodeType()
-        {
-            return "Vector 1 Output";
-        }
-
     }
 }
 
