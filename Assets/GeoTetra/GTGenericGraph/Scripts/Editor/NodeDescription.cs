@@ -16,7 +16,7 @@ namespace GeoTetra.GTGenericGraph
     [Serializable]
     public abstract class NodeDescription
     {
-        [NonSerialized] private List<GenericPortDescription> _portDescriptions = new List<GenericPortDescription>();
+        [NonSerialized] private List<PortDescription> _portDescriptions = new List<PortDescription>();
 
         [SerializeField] private Vector3 _position;
 
@@ -66,7 +66,7 @@ namespace GeoTetra.GTGenericGraph
             }
         }
 
-        public void GetInputSlots<T>(List<T> foundSlots) where T : GenericPortDescription
+        public void GetInputSlots<T>(List<T> foundSlots) where T : PortDescription
         {
             foreach (var slot in _portDescriptions)
             {
@@ -75,7 +75,7 @@ namespace GeoTetra.GTGenericGraph
             }
         }
 
-        public void GetOutputSlots<T>(List<T> foundSlots) where T : GenericPortDescription
+        public void GetOutputSlots<T>(List<T> foundSlots) where T : PortDescription
         {
             foreach (var slot in _portDescriptions)
             {
@@ -84,7 +84,7 @@ namespace GeoTetra.GTGenericGraph
             }
         }
 
-        public void GetSlots<T>(List<T> foundSlots) where T : GenericPortDescription
+        public void GetSlots<T>(List<T> foundSlots) where T : PortDescription
         {
             foreach (var slot in _portDescriptions)
             {
@@ -96,20 +96,19 @@ namespace GeoTetra.GTGenericGraph
         public void SetDirty()
         {
             SerializedNode.JSON = JsonUtility.ToJson(this);
-            EditorUtility.SetDirty(Owner.GraphData);
         }
 
-        public void AddSlot(GenericPortDescription portDescription)
+        public void AddSlot(PortDescription portDescription)
         {
-            if (!(portDescription is GenericPortDescription))
+            if (!(portDescription is PortDescription))
                 throw new ArgumentException(string.Format(
                     "Trying to add slot {0} to Material node {1}, but it is not a {2}", portDescription, this,
-                    typeof(GenericPortDescription)));
+                    typeof(PortDescription)));
 
             _portDescriptions.Add(portDescription);
         }
 
-        public T FindSlot<T>(int slotId) where T : GenericPortDescription
+        public T FindSlot<T>(int slotId) where T : PortDescription
         {
             foreach (var slot in _portDescriptions)
             {
@@ -120,7 +119,7 @@ namespace GeoTetra.GTGenericGraph
             return default(T);
         }
 
-        public T FindInputSlot<T>(int slotId) where T : GenericPortDescription
+        public T FindInputSlot<T>(int slotId) where T : PortDescription
         {
             foreach (var slot in _portDescriptions)
             {
@@ -131,7 +130,7 @@ namespace GeoTetra.GTGenericGraph
             return default(T);
         }
 
-        public T FindOutputSlot<T>(int slotId) where T : GenericPortDescription
+        public T FindOutputSlot<T>(int slotId) where T : PortDescription
         {
             foreach (var slot in _portDescriptions)
             {

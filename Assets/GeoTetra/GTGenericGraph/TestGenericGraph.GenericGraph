@@ -1,15 +1,22 @@
 {
-    "m_SerializedProperties": [],
-    "m_GUID": {
-        "m_GuidSerialized": "b710126b-64dc-4c19-8194-3d098e2e210c"
-    },
-    "m_SerializableNodes": [],
-    "m_SerializableEdges": [],
-    "m_PreviewData": {
-        "serializedMesh": {
-            "m_SerializedMesh": "",
-            "m_Guid": ""
+    "_serializedNodes": [
+        {
+            "NodeType": "Vector1",
+            "NodeGuid": "",
+            "JSON": "{\"_position\":{\"x\":79.6069564819336,\"y\":373.2565612792969,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"cee5fd60-f168-4478-83d5-105b0dda7137\",\"_value\":0.0,\"_boolValue\":false}"
+        },
+        {
+            "NodeType": "Vector1",
+            "NodeGuid": "",
+            "JSON": "{\"_position\":{\"x\":-581.5,\"y\":525.0897216796875,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"13ef25bc-6293-40b8-ae2b-503e119c1086\",\"_value\":0.0,\"_boolValue\":false}"
         }
-    },
-    "m_Path": ""
+    ],
+    "_serializedEdges": [
+        {
+            "Source": "13ef25bc-6293-40b8-ae2b-503e119c1086",
+            "SourceIndex": 1,
+            "Target": "cee5fd60-f168-4478-83d5-105b0dda7137",
+            "TargetIndex": 0
+        }
+    ]
 }

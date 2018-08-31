@@ -6,11 +6,9 @@ using UnityEngine;
 
 namespace GeoTetra.GTGenericGraph
 {
-	[CreateAssetMenu( fileName = "GenericGraphLogic", menuName = "Generic Graph Logic", order = 0)]
-	public class GraphData : ScriptableObject, ISerializationCallbackReceiver
-	{
-		public event Action Deserialized;
-		
+	[Serializable]
+	public class GraphData 
+	{		
 		[SerializeField]
 		private List<SerializedNode> _serializedNodes = new List<SerializedNode>();
 		
@@ -27,11 +25,6 @@ namespace GeoTetra.GTGenericGraph
 			get { return _serializedNodes; }
 		}
 
-		public void RegisterCompleteObjectUndo(string name)
-		{
-			Undo.RegisterCompleteObjectUndo(this, name);
-		}
-		
 		public void AddNode(SerializedNode node)
 		{
 			Debug.Log("adding node" + node);
@@ -42,11 +35,6 @@ namespace GeoTetra.GTGenericGraph
 		{
 			Debug.Log("removing node" + node);
 			_serializedNodes.Remove(node);
-		}
-
-		public void UpdateNode()
-		{
-//			SerializedNodes.Find(n => n.)
 		}
 		
 		public void AddEdge(SerializedEdge edge)
@@ -59,17 +47,6 @@ namespace GeoTetra.GTGenericGraph
 		{
 			Debug.Log("removing edge");
 			_serializedEdges.Remove(edge);
-		}
-
-		public void OnBeforeSerialize()
-		{
-//			Debug.Log("OnBeforeSerialize");
-		}
-
-		public void OnAfterDeserialize()
-		{
-			Debug.Log("OnAfterDeserialize");
-			if (Deserialized != null) Deserialized();
 		}
 	}
 

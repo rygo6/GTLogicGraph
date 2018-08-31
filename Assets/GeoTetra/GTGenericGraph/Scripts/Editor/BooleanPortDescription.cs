@@ -10,11 +10,11 @@ using UnityEngine.Experimental.UIElements;
 namespace GeoTetra.GTGenericGraph
 {
     [Serializable]
-    public class BooleanGenericPortDescription : GenericPortDescription
+    public class BooleanPortDescription : PortDescription
     {
         public override PortValueType ValueType { get { return PortValueType.Boolean; } }
 
-        public BooleanGenericPortDescription(NodeDescription owner, int slotId, string displayName,
+        public BooleanPortDescription(NodeDescription owner, int slotId, string displayName,
             PortDirection portDirection) : base(owner, slotId, displayName, portDirection)
         {
         }

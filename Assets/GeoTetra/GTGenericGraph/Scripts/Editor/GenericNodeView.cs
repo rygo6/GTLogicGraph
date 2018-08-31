@@ -59,7 +59,7 @@ namespace GeoTetra.GTGenericGraph
             }
             contents.Add(controlsContainer);
 
-            List<GenericPortDescription> foundSlots = new List<GenericPortDescription>();
+            List<PortDescription> foundSlots = new List<PortDescription>();
             nodeDescription.GetSlots(foundSlots);
             AddSlots(foundSlots);
 
@@ -68,7 +68,7 @@ namespace GeoTetra.GTGenericGraph
             RefreshExpandedState();
         }
 
-        private void AddSlots(IEnumerable<GenericPortDescription> slots)
+        private void AddSlots(IEnumerable<PortDescription> slots)
         {
             foreach (var slot in slots)
             {

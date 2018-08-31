@@ -10,7 +10,7 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTGenericGraph
 {
-    public abstract class GenericPortDescription
+    public abstract class PortDescription
     {
         private readonly int _id;
         private readonly string _displayName = "";
@@ -18,7 +18,7 @@ namespace GeoTetra.GTGenericGraph
 
         public NodeDescription Owner { get; private set; }
         
-        protected GenericPortDescription(NodeDescription owner, int slotId, string displayName, PortDirection portDirection)
+        protected PortDescription(NodeDescription owner, int slotId, string displayName, PortDirection portDirection)
         {
             Owner = owner;
             _id = slotId;
@@ -55,7 +55,7 @@ namespace GeoTetra.GTGenericGraph
 
         public abstract bool IsCompatibleWithInputSlotType(PortValueType inputType);
 
-        public bool IsCompatibleWith(GenericPortDescription otherPortDescription)
+        public bool IsCompatibleWith(PortDescription otherPortDescription)
         {
             return otherPortDescription != null
                    && otherPortDescription.Owner != Owner

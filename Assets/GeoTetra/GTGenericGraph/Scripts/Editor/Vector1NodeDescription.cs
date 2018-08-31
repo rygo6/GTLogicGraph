@@ -9,7 +9,7 @@ namespace GeoTetra.GTGenericGraph
 {
     [Title("Basic", "Vector1")]
     [NodeType("Vector1")]
-    public class Vector1GenericNodeDescription : NodeDescription
+    public class Vector1NodeDescription : NodeDescription
     {
         [SerializeField]
         private float _value;
@@ -38,10 +38,10 @@ namespace GeoTetra.GTGenericGraph
         
         public override void ConstructNode()
         {
-            AddSlot(new Vector1GenericPortDescription(this, InputSlotXId, kInputSlotXName, PortDirection.Input));
-            AddSlot(new Vector1GenericPortDescription(this, OutputSlotId, kOutputSlotName, PortDirection.Output));
-            AddSlot(new BooleanGenericPortDescription(this, 3, kInputSlotXName, PortDirection.Input));
-            AddSlot(new BooleanGenericPortDescription(this, 4, kOutputSlotName, PortDirection.Output));
+            AddSlot(new Vector1PortDescription(this, InputSlotXId, kInputSlotXName, PortDirection.Input));
+            AddSlot(new Vector1PortDescription(this, OutputSlotId, kOutputSlotName, PortDirection.Output));
+            AddSlot(new BooleanPortDescription(this, 3, kInputSlotXName, PortDirection.Input));
+            AddSlot(new BooleanPortDescription(this, 4, kOutputSlotName, PortDirection.Output));
         }
     }
 }

@@ -8,7 +8,7 @@ namespace GeoTetra.GTGenericGraph
 {
 	public class GenericGraphView : GraphView
 	{		
-		public GraphData GraphData { get; private set; }
+		public GraphObject GraphObject { get; private set; }
 		
 		public GenericGraphView()
 		{
@@ -16,9 +16,9 @@ namespace GeoTetra.GTGenericGraph
 			Debug.Log("GenericGraphView Constructor");
 		}
 		
-		public GenericGraphView(GraphData graphData) : this()
+		public GenericGraphView(GraphObject graphObject) : this()
 		{
-			GraphData = graphData;
+			GraphObject = graphObject;
 		}
 		
 		public override List<Port> GetCompatiblePorts(Port startAnchor, NodeAdapter nodeAdapter)

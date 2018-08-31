@@ -68,7 +68,7 @@ namespace GeoTetra.GTGenericGraph
 
         void OnChangeToggle()
         {
-            _nodeDescription.Owner.GraphData.RegisterCompleteObjectUndo("Toggle Change");
+            _nodeDescription.Owner.GraphObject.RegisterCompleteObjectUndo("Toggle Change");
             var value = (GenericToggleData)_propertyInfo.GetValue(_nodeDescription, null);
             value.isOn = !value.isOn;
             _propertyInfo.SetValue(_nodeDescription, value, null);

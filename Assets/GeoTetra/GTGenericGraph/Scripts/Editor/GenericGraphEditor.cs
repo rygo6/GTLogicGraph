@@ -14,13 +14,13 @@ namespace GeoTetra.GTGenericGraph
 		{
 			if (GUILayout.Button("Open Generic Graph Editor"))
 			{
-				GraphData graphData = target as GraphData;
-				GenericGraphEditorWindow.CreateWindow(graphData);
+//				GraphData graphData = target as GraphData;
+//				GenericGraphEditorWindow.CreateWindow(graphData);
 //				ShowGraphEditWindow(graph);
 			}
 		}
 
-//		internal bool ShowGraphEditWindow(GenericGraphLogic graph)
+//		private bool ShowGraphEditWindow(GraphData graph)
 //		{
 //			var guid = AssetDatabase.AssetPathToGUID(path);
 //			var extension = Path.GetExtension(path);

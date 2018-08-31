@@ -14,9 +14,9 @@ namespace GeoTetra.GTGenericGraph
             AddStyleSheetPath("Styles/GenericPort");
         }
 
-        GenericPortDescription _portDescription;
+        PortDescription _portDescription;
 
-        public static Port Create(GenericPortDescription portDescription, IEdgeConnectorListener connectorListener)
+        public static Port Create(PortDescription portDescription, IEdgeConnectorListener connectorListener)
         {
             var port = new GenericPort(Orientation.Horizontal, 
                 portDescription.isInputSlot ? Direction.Input : Direction.Output,
@@ -32,7 +32,7 @@ namespace GeoTetra.GTGenericGraph
             return port;
         }
 
-        public GenericPortDescription PortDescription
+        public PortDescription PortDescription
         {
             get { return _portDescription; }
             set

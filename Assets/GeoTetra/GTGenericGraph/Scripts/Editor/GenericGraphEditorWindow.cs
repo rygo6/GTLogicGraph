@@ -16,9 +16,10 @@ namespace GeoTetra.GTGenericGraph
 {
     public class GenericGraphEditorWindow : EditorWindow
     {
-        private GraphData _graphData;
+        private GraphObject _graphObject;
 
         private GenericGraphEditorView _graphEditorView;
+        private string _selectedGuid;
 
         private GenericGraphEditorView GenericGraphEditorView
         {
@@ -41,35 +42,37 @@ namespace GeoTetra.GTGenericGraph
             }
         }
 
-//        [MenuItem("Window/GenericGraph")]
-        public static void CreateWindow(GraphData graphData)
+        public string SelectedGuid
         {
-            GenericGraphEditorWindow window = GetWindow<GenericGraphEditorWindow>();
-            Debug.Log(graphData.GetInstanceID());
-            window.Initialize(graphData);
-            window.wantsMouseMove = true;
-            window.Show();
+            get { return _selectedGuid; }
         }
 
-        private void Initialize(GraphData graphData)
+        public void Initialize(string guid)
         {
             try
             {
-                _graphData = graphData;
-                GenericGraphEditorView = new GenericGraphEditorView(this, _graphData, _graphData.name)
+                _selectedGuid = guid;
+                var asset = AssetDatabase.LoadAssetAtPath<Object>(AssetDatabase.GUIDToAssetPath(guid));
+                var path = AssetDatabase.GetAssetPath(asset);
+                var textGraph = File.ReadAllText(path, Encoding.UTF8);
+
+                _graphObject = CreateInstance<GraphObject>();
+                GraphData graphData = JsonUtility.FromJson<GraphData>(textGraph);
+                _graphObject.Initialize(graphData);
+                GenericGraphEditorView = new GenericGraphEditorView(this, _graphObject)
                 {
-                    persistenceKey = graphData.GetInstanceID().ToString()
+                    persistenceKey = _graphObject.GetInstanceID().ToString()
                 };
                 GenericGraphEditorView.RegisterCallback<GeometryChangedEvent>(OnPostLayout);
 
-                titleContent = new GUIContent(_graphData.name);
+                titleContent = new GUIContent(_graphObject.name);
 
                 Repaint();
             }
             catch (Exception)
             {
                 _graphEditorView = null;
-                _graphData = null;
+                _graphObject = null;
                 throw;
             }
         }
@@ -101,17 +104,20 @@ namespace GeoTetra.GTGenericGraph
 
         public void UpdateAsset()
         {
-//            if (selectedGuid != null && GraphLogic != null)
-//            {
-//                var path = AssetDatabase.GUIDToAssetPath(selectedGuid);
-//                if (string.IsNullOrEmpty(path) || GraphLogic == null)
-//                    return;
-//
-//                if (_graphLogic.graph.GetType() == typeof(GenericGraph))
-//                    UpdateShaderGraphOnDisk(path);
-//
-//                GraphLogic.isDirty = false;
-//            }
+            if (SelectedGuid != null && _graphObject != null)
+            {
+                var path = AssetDatabase.GUIDToAssetPath(SelectedGuid);
+                if (string.IsNullOrEmpty(path) && _graphObject.GraphData != null)
+                    return;
+
+                var shaderImporter = AssetImporter.GetAtPath(path) as GenericGraphImporter;
+                if (shaderImporter == null)
+                    return;
+                
+                File.WriteAllText(path, EditorJsonUtility.ToJson(_graphObject.GraphData, true));
+                shaderImporter.SaveAndReimport();
+                AssetDatabase.ImportAsset(path);
+            }
         }
 
         void UpdateShaderGraphOnDisk(string path)
