@@ -19,7 +19,7 @@ namespace GeoTetra.GTGenericGraph
 			}
 		}
 
-		private bool ShowGraphEditWindow(string path)
+		private static bool ShowGraphEditWindow(string path)
 		{
 			var guid = AssetDatabase.AssetPathToGUID(path);
 			var extension = Path.GetExtension(path);
@@ -46,11 +46,11 @@ namespace GeoTetra.GTGenericGraph
 			return true;
 		}
 
-//		[OnOpenAsset(0)]
-//		public static bool OnOpenAsset(int instanceID, int line)
-//		{
-//			var path = AssetDatabase.GetAssetPath(instanceID);
-//			return ShowGraphEditWindow(path);
-//		}
+		[OnOpenAsset(0)]
+		public static bool OnOpenAsset(int instanceID, int line)
+		{
+			var path = AssetDatabase.GetAssetPath(instanceID);
+			return ShowGraphEditWindow(path);
+		}
 	}
 }

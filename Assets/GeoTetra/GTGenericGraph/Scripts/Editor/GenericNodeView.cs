@@ -50,8 +50,8 @@ namespace GeoTetra.GTGenericGraph
                                                             BindingFlags.Public |
                                                             BindingFlags.NonPublic))
                 {
-                    foreach (IGenericControlAttribute attribute in
-                        propertyInfo.GetCustomAttributes(typeof(IGenericControlAttribute), false))
+                    foreach (INodeControlAttribute attribute in
+                        propertyInfo.GetCustomAttributes(typeof(INodeControlAttribute), false))
                     {
                         _controlItems.Add(attribute.InstantiateControl(nodeDescription, propertyInfo));
                     }
@@ -72,7 +72,7 @@ namespace GeoTetra.GTGenericGraph
         {
             foreach (var slot in slots)
             {
-                var port = GenericPort.Create(slot, _connectorListener);
+                var port = PortView.Create(slot, _connectorListener);
                 if (slot.isOutputSlot)
                     outputContainer.Add(port);
                 else

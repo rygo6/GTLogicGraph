@@ -6,9 +6,9 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTGenericGraph
 {
-    public sealed class GenericPort : Port
+    public sealed class PortView : Port
     {
-        GenericPort(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type)
+        PortView(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type)
             : base(portOrientation, portDirection, portCapacity, type)
         {
             AddStyleSheetPath("Styles/GenericPort");
@@ -18,7 +18,7 @@ namespace GeoTetra.GTGenericGraph
 
         public static Port Create(PortDescription portDescription, IEdgeConnectorListener connectorListener)
         {
-            var port = new GenericPort(Orientation.Horizontal, 
+            var port = new PortView(Orientation.Horizontal, 
                 portDescription.isInputSlot ? Direction.Input : Direction.Output,
                 portDescription.isInputSlot ? Capacity.Single : Capacity.Multi,
                 null)

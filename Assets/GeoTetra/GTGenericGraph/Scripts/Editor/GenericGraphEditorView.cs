@@ -90,7 +90,7 @@ namespace GeoTetra.GTGenericGraph
 
             _graphView.nodeCreationRequest = (c) =>
             {
-                _searchWindowProvider.connectedPort = null;
+                _searchWindowProvider.ConnectedPortView = null;
                 SearchWindow.Open(new SearchWindowContext(c.screenMousePosition), _searchWindowProvider);
             };
 
@@ -270,12 +270,12 @@ namespace GeoTetra.GTGenericGraph
                 .FirstOrDefault(x => x.NodeDescription.NodeGuid == serializedEdge.Source);
             if (sourceNodeView != null)
             {
-                GenericPort sourceAnchor = sourceNodeView.outputContainer.Children().OfType<GenericPort>()
+                PortView sourceAnchor = sourceNodeView.outputContainer.Children().OfType<PortView>()
                     .FirstOrDefault(x => x.PortDescription.id == serializedEdge.SourceIndex);
 
                 GenericNodeView targetNodeView = _graphView.nodes.ToList().OfType<GenericNodeView>()
                     .FirstOrDefault(x => x.NodeDescription.NodeGuid == serializedEdge.Target);
-                GenericPort targetAnchor = targetNodeView.inputContainer.Children().OfType<GenericPort>()
+                PortView targetAnchor = targetNodeView.inputContainer.Children().OfType<PortView>()
                     .FirstOrDefault(x => x.PortDescription.id == serializedEdge.TargetIndex);
 
                 var edgeView = new Edge
@@ -293,8 +293,8 @@ namespace GeoTetra.GTGenericGraph
 
         private void GetSlots(Edge edge, out PortDescription leftPortDescription, out PortDescription rightPortDescription)
         {
-            leftPortDescription = (edge.output as GenericPort).PortDescription;
-            rightPortDescription = (edge.input as GenericPort).PortDescription;
+            leftPortDescription = (edge.output as PortView).PortDescription;
+            rightPortDescription = (edge.input as PortView).PortDescription;
             if (leftPortDescription == null || rightPortDescription == null)
             {
                 Debug.Log("an edge is null");

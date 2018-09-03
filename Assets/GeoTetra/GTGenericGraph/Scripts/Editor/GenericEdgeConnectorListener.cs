@@ -21,7 +21,7 @@ namespace GeoTetra.GTGenericGraph
         {
             var draggedPort = (edge.output != null ? edge.output.edgeConnector.edgeDragHelper.draggedPort : null) ??
                               (edge.input != null ? edge.input.edgeConnector.edgeDragHelper.draggedPort : null);
-            _searchWindowProvider.connectedPort = (GenericPort) draggedPort;
+            _searchWindowProvider.ConnectedPortView = (PortView) draggedPort;
             SearchWindow.Open(new SearchWindowContext(GUIUtility.GUIToScreenPoint(Event.current.mousePosition)),
                 _searchWindowProvider);
         }

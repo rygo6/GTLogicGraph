@@ -3,7 +3,7 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTGenericGraph
 {
-	public interface IGenericControlAttribute
+	public interface INodeControlAttribute
 	{
 		VisualElement InstantiateControl(NodeDescription nodeDescription, PropertyInfo propertyInfo);
 	}

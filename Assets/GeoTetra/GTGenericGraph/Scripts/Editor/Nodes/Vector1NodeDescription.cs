@@ -23,7 +23,7 @@ namespace GeoTetra.GTGenericGraph
         public const int InputSlotXId = 0;
         public const int OutputSlotId = 1;
 
-        [GenericToggleControlAttribute("Bool")]
+        [NodeToggleControl("Bool")]
         public GenericToggleData BoolValue
         {
             get { return new GenericToggleData(_boolValue); }

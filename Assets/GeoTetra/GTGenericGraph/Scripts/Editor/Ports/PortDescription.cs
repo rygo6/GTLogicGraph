@@ -18,7 +18,7 @@ namespace GeoTetra.GTGenericGraph
 
         public NodeDescription Owner { get; private set; }
         
-        protected PortDescription(NodeDescription owner, int slotId, string displayName, PortDirection portDirection)
+        public PortDescription(NodeDescription owner, int slotId, string displayName, PortDirection portDirection)
         {
             Owner = owner;
             _id = slotId;

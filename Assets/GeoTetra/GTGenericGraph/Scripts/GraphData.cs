@@ -30,7 +30,7 @@ namespace GeoTetra.GTGenericGraph
 			Debug.Log("adding node" + node);
 			_serializedNodes.Add(node);
 		}
-
+		
 		public void RemoveNode(SerializedNode node)
 		{
 			Debug.Log("removing node" + node);

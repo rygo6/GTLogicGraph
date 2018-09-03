@@ -22,11 +22,11 @@ namespace GeoTetra.GTGenericGraph
     }
 
     [AttributeUsage(AttributeTargets.Property)]
-    public class GenericToggleControlAttribute : Attribute, IGenericControlAttribute
+    public class NodeToggleControlAttribute : Attribute, INodeControlAttribute
     {
         string _label;
 
-        public GenericToggleControlAttribute(string label = null)
+        public NodeToggleControlAttribute(string label = null)
         {
             _label = label;
         }

@@ -18,7 +18,7 @@ namespace GeoTetra.GTGenericGraph
         private GenericGraphEditorView _genericGraphEditorView;
         private GenericGraphView _graphView;
         private Texture2D m_Icon;
-        public GenericPort connectedPort { get; set; }
+        public PortView ConnectedPortView { get; set; }
         public bool nodeNeedsRepositioning { get; set; }
         public SlotReference targetSlotReference { get; private set; }
         public Vector2 targetPosition { get; private set; }
@@ -155,7 +155,7 @@ namespace GeoTetra.GTGenericGraph
 
         void AddEntries(NodeDescription nodeDescription, string[] title, List<NodeEntry> nodeEntries)
         {
-            if (connectedPort == null)
+            if (ConnectedPortView == null)
             {
                 nodeEntries.Add(new NodeEntry
                 {
@@ -166,7 +166,7 @@ namespace GeoTetra.GTGenericGraph
                 return;
             }
 
-            var connectedSlot = connectedPort.PortDescription;
+            var connectedSlot = ConnectedPortView.PortDescription;
             m_Slots.Clear();
             nodeDescription.GetSlots(m_Slots);
             var hasSingleSlot = m_Slots.Count(s => s.isOutputSlot != connectedSlot.isOutputSlot) == 1;
