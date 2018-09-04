@@ -10,15 +10,10 @@ namespace GeoTetra.GTGenericGraph
     {        
         [SerializeField] 
         private string _nodeGuid;
-        
-        public virtual Action<float> InputSlot(int id)
-        {
-            return null;
-        }
 
-        public virtual Action<float> OutputSlot(int id)
+        public string NodeGuid
         {
-            return  null;
+            get { return _nodeGuid; }
         }
     }
 }

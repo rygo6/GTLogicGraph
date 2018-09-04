@@ -13,19 +13,30 @@ namespace GeoTetra.GTGenericGraph
         private List<LogicNode> _outputNodes = new List<LogicNode>();
         private List<LogicNode> _nodes = new List<LogicNode>();
 
+        public List<LogicNode> InputNodes
+        {
+            get { return _inputNodes; }
+        }
+
+        public List<LogicNode> OutputNodes
+        {
+            get { return _outputNodes; }
+        }
+
         private void Awake()
         {
             Debug.Log(name + " Awake");
-            LoadLogiceNodeGraph();
         }
-        
+
+        [ContextMenu("OnEnable")]
         private void OnEnable()
         {
+            LoadLogiceNodeGraph();
             Debug.Log(name + " OnEnable");
-            if (_nodes.Count > 0)
-            Debug.Log(_nodes[0].GetType());
+            if (_inputNodes.Count > 0)
+                Debug.Log(_inputNodes[0].GetType() + "  " + _inputNodes[0].GetHashCode());
         }
-        
+
         private void OnDisable()
         {
             Debug.Log(name + " OnDisable");
@@ -34,14 +45,14 @@ namespace GeoTetra.GTGenericGraph
         public void Initialize(GraphData graphData)
         {
             _graphData = graphData;
-            LoadLogiceNodeGraph();
         }
 
         private void LoadLogiceNodeGraph()
         {
             if (_graphData == null)
                 return;
-            
+
+            _nodes.Clear();
             for (int i = 0; i < _graphData.SerializedNodes.Count; ++i)
             {
                 LogicNode node = CreateLogicNodeFromSerializedNode(_graphData.SerializedNodes[i]);
@@ -52,6 +63,7 @@ namespace GeoTetra.GTGenericGraph
                 }
             }
 
+            _inputNodes.Clear();
             for (int i = 0; i < _graphData.SerializedInputNodes.Count; ++i)
             {
                 LogicNode node = CreateLogicNodeFromSerializedNode(_graphData.SerializedInputNodes[i]);
@@ -62,6 +74,7 @@ namespace GeoTetra.GTGenericGraph
                 }
             }
 
+            _outputNodes.Clear();
             for (int i = 0; i < _graphData.SerializedOutputNodes.Count; ++i)
             {
                 LogicNode node = CreateLogicNodeFromSerializedNode(_graphData.SerializedOutputNodes[i]);
@@ -73,12 +86,12 @@ namespace GeoTetra.GTGenericGraph
             }
 
             Debug.Log(_nodes[0].GetType());
-            
+
             for (int i = 0; i < _graphData.SerializedEdges.Count; ++i)
             {
             }
         }
-        
+
         private LogicNode CreateLogicNodeFromSerializedNode(SerializedNode serializedNode)
         {
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())

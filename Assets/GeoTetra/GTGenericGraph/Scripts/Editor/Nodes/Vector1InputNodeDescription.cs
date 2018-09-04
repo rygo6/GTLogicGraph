@@ -19,10 +19,6 @@ namespace GeoTetra.GTGenericGraph
         private const string InputSlotXName = "X";
         private const int InputSlotId = 0;
 
-        [VectorControlAttribute("X", "Y", "Z", "U", "V ")]
-        public Vector3 Value2 { get; set; }
-
-        
         [VectorControlAttribute("Value", "X", "Y", "Z", "W")]
         public float Value
         {

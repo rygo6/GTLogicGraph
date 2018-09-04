@@ -26,27 +26,5 @@ namespace GeoTetra.GTGenericGraph
             _value = value;
             if (output != null) output(_value);
         }
-
-        public override Action<float> InputSlot(int id)
-        {
-            switch (id)
-            {
-                case 0:
-                    return SetValue;
-            }
-
-            return null;
-        }
-        
-        public override Action<float> OutputSlot(int id)
-        {
-            switch (id)
-            {
-                case 1:
-                    return output;
-            }
-
-            return null;
-        }
     }
 }

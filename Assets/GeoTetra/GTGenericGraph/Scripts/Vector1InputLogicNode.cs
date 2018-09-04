@@ -11,44 +11,12 @@ namespace GeoTetra.GTGenericGraph
     {
         [PortIndex(0)]
         public event Action<float> output;
-
-        [SerializeField] 
-        private float _value;
-
-        public float Value
+       
+        [InputAttribute]
+        public void Vector1Input(float value)
         {
-            get { return _value; }
-//            set { _value = value; }
-        }
-        
-        //input id 0
-        //[LogicInput]
-        public void SetValue(float value)
-        {
-            _value = value;
-            if (output != null) output(_value);
-        }
-        
-        public override Action<float> InputSlot(int id)
-        {
-            switch (id)
-            {
-                case 0:
-                    return SetValue;
-            }
-
-            return null;
-        }
-        
-        public override Action<float> OutputSlot(int id)
-        {
-            switch (id)
-            {
-                case 1:
-                    return output;
-            }
-
-            return null;
+            Debug.Log("Set Value " + value);
+            if (output != null) output(value);
         }
     }
 }

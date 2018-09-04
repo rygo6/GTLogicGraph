@@ -40,8 +40,8 @@ namespace GeoTetra.GTGenericGraph
         {
             AddSlot(new Vector1PortDescription(this, InputSlotXId, kInputSlotXName, PortDirection.Input));
             AddSlot(new Vector1PortDescription(this, OutputSlotId, kOutputSlotName, PortDirection.Output));
-//            AddSlot(new BooleanPortDescription(this, 3, kInputSlotXName, PortDirection.Input));
-//            AddSlot(new BooleanPortDescription(this, 4, kOutputSlotName, PortDirection.Output));
+            AddSlot(new BooleanPortDescription(this, 3, kInputSlotXName, PortDirection.Input));
+            AddSlot(new BooleanPortDescription(this, 4, kOutputSlotName, PortDirection.Output));
         }
     }
 }

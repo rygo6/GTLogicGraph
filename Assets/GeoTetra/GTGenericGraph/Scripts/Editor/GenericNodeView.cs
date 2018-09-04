@@ -21,7 +21,6 @@ namespace GeoTetra.GTGenericGraph
         public void Initialize(NodeDescription nodeDescription, IEdgeConnectorListener connectorListener)
         {
             AddStyleSheetPath("Styles/GenericNodeView");
-            AddToClassList("GenericNode");
 
             _connectorListener = connectorListener;
             NodeDescription = nodeDescription;
