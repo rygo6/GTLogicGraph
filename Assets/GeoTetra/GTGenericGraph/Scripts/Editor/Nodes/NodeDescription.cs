@@ -54,7 +54,7 @@ namespace GeoTetra.GTGenericGraph
 
         public string NodeType()
         {
-            var attrs = GetType().GetCustomAttributes(typeof(NodeType), false) as NodeType[];
+            var attrs = GetType().GetCustomAttributes(typeof(NodeDescriptionType), false) as NodeDescriptionType[];
             if (attrs != null && attrs.Length > 0)
             {
                 return attrs[0].Name;

@@ -1,6 +1,6 @@
 /* THIS FILE IS FROM GRAPHVIEW BUT CONTAINS MODIFICATIONS */
 
-GenericPort {
+PortView {
     height: 24;
     align-items: center;
     padding-left: 4;
@@ -9,15 +9,15 @@ GenericPort {
     disabled-port-color: rgb(70, 70, 70);
 }
 
-GenericPort.input {
+PortView.input {
     flex-direction: row;
 }
 
-GenericPort.output {
+PortView.output {
     flex-direction: row-reverse;
 }
 
-GenericPort > #connector {
+PortView > #connector {
     border-color: rgb(70, 70, 70);
     background-color: #212121;
     width: 8;
@@ -34,11 +34,11 @@ GenericPort > #connector {
     border-bottom-width:1;
 }
 
-GenericPort > #connector:hover {
+PortView > #connector:hover {
     border-color:  #f0f0f0
 }
 
-GenericPort > #connector > #cap
+PortView > #connector > #cap
 {
     background-color: #212121;
     width: 4;
@@ -46,16 +46,16 @@ GenericPort > #connector > #cap
     border-radius: 4;
 }
 
-GenericPort > #connector > #cap:hover
+PortView > #connector > #cap:hover
 {
     background-color: #f0f0f0;
 }
 
-GenericPort > #connector.portHighlight {
+PortView > #connector.portHighlight {
     border-color: #f0f0f0;
 }
 
-GenericPort > #type {
+PortView > #type {
     text-color: #c1c1c1;
     font-size:11;
     height:16;
@@ -65,11 +65,11 @@ GenericPort > #type {
     margin-right: 4;
 }
 
-GenericPort.input > #type {
+PortView.input > #type {
     text-alignment: middle-left;
 }
 
-GenericPort.output > #type {
+PortView.output > #type {
     text-alignment:middle-right;
 }
 
@@ -77,119 +77,119 @@ GenericPort.output > #type {
 /* GenericPorts colors by types */
 /*******************************/
 
-GenericPort.typeTexture {
+PortView.typeTexture {
     port-color:#FF8B8B;
 }
 
-GenericPort.typeTexture2D {
+PortView.typeTexture2D {
     /* Same as typeTexture */
     port-color:#FF8B8B;
 }
 
-GenericPort.typeCubemap {
+PortView.typeCubemap {
 	/* Same as typeTexture */
     port-color:#FF8B8B;
 }
 
-GenericPort.typeGraphScript {
+PortView.typeGraphScript {
     /* Todo: there is no such type in Unity atm */
     port-color:#E681BA;
 }
 
-GenericPort.typeFloat4 {
+PortView.typeFloat4 {
     port-color:#FBCBF4;
 }
 
-GenericPort.typeVector4 {
+PortView.typeVector4 {
     /* Same as typeFloat4 */
     port-color:#FBCBF4;
 }
 
-GenericPort.typeQuaternion {
+PortView.typeQuaternion {
     /* Same as typeFloat4 */
     port-color:#FBCBF4;
 }
 
-GenericPort.typeColor {
+PortView.typeColor {
     /* Same as typeFloat4 */
     port-color:#FBCBF4;
 }
 
-GenericPort.typeInt {
+PortView.typeInt {
     port-color:#9481E6;
 }
 
-GenericPort.typeInt32 {
+PortView.typeInt32 {
     /* Same as typeInt */
     port-color:#9481E6;
 }
 
 /* TEMP STUFF THAT SHOULD ACTUALLY STAY IN GRAPHVIEW */
-GenericPort.typeInt64 {
+PortView.typeInt64 {
     /* Same as typeInt */
     /* todo we might want to differentiate that from int32 */
     port-color:#9481E6;
 }
 
-GenericPort.typeBoolean {
+PortView.typeBoolean {
     port-color:#9481E6;
 }
 
-GenericPort.typeMatrix {
+PortView.typeMatrix {
     port-color:#8FC1DF;
 }
 
-GenericPort.typeMatrix4x4 {
+PortView.typeMatrix4x4 {
     /* Same as typeMatrix */
     port-color:#8FC1DF;
 }
 
-GenericPort.typeGameObject {
+PortView.typeGameObject {
     port-color:#8FC1DF;
 }
 
-GenericPort.Vector1 {
+PortView.Vector1 {
     port-color:#84E4E7;
 }
 
-GenericPort.typeFloat1 {
+PortView.typeFloat1 {
     /* Same as typeFloat */
     port-color:#84E4E7;
 }
 
-GenericPort.typeSingle {
+PortView.typeSingle {
     /* Same as typeFloat */
     port-color:#84E4E7;
 }
 
-GenericPort.typeDouble {
+PortView.typeDouble {
     /* Same as typeFloat */
     /* todo we might want to differentiate that from float */
     port-color:#84E4E7;
 }
 
-GenericPort.typeFloat2 {
+PortView.typeFloat2 {
     port-color:#9AEF92;
 }
 
-GenericPort.typeVector2 {
+PortView.typeVector2 {
     /* Same as typeFloat2 */
     port-color:#9AEF92;
 }
 
-GenericPort.typeComponent {
+PortView.typeComponent {
     port-color:#C9F774;
 }
 
-GenericPort.typeFloat3 {
+PortView.typeFloat3 {
     port-color:#F6FF9A;
 }
 
-GenericPort.typeVector3 {
+PortView.typeVector3 {
     /* Same as typeFloat3 */
     port-color:#F6FF9A;
 }
 
-GenericPort.typeString {
+PortView.typeString {
     port-color:#FCD76E;
 }

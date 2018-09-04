@@ -1,0 +1,20 @@
+VectorControlView {
+    flex-direction: row;
+    padding-left: 8;
+    padding-right: 8;
+    padding-top: 4;
+    padding-bottom: 4;
+}
+
+VectorControlView > #dummy > Label {
+    margin-left: 0;
+    margin-right: 0;
+    cursor: slide-arrow;
+}
+
+VectorControlView > FloatField {
+    margin-left: 0;
+    margin-right: 0;
+    min-width: 30;
+    flex-grow: 1;
+}

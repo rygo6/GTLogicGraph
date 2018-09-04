@@ -27,8 +27,6 @@ namespace GeoTetra.GTGenericGraph
             };
             port.AddManipulator(port.m_EdgeConnector);
             port.PortDescription = portDescription;
-            port.portName = portDescription.DisplayName;
-            port.visualClass = portDescription.ValueType.ToString();
             return port;
         }
 
@@ -46,6 +44,7 @@ namespace GeoTetra.GTGenericGraph
                 _portDescription = value;
                 portName = PortDescription.DisplayName;
                 visualClass = PortDescription.ValueType.ToString();
+                Debug.Log(visualClass);
             }
         }
     }

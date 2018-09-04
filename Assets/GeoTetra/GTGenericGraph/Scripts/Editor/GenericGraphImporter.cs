@@ -19,11 +19,9 @@ public class GenericGraphImporter : ScriptedImporter
     {
         var textGraph = File.ReadAllText(ctx.assetPath, Encoding.UTF8);
         var graph = JsonUtility.FromJson<GraphData>(textGraph);
-//        graph.LoadedFromDisk();
-//        graph.GetLogicChains();
-        
-        GameObject graphGameObject = new GameObject("GenericGraph");
-        ctx.AddObjectToAsset("MainAsset", graphGameObject);
-        ctx.SetMainObject(graphGameObject);
+        GraphLogicData graphObject = ScriptableObject.CreateInstance<GraphLogicData>();
+        graphObject.Initialize(graph);
+        ctx.AddObjectToAsset("MainAsset", graphObject);
+        ctx.SetMainObject(graphObject);
     }
 }

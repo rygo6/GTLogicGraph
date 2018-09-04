@@ -105,6 +105,16 @@ namespace GeoTetra.GTGenericGraph
             {
                 AddNodeFromload(_graphObject.GraphData.SerializedNodes[i]);
             }
+            
+            for (int i = 0; i < _graphObject.GraphData.SerializedInputNodes.Count; ++i)
+            {
+                AddNodeFromload(_graphObject.GraphData.SerializedInputNodes[i]);
+            }
+            
+            for (int i = 0; i < _graphObject.GraphData.SerializedOutputNodes.Count; ++i)
+            {
+                AddNodeFromload(_graphObject.GraphData.SerializedOutputNodes[i]);
+            }
 
             for (int i = 0; i < _graphObject.GraphData.SerializedEdges.Count; ++i)
             {
@@ -160,12 +170,14 @@ namespace GeoTetra.GTGenericGraph
             {
                 foreach (var nodeView in graphViewChange.elementsToRemove.OfType<GenericNodeView>())
                 {
-                    _graphObject.GraphData.RemoveNode(nodeView.NodeDescription.SerializedNode);
+                    _graphObject.GraphData.SerializedNodes.Remove(nodeView.NodeDescription.SerializedNode);
+                    _graphObject.GraphData.SerializedInputNodes.Remove(nodeView.NodeDescription.SerializedNode);
+                    _graphObject.GraphData.SerializedOutputNodes.Remove(nodeView.NodeDescription.SerializedNode);
                 }
 
                 foreach (var edge in graphViewChange.elementsToRemove.OfType<Edge>())
                 {
-                    _graphObject.GraphData.RemoveEdge(edge.userData as SerializedEdge);
+                    _graphObject.GraphData.SerializedEdges.Remove(edge.userData as SerializedEdge);
                 }
             }
 
@@ -195,7 +207,18 @@ namespace GeoTetra.GTGenericGraph
             };
 
             nodeDescription.SerializedNode = serializedNode;
-            _graphObject.GraphData.AddNode(serializedNode);
+            if (nodeDescription is IInputNode)
+            {
+                _graphObject.GraphData.SerializedInputNodes.Add(serializedNode);
+            }
+            else if (nodeDescription is IOutputNode)
+            {
+                _graphObject.GraphData.SerializedOutputNodes.Add(serializedNode);
+            }
+            else
+            {
+                _graphObject.GraphData.SerializedNodes.Add(serializedNode);
+            }
 
             nodeDescription.Owner = _graphView;
             var nodeView = new GenericNodeView {userData = nodeDescription};
@@ -213,7 +236,7 @@ namespace GeoTetra.GTGenericGraph
                 {
                     if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(NodeDescription)))
                     {
-                        var attrs = type.GetCustomAttributes(typeof(NodeType), false) as NodeType[];
+                        var attrs = type.GetCustomAttributes(typeof(NodeDescriptionType), false) as NodeDescriptionType[];
                         if (attrs != null && attrs.Length > 0)
                         {
                             if (attrs[0].Name == serializedNode.NodeType)
@@ -256,7 +279,7 @@ namespace GeoTetra.GTGenericGraph
                 TargetIndex = rightPortDescription.id
             };
 
-            _graphObject.GraphData.AddEdge(serializedEdge);
+            _graphObject.GraphData.SerializedEdges.Add(serializedEdge);
 
             edgeView.userData = serializedEdge;
             edgeView.output.Connect(edgeView);

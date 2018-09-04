@@ -1,32 +1,34 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Schema;
 using UnityEngine;
 
 namespace GeoTetra.GTGenericGraph
 {
-    [LogicNodeType("Vector1")]
-    public class Vector1LogicNode : LogicNode
+    [LogicNodeType("Vector1Input")]
+    public class Vector1InputLogicNode : LogicNode
     {
-        [PortIndex(1)]
+        [PortIndex(0)]
         public event Action<float> output;
 
         [SerializeField] 
         private float _value;
 
-
         public float Value
         {
             get { return _value; }
+//            set { _value = value; }
         }
-
-        [PortIndex(0)]
+        
+        //input id 0
+        //[LogicInput]
         public void SetValue(float value)
         {
             _value = value;
             if (output != null) output(_value);
         }
-
+        
         public override Action<float> InputSlot(int id)
         {
             switch (id)

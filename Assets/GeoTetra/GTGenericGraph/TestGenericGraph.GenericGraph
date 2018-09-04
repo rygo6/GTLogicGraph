@@ -1,21 +1,33 @@
 {
+    "_serializedInputNodes": [
+        {
+            "NodeType": "Vector1Input",
+            "JSON": "{\"_position\":{\"x\":-905.609130859375,\"y\":376.9334716796875,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"bef8cb73-89d2-4ea6-aaa6-d9dbf8b68dbe\",\"_value\":11.600000381469727}"
+        }
+    ],
+    "_serializedOutputNodes": [
+        {
+            "NodeType": "Vector1Output",
+            "JSON": "{\"_position\":{\"x\":327.8331298828125,\"y\":384.5178527832031,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"520970b0-be6e-491f-ac1d-3a8a3de85550\"}"
+        }
+    ],
     "_serializedNodes": [
         {
             "NodeType": "Vector1",
-            "NodeGuid": "",
-            "JSON": "{\"_position\":{\"x\":79.6069564819336,\"y\":373.2565612792969,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"cee5fd60-f168-4478-83d5-105b0dda7137\",\"_value\":0.0,\"_boolValue\":false}"
-        },
-        {
-            "NodeType": "Vector1",
-            "NodeGuid": "",
-            "JSON": "{\"_position\":{\"x\":-581.5,\"y\":525.0897216796875,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"13ef25bc-6293-40b8-ae2b-503e119c1086\",\"_value\":0.0,\"_boolValue\":false}"
+            "JSON": "{\"_position\":{\"x\":-318.3336181640625,\"y\":354.9018859863281,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"ed7bcc60-293d-436b-b542-41e3db7413a3\",\"_value\":0.0,\"_boolValue\":false}"
         }
     ],
     "_serializedEdges": [
         {
-            "Source": "13ef25bc-6293-40b8-ae2b-503e119c1086",
+            "Source": "bef8cb73-89d2-4ea6-aaa6-d9dbf8b68dbe",
+            "SourceIndex": 0,
+            "Target": "ed7bcc60-293d-436b-b542-41e3db7413a3",
+            "TargetIndex": 0
+        },
+        {
+            "Source": "ed7bcc60-293d-436b-b542-41e3db7413a3",
             "SourceIndex": 1,
-            "Target": "cee5fd60-f168-4478-83d5-105b0dda7137",
+            "Target": "520970b0-be6e-491f-ac1d-3a8a3de85550",
             "TargetIndex": 0
         }
     ]

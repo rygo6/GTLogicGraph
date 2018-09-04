@@ -10,6 +10,12 @@ namespace GeoTetra.GTGenericGraph
 	public class GraphData 
 	{		
 		[SerializeField]
+		private List<SerializedNode> _serializedInputNodes = new List<SerializedNode>();
+		
+		[SerializeField]
+		private List<SerializedNode> _serializedOutputNodes = new List<SerializedNode>();
+		
+		[SerializeField]
 		private List<SerializedNode> _serializedNodes = new List<SerializedNode>();
 		
 		[SerializeField]
@@ -25,28 +31,14 @@ namespace GeoTetra.GTGenericGraph
 			get { return _serializedNodes; }
 		}
 
-		public void AddNode(SerializedNode node)
+		public List<SerializedNode> SerializedInputNodes
 		{
-			Debug.Log("adding node" + node);
-			_serializedNodes.Add(node);
+			get { return _serializedInputNodes; }
 		}
-		
-		public void RemoveNode(SerializedNode node)
+
+		public List<SerializedNode> SerializedOutputNodes
 		{
-			Debug.Log("removing node" + node);
-			_serializedNodes.Remove(node);
-		}
-		
-		public void AddEdge(SerializedEdge edge)
-		{
-			Debug.Log("adding edge");
-			_serializedEdges.Add(edge);
-		}
-		
-		public void RemoveEdge(SerializedEdge edge)
-		{
-			Debug.Log("removing edge");
-			_serializedEdges.Remove(edge);
+			get { return _serializedOutputNodes; }
 		}
 	}
 
@@ -54,7 +46,6 @@ namespace GeoTetra.GTGenericGraph
 	public class SerializedNode
 	{
 		public string NodeType;
-		public string NodeGuid;
 		public string JSON;
 	}
 	

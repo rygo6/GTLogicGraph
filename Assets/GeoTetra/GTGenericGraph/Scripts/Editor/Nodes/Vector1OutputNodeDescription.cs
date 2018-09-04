@@ -8,7 +8,8 @@ using UnityEditor.ShaderGraph;
 namespace GeoTetra.GTGenericGraph
 {
     [Title("Output", "Vector1")]
-    public class Vector1OutputNodeDescription : NodeDescription
+    [NodeDescriptionType("Vector1Output")]
+    public class Vector1OutputNodeDescription : NodeDescription, IOutputNode
     {
         private const string ValueName = "_value";
 

@@ -1,5 +1,5 @@
 GenericNodeView {
-  width: 400;
+  width: 300;
 }
 
 GenericNodeView.graphElement.node.MaterialNode {
@@ -14,12 +14,12 @@ GenericNodeView #collapsible-area {
     height: 0;
 }
 
-MaterialNodeView #previewFiller.expanded {
+GenericNodeView #previewFiller.expanded {
     width: 200;
     padding-bottom: 200;
 }
 
-MaterialNodeView #previewFiller,
+GenericNodeView #previewFiller,
 GenericNodeView #controls {
     background-color: rgba(63, 63, 63, 0.8);
 }
@@ -151,12 +151,4 @@ GenericNodeView > #settings-container {
     background-color: #2B2B2B;
     background-image : resource("Icons/SettingsIcons_hover");
     visibility: visible;
-}
-
-.node.collapsed > #node-border > #title > #button-container > #collapse-button > #icon {
-    background-image: resource("GraphView/Nodes/NodeChevronLeft.png");
-}
-
-.node.expanded > #node-border > #title > #button-container > #collapse-button > #icon {
-    background-image : resource("GraphView/Nodes/NodeChevronDown.png");
 }

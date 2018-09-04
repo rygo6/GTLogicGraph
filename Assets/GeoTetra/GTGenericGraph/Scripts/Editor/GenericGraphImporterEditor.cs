@@ -8,15 +8,17 @@ using UnityEngine;
 namespace GeoTetra.GTGenericGraph
 {
 	[CustomEditor(typeof(GenericGraphImporter))]
-	public class GenericGraphImporterEditor : Editor
+	public class GenericGraphImporterEditor : ScriptedImporterEditor
 	{
 		public override void OnInspectorGUI()
 		{
-			if (GUILayout.Button("Open Generic Graph Editor"))
-			{
-				AssetImporter importer = target as AssetImporter;
-				ShowGraphEditWindow(importer.assetPath);
-			}
+//			if (GUILayout.Button("Open Generic Graph Editor"))
+//			{
+//				AssetImporter importer = target as AssetImporter;
+//				ShowGraphEditWindow(importer.assetPath);
+//			}
+
+			DrawDefaultInspector();
 		}
 
 		private static bool ShowGraphEditWindow(string path)

@@ -166,6 +166,8 @@ namespace UnityEditor.ShaderGraph.Drawing
             get { return base.expanded; }
             set
             {
+                Debug.Log(value);
+
                 if (base.expanded != value)
                     base.expanded = value;
 

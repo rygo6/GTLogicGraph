@@ -5,28 +5,29 @@ using UnityEngine;
 
 namespace GeoTetra.GTGenericGraph
 {
-    [LogicNodeType("Vector1")]
-    public class Vector1LogicNode : LogicNode
+    [LogicNodeType("Vector1Output")]
+    public class Vector1OutputLogicNode : LogicNode
     {
-        [PortIndex(1)]
+        //output id 1 - change to attibute?
+        //[LogicOutput]
         public event Action<float> output;
 
         [SerializeField] 
         private float _value;
-
 
         public float Value
         {
             get { return _value; }
         }
 
-        [PortIndex(0)]
+        //input id 0
+        //[LogicInput]
         public void SetValue(float value)
         {
             _value = value;
             if (output != null) output(_value);
         }
-
+        
         public override Action<float> InputSlot(int id)
         {
             switch (id)

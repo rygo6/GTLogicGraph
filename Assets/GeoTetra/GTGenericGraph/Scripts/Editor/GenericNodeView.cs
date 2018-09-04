@@ -1,23 +1,15 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEditor.Experimental.UIElements.GraphView;
-using UnityEditor.Graphing;
-using UnityEditor.ShaderGraph;
-using UnityEditor.ShaderGraph.Drawing;
-using UnityEditor.ShaderGraph.Drawing.Controls;
 using UnityEngine.Experimental.UIElements;
-using UnityEngine.Experimental.UIElements.StyleEnums;
 
 namespace GeoTetra.GTGenericGraph
 {
     /// <summary>
     /// Actual visual nodes which gets added to the graph UI.
     /// </summary>
-    public class GenericNodeView : UnityEditor.Experimental.UIElements.GraphView.Node
+    public class GenericNodeView : Node
     {
         VisualElement _controlsDivider;
         VisualElement _controlItems;
@@ -29,6 +21,7 @@ namespace GeoTetra.GTGenericGraph
         public void Initialize(NodeDescription nodeDescription, IEdgeConnectorListener connectorListener)
         {
             AddStyleSheetPath("Styles/GenericNodeView");
+            AddToClassList("GenericNode");
 
             _connectorListener = connectorListener;
             NodeDescription = nodeDescription;
@@ -44,7 +37,6 @@ namespace GeoTetra.GTGenericGraph
                 _controlItems = new VisualElement {name = "items"};
                 controlsContainer.Add(_controlItems);
 
-                //TODO replicate generic control attribute classes
                 foreach (var propertyInfo in
                     nodeDescription.GetType().GetProperties(BindingFlags.Instance |
                                                             BindingFlags.Public |
@@ -64,7 +56,7 @@ namespace GeoTetra.GTGenericGraph
             AddSlots(foundSlots);
 
             SetPosition(new Rect(nodeDescription.Position.x, nodeDescription.Position.y, 0, 0));
-
+            base.expanded = nodeDescription.Expanded;
             RefreshExpandedState();
         }
 
@@ -77,6 +69,20 @@ namespace GeoTetra.GTGenericGraph
                     outputContainer.Add(port);
                 else
                     inputContainer.Add(port);
+            }
+        }
+        
+        public override bool expanded
+        {
+            get { return base.expanded; }
+            set
+            {
+                Debug.Log(value);
+                if (base.expanded != value)
+                    base.expanded = value;
+
+                NodeDescription.Expanded = value;
+                RefreshExpandedState(); //This should not be needed. GraphView needs to improve the extension api here
             }
         }
     }
