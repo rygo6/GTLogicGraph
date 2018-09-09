@@ -284,6 +284,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _graphLogicData: {fileID: 11400000, guid: 33ce9b207e2a7dc4a841580b9036671c, type: 3}
+  _inputs:
+  - NodeGuid: bef8cb73-89d2-4ea6-aaa6-d9dbf8b68dbe
+    Name: Vector1Input
+    FloatValue: 0.28
+  _outputs: []
 --- !u!4 &1081646838
 Transform:
   m_ObjectHideFlags: 0

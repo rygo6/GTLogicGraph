@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Security.AccessControl;
 using UnityEngine;
 
 namespace GeoTetra.GTGenericGraph
@@ -28,13 +30,10 @@ namespace GeoTetra.GTGenericGraph
             Debug.Log(name + " Awake");
         }
 
-        [ContextMenu("OnEnable")]
         private void OnEnable()
         {
-            LoadLogiceNodeGraph();
+            LoadLogicNodeGraph();
             Debug.Log(name + " OnEnable");
-            if (_inputNodes.Count > 0)
-                Debug.Log(_inputNodes[0].GetType() + "  " + _inputNodes[0].GetHashCode());
         }
 
         private void OnDisable()
@@ -47,7 +46,8 @@ namespace GeoTetra.GTGenericGraph
             _graphData = graphData;
         }
 
-        private void LoadLogiceNodeGraph()
+        [ContextMenu("LoadLogicNodeGraph")]
+        private void LoadLogicNodeGraph()
         {
             if (_graphData == null)
                 return;
@@ -85,11 +85,73 @@ namespace GeoTetra.GTGenericGraph
                 }
             }
 
-            Debug.Log(_nodes[0].GetType());
-
-            for (int i = 0; i < _graphData.SerializedEdges.Count; ++i)
+            foreach (var serializedEdge in _graphData.SerializedEdges)
             {
+                Debug.Log(serializedEdge);
+                LogicNode sourceNode = FindNodeByGuid(serializedEdge.Source);
+                Debug.Log(sourceNode);
+                LogicNode targetNode = FindNodeByGuid(serializedEdge.Target);
+                Debug.Log(targetNode);
+                MethodInfo targetMethodInfo = MethodInfoByIndex(targetNode, serializedEdge.TargetIndex);
+                Debug.Log(targetMethodInfo);
+                SubscribeToEventByIndex(sourceNode, serializedEdge.SourceIndex, targetNode, targetMethodInfo);
             }
+        }
+
+        private MethodInfo MethodInfoByIndex(LogicNode node, int index)
+        {
+            var methods = node.GetType()
+                .GetMethods(BindingFlags.Public |
+                            BindingFlags.NonPublic |
+                            BindingFlags.Instance);
+            foreach (MethodInfo method in methods)
+            {
+                var attrs = method.GetCustomAttributes(typeof(PortIndexAttribute), false) as PortIndexAttribute[];
+                for (int i = 0; i < attrs.Length; ++i)
+                {
+                    if (attrs[i].Id == index)
+                    {
+                        return method;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        private void SubscribeToEventByIndex(LogicNode sourceNode, int sourceIndex, LogicNode targetNode, MethodInfo targetMethodInfo)
+        {
+            var events = sourceNode.GetType()
+                .GetEvents(BindingFlags.Public |
+                           BindingFlags.NonPublic |
+                           BindingFlags.Instance);
+            foreach (EventInfo eventInfo in events)
+            {
+                var attrs = eventInfo.GetCustomAttributes(typeof(PortIndexAttribute), false) as PortIndexAttribute[];
+                for (int i = 0; i < attrs.Length; ++i)
+                {
+                    if (attrs[i].Id == sourceIndex)
+                    {
+                        MethodInfo method = typeof(GraphOutput).GetMethod("RaiseUpdated",
+                            BindingFlags.Public | BindingFlags.Instance);
+
+                        Type type = eventInfo.EventHandlerType;
+                        Delegate handler = Delegate.CreateDelegate(type, targetNode, targetMethodInfo);
+                        eventInfo.AddEventHandler(sourceNode, handler);
+                        return;
+                    }
+                }
+            }
+        }
+
+        private LogicNode FindNodeByGuid(string guid)
+        {
+            LogicNode node = _nodes.Find(n => n.NodeGuid == guid);
+            if (node != null) return node;
+            node = _inputNodes.Find(n => n.NodeGuid == guid);
+            if (node != null) return node;
+            node = _outputNodes.Find(n => n.NodeGuid == guid);
+            return node;
         }
 
         private LogicNode CreateLogicNodeFromSerializedNode(SerializedNode serializedNode)

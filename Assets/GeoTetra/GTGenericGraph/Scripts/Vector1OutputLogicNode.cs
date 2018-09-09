@@ -8,8 +8,7 @@ namespace GeoTetra.GTGenericGraph
     [LogicNodeType("Vector1Output")]
     public class Vector1OutputLogicNode : LogicNode
     {
-        //output id 1 - change to attibute?
-        //[LogicOutput]
+        [Output(1)]
         public event Action<float> output;
 
         [SerializeField] 
@@ -20,10 +19,10 @@ namespace GeoTetra.GTGenericGraph
             get { return _value; }
         }
 
-        //input id 0
-        //[LogicInput]
+        [PortIndex(0)]
         public void SetValue(float value)
         {
+            Debug.Log("Vector1OutputLogicNode SetValue " + value);
             _value = value;
             if (output != null) output(_value);
         }

@@ -12,10 +12,10 @@ namespace GeoTetra.GTGenericGraph
         [PortIndex(0)]
         public event Action<float> output;
        
-        [InputAttribute]
+        [FloatInput(0)]
         public void Vector1Input(float value)
         {
-            Debug.Log("Set Value " + value);
+            Debug.Log("Vector1InputLogicNode Vector1Input " + value);
             if (output != null) output(value);
         }
     }
