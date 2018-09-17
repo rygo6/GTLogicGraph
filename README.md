@@ -18,7 +18,7 @@ Completed or Started:
 - Can chain together nodes.
 - Can open search menu.
 - Serializing and save of graphs. Loading graph.
+- Graphs can be loaded into scene via GraphLogic component
 
 Still to do:
 - Implement a whole set of common base types for data nodes can support and their corresponding UI's.
-- Figure out way to enable plugging in of different logic to nodes so the GraphView can act like a frontend to different sets of nodes.
