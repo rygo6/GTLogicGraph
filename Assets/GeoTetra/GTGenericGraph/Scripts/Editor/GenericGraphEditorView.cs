@@ -77,7 +77,7 @@ namespace GeoTetra.GTGenericGraph
                 _graphView.AddManipulator(new SelectionDragger());
                 _graphView.AddManipulator(new RectangleSelector());
                 _graphView.AddManipulator(new ClickSelector());
-                _graphView.RegisterCallback<KeyDownEvent>(OnSpaceDown);
+                _graphView.RegisterCallback<KeyDownEvent>(KeyDown);
                 content.Add(_graphView);
 
                 _graphView.graphViewChanged = GraphViewChanged;
@@ -158,6 +158,7 @@ namespace GeoTetra.GTGenericGraph
 
             if (graphViewChange.movedElements != null)
             {
+                _graphObject.RegisterCompleteObjectUndo("Graph Element Moved.");
                 foreach (var element in graphViewChange.movedElements)
                 {
                     NodeEditor nodeEditor = element.userData as NodeEditor;
@@ -168,6 +169,8 @@ namespace GeoTetra.GTGenericGraph
 
             if (graphViewChange.elementsToRemove != null)
             {
+                _graphObject.RegisterCompleteObjectUndo("Deleted Graph Elements.");
+                
                 foreach (var nodeView in graphViewChange.elementsToRemove.OfType<GenericNodeView>())
                 {
                     _graphObject.GraphData.SerializedNodes.Remove(nodeView.NodeEditor.SerializedNode);
@@ -185,9 +188,8 @@ namespace GeoTetra.GTGenericGraph
         }
 
 
-        private void OnSpaceDown(KeyDownEvent evt)
+        private void KeyDown(KeyDownEvent evt)
         {
-            Debug.Log(evt);
             if (evt.keyCode == KeyCode.Space && !evt.shiftKey && !evt.altKey && !evt.ctrlKey && !evt.commandKey)
             {
             }
