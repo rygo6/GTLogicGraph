@@ -21,4 +21,5 @@ Completed or Started:
 - Graphs can be loaded into scene via GraphLogic component
 
 Still to do:
-- Implement a whole set of common base types for data nodes can support and their corresponding UI's.
+- Implement a whole set of common base types and nodes.
+- Graph Input and Graph Output in LogicGraph component needs to be more comprehensive.
