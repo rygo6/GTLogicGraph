@@ -288,8 +288,7 @@ MonoBehaviour:
   - DisplayName: ' Vector1Input'
     MemberName: Vector1Input
     NodeGuid: 6314f94f-b9bf-44cf-aa67-f7b19839f05b
-    FloatValue: 0.32
-    PriorFloatvalue: 0
+    FloatValue: 1
   _outputs:
   - DisplayName: ' Vector1Output'
     MemberName: Vector1Output

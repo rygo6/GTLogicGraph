@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.AccessControl;
+using System.Threading;
 using UnityEngine;
 
 namespace GeoTetra.GTGenericGraph
@@ -11,94 +12,60 @@ namespace GeoTetra.GTGenericGraph
     public class GraphLogicData : ScriptableObject
     {
         [SerializeField] private GraphData _graphData;
-
-        private List<LogicNode> _inputNodes = new List<LogicNode>();
-        private List<LogicNode> _outputNodes = new List<LogicNode>();
-        private List<LogicNode> _nodes = new List<LogicNode>();
         
-        public List<LogicNode> InputNodes
-        {
-            get
-            {
-                if (_inputNodes.Count == 0)
-                    LoadLogicNodeGraph();
-                return _inputNodes;
-            }
-        }
-
-        public List<LogicNode> OutputNodes
-        {
-            get
-            {
-                if (_outputNodes.Count == 0)
-                    LoadLogicNodeGraph();
-                return _outputNodes;
-            }
-        }
-
-        private void OnDisable()
-        {
-            Debug.Log("GraphLogicData OnDisable");
-            //prior instances must be cleared so when this object is reloaded
-            //the instances are reloaded, because they aren't saved by serialization
-            _outputNodes.Clear();
-            _inputNodes.Clear();
-        }
-
         public void Initialize(GraphData graphData)
         {
             _graphData = graphData;
         }
 
-        [ContextMenu("LoadLogicNodeGraph")]
-        private void LoadLogicNodeGraph()
+        public void LoadLogicNodeGraph(List<LogicNode> nodes, List<LogicNode> inputNodes, List<LogicNode> outputNodes)
         {
             if (_graphData == null)
                 return;
 
-            _nodes.Clear();
+            nodes.Clear();
             for (int i = 0; i < _graphData.SerializedNodes.Count; ++i)
             {
                 LogicNode node = CreateLogicNodeFromSerializedNode(_graphData.SerializedNodes[i]);
                 Debug.Log("Adding node " + node);
                 if (node != null)
                 {
-                    _nodes.Add(node);
+                    nodes.Add(node);
                 }
             }
 
-            _inputNodes.Clear();
+            inputNodes.Clear();
             for (int i = 0; i < _graphData.SerializedInputNodes.Count; ++i)
             {
                 LogicNode node = CreateLogicNodeFromSerializedNode(_graphData.SerializedInputNodes[i]);
                 Debug.Log("Adding node " + node);
                 if (node != null)
                 {
-                    _inputNodes.Add(node);
+                    inputNodes.Add(node);
                 }
             }
 
-            _outputNodes.Clear();
+            outputNodes.Clear();
             for (int i = 0; i < _graphData.SerializedOutputNodes.Count; ++i)
             {
                 LogicNode node = CreateLogicNodeFromSerializedNode(_graphData.SerializedOutputNodes[i]);
                 Debug.Log("Adding node " + node);
                 if (node != null)
                 {
-                    _outputNodes.Add(node);
+                    outputNodes.Add(node);
                 }
             }
 
             foreach (var serializedEdge in _graphData.SerializedEdges)
             {
-                LogicNode sourceNode = FindNodeByGuid(serializedEdge.SourceNodeGuid);
+                LogicNode sourceNode = FindNodeByGuid(serializedEdge.SourceNodeGuid, nodes, inputNodes, outputNodes);
                 if (sourceNode == null)
                 {
                     Debug.LogWarning("source node is null for edge " + serializedEdge);
                     return;
                 }
                 
-                LogicNode targetNode = FindNodeByGuid(serializedEdge.TargetNodeGuid);
+                LogicNode targetNode = FindNodeByGuid(serializedEdge.TargetNodeGuid, nodes, inputNodes, outputNodes);
                 if (targetNode == null)
                 {
                     Debug.LogWarning("target node is null for edge " + serializedEdge);
@@ -157,15 +124,26 @@ namespace GeoTetra.GTGenericGraph
             }
         }
 
-        private LogicNode FindNodeByGuid(string guid)
+        private LogicNode FindNodeByGuid(string guid, params List<LogicNode>[] lists)
         {
-            LogicNode node = _nodes.Find(n => n.NodeGuid == guid);
-            if (node != null) return node;
-            node = _inputNodes.Find(n => n.NodeGuid == guid);
-            if (node != null) return node;
-            node = _outputNodes.Find(n => n.NodeGuid == guid);
-            return node;
+            foreach (var list in lists)
+            {
+                LogicNode node = list.Find(n => n.NodeGuid == guid);
+                if (node != null) return node;
+            }
+
+            return null;
         }
+        
+//        private LogicNode FindNodeByGuid(string guid, List<LogicNode> nodes, List<LogicNode> inputNodes, List<LogicNode> outputNodes)
+//        {
+//            LogicNode node = nodes.Find(n => n.NodeGuid == guid);
+//            if (node != null) return node;
+//            node = inputNodes.Find(n => n.NodeGuid == guid);
+//            if (node != null) return node;
+//            node = outputNodes.Find(n => n.NodeGuid == guid);
+//            return node;
+//        }
 
         private LogicNode CreateLogicNodeFromSerializedNode(SerializedNode serializedNode)
         {

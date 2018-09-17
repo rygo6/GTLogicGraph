@@ -10,16 +10,47 @@ namespace GeoTetra.GTGenericGraph
     public class GraphLogic : MonoBehaviour
     {
         [SerializeField] private GraphLogicData _graphLogicData;
-
         [SerializeField] private List<GraphInput> _inputs;
-
         [SerializeField] private List<GraphOutput> _outputs;
+
+        private GraphLogicData _priorGraphLogicData;
+        private List<LogicNode> _inputNodes = new List<LogicNode>();
+        private List<LogicNode> _outputNodes = new List<LogicNode>();
+        private List<LogicNode> _nodes = new List<LogicNode>();
+
+        private void Awake()
+        {
+            Debug.Log("Start");
+        }
 
         private void OnEnable()
         {
+            Debug.Log("OnEnable");
+            _graphLogicData.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
+            UpdateInputsAndOutputs();
+        }
+
+        private void OnValidate()
+        {
+            Debug.Log("OnValidate");
+
+            if (_graphLogicData != _priorGraphLogicData && _graphLogicData != null)
+            {
+                _priorGraphLogicData = _graphLogicData;
+                UpdateInputsAndOutputs();
+            }
+            
+            for (int i = 0; i < _inputs.Count; ++i)
+            {
+                if (_inputs[i].OnValidate != null) _inputs[i].OnValidate();
+            }
+        }
+        
+        private void UpdateInputsAndOutputs()
+        {
             Debug.Log("GraphLogic OnEnable");
 
-            if (_graphLogicData.InputNodes.Count != 0)
+            if (_inputNodes.Count != 0)
             {
                 List<GraphInput> loadedInputs = new List<GraphInput>();
                 LoadInputs(loadedInputs);
@@ -28,7 +59,8 @@ namespace GeoTetra.GTGenericGraph
                 //add nodes
                 for (int i = 0; i < loadedInputs.Count; ++i)
                 {
-                    if (_inputs.Find(n => n.NodeGuid == loadedInputs[i].NodeGuid) == null)
+                    if (_inputs.Find(n => n.MemberName == loadedInputs[i].MemberName &&
+                                          n.NodeGuid == loadedInputs[i].NodeGuid) == null)
                     {
                         _inputs.Add(loadedInputs[i]);
                     }
@@ -37,7 +69,8 @@ namespace GeoTetra.GTGenericGraph
                 //remove nodes and hook up
                 for (int i = _inputs.Count - 1; i > -1; --i)
                 {
-                    if (loadedInputs.Find(n => n.NodeGuid == _inputs[i].NodeGuid) == null)
+                    if (loadedInputs.Find(n => n.MemberName == _inputs[i].MemberName &&
+                                               n.NodeGuid == _inputs[i].NodeGuid) == null)
                     {
                         _inputs.RemoveAt(i);
                     }
@@ -48,7 +81,7 @@ namespace GeoTetra.GTGenericGraph
                 }
             }
 
-            if (_graphLogicData.OutputNodes.Count != 0)
+            if (_outputNodes.Count != 0)
             {
                 List<GraphOutput> loadedOutputs = new List<GraphOutput>();
                 LoadOutputs(loadedOutputs);
@@ -57,7 +90,8 @@ namespace GeoTetra.GTGenericGraph
                 //add nodes
                 for (int i = 0; i < loadedOutputs.Count; ++i)
                 {
-                    if (_outputs.Find(n => n.NodeGuid == loadedOutputs[i].NodeGuid) == null)
+                    if (_outputs.Find(n => n.MemberName == loadedOutputs[i].MemberName &&
+                                           n.NodeGuid == loadedOutputs[i].NodeGuid) == null)
                     {
                         _outputs.Add(loadedOutputs[i]);
                     }
@@ -66,7 +100,8 @@ namespace GeoTetra.GTGenericGraph
                 //remove nodes and hook up
                 for (int i = _outputs.Count - 1; i > -1; --i)
                 {
-                    if (loadedOutputs.Find(n => n.NodeGuid == _outputs[i].NodeGuid) == null)
+                    if (loadedOutputs.Find(n => n.MemberName == _outputs[i].MemberName &&
+                                                n.NodeGuid == _outputs[i].NodeGuid) == null)
                     {
                         _outputs.RemoveAt(i);
                     }
@@ -78,17 +113,9 @@ namespace GeoTetra.GTGenericGraph
             }
         }
 
-        private void OnValidate()
-        {
-            for (int i = 0; i < _inputs.Count; ++i)
-            {
-                if (_inputs[i].OnValidate != null) _inputs[i].OnValidate();
-            }
-        }
-
         private void LoadInputs(List<GraphInput> inputs)
         {
-            foreach (var node in _graphLogicData.InputNodes)
+            foreach (var node in _inputNodes)
             {
                 var methods = node.GetType().GetMethods(BindingFlags.Public |
                                                         BindingFlags.NonPublic |
@@ -104,20 +131,17 @@ namespace GeoTetra.GTGenericGraph
                             NodeGuid = node.NodeGuid,
                             DisplayName = node.DisplayName + " " + method.Name
                         };
-                        attrs[0].HookUpMethodInvoke(node, method, input);
                         inputs.Add(input);
-                    }
-                    else
-                    {
-                        Debug.LogWarning(method.Name + " on  " + node + "has multiple input attributes.");
+                        if (attrs.Length > 1)
+                            Debug.LogWarning(method.Name + " on  " + node + "has multiple input attributes.");
                     }
                 }
             }
         }
-                
+
         private void HookUpInput(GraphInput graphInput)
         {
-            LogicNode node = _graphLogicData.InputNodes.Find(n => n.NodeGuid == graphInput.NodeGuid);
+            LogicNode node = _inputNodes.Find(n => n.NodeGuid == graphInput.NodeGuid);
             var methods = node.GetType().GetMethods(BindingFlags.Public |
                                                     BindingFlags.NonPublic |
                                                     BindingFlags.Instance);
@@ -130,17 +154,16 @@ namespace GeoTetra.GTGenericGraph
                     {
                         attrs[0].HookUpMethodInvoke(node, method, graphInput);
                     }
-                }
-                else
-                {
-                    Debug.LogWarning(method.Name + " on  " + node + "has multiple input attributes.");
+
+                    if (attrs.Length > 1)
+                        Debug.LogWarning(method.Name + " on  " + node + "has multiple input attributes.");
                 }
             }
         }
-        
+
         private void LoadOutputs(List<GraphOutput> outputs)
         {
-            foreach (var node in _graphLogicData.OutputNodes)
+            foreach (var node in _outputNodes)
             {
                 var events = node.GetType().GetEvents(BindingFlags.Public |
                                                       BindingFlags.NonPublic |
@@ -156,12 +179,10 @@ namespace GeoTetra.GTGenericGraph
                             NodeGuid = node.NodeGuid,
                             DisplayName = node.DisplayName + " " + eventInfo.Name
                         };
-                        graphOutput.SubscribeRaiseUpdate(eventInfo, node);
                         outputs.Add(graphOutput);
-                    }
-                    else
-                    {
-                        Debug.LogWarning(eventInfo.Name + " on  " + node + "has multiple input attributes.");
+
+                        if (attrs.Length > 1)
+                            Debug.LogWarning(eventInfo.Name + " on  " + node + "has multiple input attributes.");
                     }
                 }
             }
@@ -169,7 +190,7 @@ namespace GeoTetra.GTGenericGraph
 
         private void HookUpOutput(GraphOutput graphOutput)
         {
-            LogicNode node = _graphLogicData.OutputNodes.Find(n => n.NodeGuid == graphOutput.NodeGuid);
+            LogicNode node = _outputNodes.Find(n => n.NodeGuid == graphOutput.NodeGuid);
             var events = node.GetType().GetEvents(BindingFlags.Public |
                                                   BindingFlags.NonPublic |
                                                   BindingFlags.Instance);
@@ -182,10 +203,9 @@ namespace GeoTetra.GTGenericGraph
                     {
                         graphOutput.SubscribeRaiseUpdate(eventInfo, node);
                     }
-                }
-                else
-                {
-                    Debug.LogWarning(eventInfo.Name + " on  " + node + "has multiple input attributes.");
+
+                    if (attrs.Length > 1)
+                        Debug.LogWarning(eventInfo.Name + " on  " + node + "has multiple input attributes.");
                 }
             }
         }
