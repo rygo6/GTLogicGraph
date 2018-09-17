@@ -8,20 +8,14 @@ using UnityEngine;
 namespace GeoTetra.GTGenericGraph
 {
     [Title("Basic", "Vector1")]
-    [NodeDescriptionType("Vector1")]
-    public class Vector1NodeDescription : NodeDescription
+    [NodeEditorType(typeof(Vector1LogicNode))]
+    public class Vector1NodeEditor : NodeEditor
     {
         [SerializeField]
         private float _value;
 
         [SerializeField]
         private bool _boolValue;
-        
-        const string kInputSlotXName = "X";
-        const string kOutputSlotName = "Out";
-
-        public const int InputSlotXId = 0;
-        public const int OutputSlotId = 1;
 
         [NodeToggleControl("Bool")]
         public GenericToggleData BoolValue
@@ -38,10 +32,10 @@ namespace GeoTetra.GTGenericGraph
         
         public override void ConstructNode()
         {
-            AddSlot(new Vector1PortDescription(this, InputSlotXId, kInputSlotXName, PortDirection.Input));
-            AddSlot(new Vector1PortDescription(this, OutputSlotId, kOutputSlotName, PortDirection.Output));
-            AddSlot(new BooleanPortDescription(this, 3, kInputSlotXName, PortDirection.Input));
-            AddSlot(new BooleanPortDescription(this, 4, kOutputSlotName, PortDirection.Output));
+            AddSlot(new Vector1PortDescription(this, "Vector1Input", "X", PortDirection.Input));
+            AddSlot(new Vector1PortDescription(this, "Vector1Output", "Out", PortDirection.Output));
+//            AddSlot(new BooleanPortDescription(this, 3, InputPortDisplayName, PortDirection.Input));
+//            AddSlot(new BooleanPortDescription(this, 4, OutputPortDisplayName, PortDirection.Output));
         }
     }
 }

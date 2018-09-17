@@ -16,15 +16,15 @@ namespace GeoTetra.GTGenericGraph
         VisualElement _portInputContainer;
         IEdgeConnectorListener _connectorListener;
 
-        public NodeDescription NodeDescription { get; private set; }
+        public NodeEditor NodeEditor { get; private set; }
 
-        public void Initialize(NodeDescription nodeDescription, IEdgeConnectorListener connectorListener)
+        public void Initialize(NodeEditor nodeEditor, IEdgeConnectorListener connectorListener)
         {
             AddStyleSheetPath("Styles/GenericNodeView");
 
             _connectorListener = connectorListener;
-            NodeDescription = nodeDescription;
-            title = NodeDescription.NodeType();
+            NodeEditor = nodeEditor;
+            title = NodeEditor.NodeType();
 
             var contents = this.Q("contents");
 
@@ -37,25 +37,25 @@ namespace GeoTetra.GTGenericGraph
                 controlsContainer.Add(_controlItems);
 
                 foreach (var propertyInfo in
-                    nodeDescription.GetType().GetProperties(BindingFlags.Instance |
+                    nodeEditor.GetType().GetProperties(BindingFlags.Instance |
                                                             BindingFlags.Public |
                                                             BindingFlags.NonPublic))
                 {
                     foreach (INodeControlAttribute attribute in
                         propertyInfo.GetCustomAttributes(typeof(INodeControlAttribute), false))
                     {
-                        _controlItems.Add(attribute.InstantiateControl(nodeDescription, propertyInfo));
+                        _controlItems.Add(attribute.InstantiateControl(nodeEditor, propertyInfo));
                     }
                 }
             }
             contents.Add(controlsContainer);
 
             List<PortDescription> foundSlots = new List<PortDescription>();
-            nodeDescription.GetSlots(foundSlots);
+            nodeEditor.GetSlots(foundSlots);
             AddSlots(foundSlots);
 
-            SetPosition(new Rect(nodeDescription.Position.x, nodeDescription.Position.y, 0, 0));
-            base.expanded = nodeDescription.Expanded;
+            SetPosition(new Rect(nodeEditor.Position.x, nodeEditor.Position.y, 0, 0));
+            base.expanded = nodeEditor.Expanded;
             RefreshExpandedState();
         }
 
@@ -80,7 +80,7 @@ namespace GeoTetra.GTGenericGraph
                 if (base.expanded != value)
                     base.expanded = value;
 
-                NodeDescription.Expanded = value;
+                NodeEditor.Expanded = value;
                 RefreshExpandedState(); //This should not be needed. GraphView needs to improve the extension api here
             }
         }

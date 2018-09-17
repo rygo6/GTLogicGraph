@@ -8,12 +8,20 @@ namespace GeoTetra.GTGenericGraph
     [Serializable]
     public class LogicNode
     {        
-        [SerializeField] 
+        [SerializeField]
+        private string _displayName;
+        
+        [SerializeField]
         private string _nodeGuid;
 
         public string NodeGuid
         {
             get { return _nodeGuid; }
+        }
+        
+        public string DisplayName
+        {
+            get { return _displayName; }
         }
     }
 }

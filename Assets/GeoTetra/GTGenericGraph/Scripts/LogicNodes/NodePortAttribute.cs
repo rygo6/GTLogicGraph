@@ -3,9 +3,7 @@
 namespace GeoTetra.GTGenericGraph
 {
 	[AttributeUsage(AttributeTargets.Property | AttributeTargets.Method | AttributeTargets.Event)]
-	public class PortIndexAttribute : Attribute
+	public class NodePortAttribute : Attribute
 	{
-		public readonly int Id;
-		public PortIndexAttribute(int id) { this.Id = id; }
 	}
 }

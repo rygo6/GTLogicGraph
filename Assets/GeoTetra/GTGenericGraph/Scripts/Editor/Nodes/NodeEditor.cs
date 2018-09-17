@@ -14,10 +14,12 @@ namespace GeoTetra.GTGenericGraph
     /// Describes how to draw a node, paired with GenericNodeview
     /// </summary>
     [Serializable]
-    public abstract class NodeDescription
+    public abstract class NodeEditor
     {
         [NonSerialized] private List<PortDescription> _portDescriptions = new List<PortDescription>();
 
+        [SerializeField] private string _displayName;
+        
         [SerializeField] private Vector3 _position;
 
         [SerializeField] private bool _expanded = true;
@@ -44,7 +46,7 @@ namespace GeoTetra.GTGenericGraph
             get { return _nodeGuid; }
         }
 
-        public NodeDescription()
+        public NodeEditor()
         {
             _nodeGuid = System.Guid.NewGuid().ToString();
             ConstructNode();
@@ -54,10 +56,10 @@ namespace GeoTetra.GTGenericGraph
 
         public string NodeType()
         {
-            var attrs = GetType().GetCustomAttributes(typeof(NodeDescriptionType), false) as NodeDescriptionType[];
+            var attrs = GetType().GetCustomAttributes(typeof(NodeEditorType), false) as NodeEditorType[];
             if (attrs != null && attrs.Length > 0)
             {
-                return attrs[0].Name;
+                return attrs[0].NodeType.Name;
             }
             else
             {
@@ -108,33 +110,33 @@ namespace GeoTetra.GTGenericGraph
             _portDescriptions.Add(portDescription);
         }
 
-        public T FindSlot<T>(int slotId) where T : PortDescription
+        public T FindSlot<T>(string memberName) where T : PortDescription
         {
             foreach (var slot in _portDescriptions)
             {
-                if (slot.id == slotId && slot is T)
+                if (slot.MemberName == memberName && slot is T)
                     return (T) slot;
             }
 
             return default(T);
         }
 
-        public T FindInputSlot<T>(int slotId) where T : PortDescription
+        public T FindInputSlot<T>(string memberName) where T : PortDescription
         {
             foreach (var slot in _portDescriptions)
             {
-                if (slot.isInputSlot && slot.id == slotId && slot is T)
+                if (slot.isInputSlot && slot.MemberName == memberName && slot is T)
                     return (T) slot;
             }
 
             return default(T);
         }
 
-        public T FindOutputSlot<T>(int slotId) where T : PortDescription
+        public T FindOutputSlot<T>(string memberName) where T : PortDescription
         {
             foreach (var slot in _portDescriptions)
             {
-                if (slot.isOutputSlot && slot.id == slotId && slot is T)
+                if (slot.isOutputSlot && slot.MemberName == memberName && slot is T)
                     return (T) slot;
             }
 

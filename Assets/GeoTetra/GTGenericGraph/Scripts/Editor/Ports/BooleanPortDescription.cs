@@ -14,8 +14,8 @@ namespace GeoTetra.GTGenericGraph
     {
         public override PortValueType ValueType { get { return PortValueType.Boolean; } }
 
-        public BooleanPortDescription(NodeDescription owner, int slotId, string displayName,
-            PortDirection portDirection) : base(owner, slotId, displayName, portDirection)
+        public BooleanPortDescription(NodeEditor owner, string memberName, string displayName,
+            PortDirection portDirection) : base(owner, memberName, displayName, portDirection)
         {
         }
 

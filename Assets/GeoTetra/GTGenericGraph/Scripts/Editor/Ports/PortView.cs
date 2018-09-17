@@ -44,7 +44,6 @@ namespace GeoTetra.GTGenericGraph
                 _portDescription = value;
                 portName = PortDescription.DisplayName;
                 visualClass = PortDescription.ValueType.ToString();
-                Debug.Log(visualClass);
             }
         }
     }

@@ -26,11 +26,11 @@ namespace GeoTetra.GTGenericGraph
             m_Label = label;
         }
 
-        public VisualElement InstantiateControl(NodeDescription nodeDescription, PropertyInfo propertyInfo)
+        public VisualElement InstantiateControl(NodeEditor nodeEditor, PropertyInfo propertyInfo)
         {
             if (!VectorControlView.validTypes.Contains(propertyInfo.PropertyType))
                 return null;
-            return new VectorControlView(m_Label, m_SubLabel1, m_SubLabel2, m_SubLabel3, m_SubLabel4, nodeDescription, propertyInfo);
+            return new VectorControlView(m_Label, m_SubLabel1, m_SubLabel2, m_SubLabel3, m_SubLabel4, nodeEditor, propertyInfo);
         }
     }
 
@@ -38,12 +38,12 @@ namespace GeoTetra.GTGenericGraph
     {
         public static Type[] validTypes = { typeof(float), typeof(Vector2), typeof(Vector3), typeof(Vector4) };
 
-        NodeDescription m_Node;
+        NodeEditor m_Node;
         PropertyInfo m_PropertyInfo;
         Vector4 m_Value;
         int m_UndoGroup = -1;
 
-        public VectorControlView(string label, string subLabel1, string subLabel2, string subLabel3, string subLabel4, NodeDescription node, PropertyInfo propertyInfo)
+        public VectorControlView(string label, string subLabel1, string subLabel2, string subLabel3, string subLabel4, NodeEditor node, PropertyInfo propertyInfo)
         {
             var components = Array.IndexOf(validTypes, propertyInfo.PropertyType) + 1;
             if (components == -1)

@@ -1,34 +1,34 @@
 {
     "_serializedInputNodes": [
         {
-            "NodeType": "Vector1Input",
-            "JSON": "{\"_position\":{\"x\":-905.609130859375,\"y\":376.9334716796875,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"bef8cb73-89d2-4ea6-aaa6-d9dbf8b68dbe\",\"_value\":11.600000381469727}"
+            "NodeType": "Vector1InputLogicNode",
+            "JSON": "{\"_position\":{\"x\":-395.7063903808594,\"y\":617.2811279296875,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"6314f94f-b9bf-44cf-aa67-f7b19839f05b\"}"
         }
     ],
     "_serializedOutputNodes": [
         {
-            "NodeType": "Vector1Output",
-            "JSON": "{\"_position\":{\"x\":327.8331298828125,\"y\":384.5178527832031,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"520970b0-be6e-491f-ac1d-3a8a3de85550\"}"
+            "NodeType": "Vector1OutputLogicNode",
+            "JSON": "{\"_position\":{\"x\":418.6459045410156,\"y\":617.2810668945313,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"0caf7071-d66f-41fc-8d7b-b973805c5f6e\"}"
         }
     ],
     "_serializedNodes": [
         {
-            "NodeType": "Vector1",
-            "JSON": "{\"_position\":{\"x\":-318.3336181640625,\"y\":354.9018859863281,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"ed7bcc60-293d-436b-b542-41e3db7413a3\",\"_value\":0.0,\"_boolValue\":false}"
+            "NodeType": "Vector1LogicNode",
+            "JSON": "{\"_position\":{\"x\":47.44306182861328,\"y\":611.0248413085938,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"51dceb93-6d99-4b82-9f2f-3299aec20431\",\"_value\":0.0,\"_boolValue\":false}"
         }
     ],
     "_serializedEdges": [
         {
-            "Source": "bef8cb73-89d2-4ea6-aaa6-d9dbf8b68dbe",
-            "SourceIndex": 0,
-            "Target": "ed7bcc60-293d-436b-b542-41e3db7413a3",
-            "TargetIndex": 0
+            "SourceNodeGuid": "51dceb93-6d99-4b82-9f2f-3299aec20431",
+            "SourceIndex": "Vector1Output",
+            "TargetNodeGuid": "0caf7071-d66f-41fc-8d7b-b973805c5f6e",
+            "TargetIndex": "Vector1Input"
         },
         {
-            "Source": "ed7bcc60-293d-436b-b542-41e3db7413a3",
-            "SourceIndex": 1,
-            "Target": "520970b0-be6e-491f-ac1d-3a8a3de85550",
-            "TargetIndex": 0
+            "SourceNodeGuid": "6314f94f-b9bf-44cf-aa67-f7b19839f05b",
+            "SourceIndex": "Vector1Output",
+            "TargetNodeGuid": "51dceb93-6d99-4b82-9f2f-3299aec20431",
+            "TargetIndex": "Vector1Input"
         }
     ]
 }

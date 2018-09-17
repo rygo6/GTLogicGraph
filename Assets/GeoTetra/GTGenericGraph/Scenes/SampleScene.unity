@@ -285,10 +285,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _graphLogicData: {fileID: 11400000, guid: 33ce9b207e2a7dc4a841580b9036671c, type: 3}
   _inputs:
-  - NodeGuid: bef8cb73-89d2-4ea6-aaa6-d9dbf8b68dbe
-    Name: Vector1Input
-    FloatValue: 0.28
-  _outputs: []
+  - DisplayName: ' Vector1Input'
+    MemberName: Vector1Input
+    NodeGuid: 6314f94f-b9bf-44cf-aa67-f7b19839f05b
+    FloatValue: 0.32
+    PriorFloatvalue: 0
+  _outputs:
+  - DisplayName: ' Vector1Output'
+    MemberName: Vector1Output
+    NodeGuid: 0caf7071-d66f-41fc-8d7b-b973805c5f6e
+    Updated:
+      m_PersistentCalls:
+        m_Calls: []
+      m_TypeName: GeoTetra.GTGenericGraph.FloatUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+        Culture=neutral, PublicKeyToken=null
 --- !u!4 &1081646838
 Transform:
   m_ObjectHideFlags: 0

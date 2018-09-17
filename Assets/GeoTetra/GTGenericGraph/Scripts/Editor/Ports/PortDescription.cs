@@ -12,16 +12,16 @@ namespace GeoTetra.GTGenericGraph
 {
     public abstract class PortDescription
     {
-        private readonly int _id;
+        private readonly string _memberName;
         private readonly string _displayName = "";
         private readonly PortDirection _portDirection;
 
-        public NodeDescription Owner { get; private set; }
+        public NodeEditor Owner { get; private set; }
         
-        public PortDescription(NodeDescription owner, int slotId, string displayName, PortDirection portDirection)
+        public PortDescription(NodeEditor owner, string memberName, string displayName, PortDirection portDirection)
         {
             Owner = owner;
-            _id = slotId;
+            _memberName = memberName;
             _displayName = displayName;
             _portDirection = portDirection;
         }
@@ -31,9 +31,9 @@ namespace GeoTetra.GTGenericGraph
             get { return _displayName + " " + ValueType; }
         }
 
-        public int id
+        public string MemberName
         {
-            get { return _id; }
+            get { return _memberName; }
         }
 
         public bool isInputSlot

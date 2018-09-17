@@ -49,8 +49,8 @@ namespace GeoTetra.GTGenericGraph
         struct NodeEntry
         {
             public string[] title;
-            public NodeDescription NodeDescription;
-            public int compatibleSlotId;
+            public NodeEditor NodeEditor;
+            public string compatibleSlotId;
         }
 
         List<int> m_Ids;
@@ -64,12 +64,12 @@ namespace GeoTetra.GTGenericGraph
             {
                 foreach (var type in assembly.GetTypesOrNothing())
                 {
-                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(NodeDescription)))
+                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(NodeEditor)))
                     {
                         var attrs = type.GetCustomAttributes(typeof(TitleAttribute), false) as TitleAttribute[];
                         if (attrs != null && attrs.Length > 0)
                         {
-                            var node = (NodeDescription)Activator.CreateInstance(type);
+                            var node = (NodeEditor)Activator.CreateInstance(type);
                             AddEntries(node, attrs[0].title, nodeEntries);
                         }
                     }
@@ -153,22 +153,22 @@ namespace GeoTetra.GTGenericGraph
             return tree;
         }
 
-        void AddEntries(NodeDescription nodeDescription, string[] title, List<NodeEntry> nodeEntries)
+        void AddEntries(NodeEditor nodeEditor, string[] title, List<NodeEntry> nodeEntries)
         {
             if (ConnectedPortView == null)
             {
                 nodeEntries.Add(new NodeEntry
                 {
-                    NodeDescription = nodeDescription,
+                    NodeEditor = nodeEditor,
                     title = title,
-                    compatibleSlotId = -1
+                    compatibleSlotId = ""
                 });
                 return;
             }
 
             var connectedSlot = ConnectedPortView.PortDescription;
             m_Slots.Clear();
-            nodeDescription.GetSlots(m_Slots);
+            nodeEditor.GetSlots(m_Slots);
             var hasSingleSlot = m_Slots.Count(s => s.isOutputSlot != connectedSlot.isOutputSlot) == 1;
             m_Slots.RemoveAll(slot =>
             {
@@ -180,9 +180,9 @@ namespace GeoTetra.GTGenericGraph
             {
                 nodeEntries.Add(new NodeEntry
                 {
-                    NodeDescription = nodeDescription,
+                    NodeEditor = nodeEditor,
                     title = title,
-                    compatibleSlotId = m_Slots.First().id
+                    compatibleSlotId = m_Slots.First().MemberName
                 });
                 return;
             }
@@ -195,8 +195,8 @@ namespace GeoTetra.GTGenericGraph
                 nodeEntries.Add(new NodeEntry
                 {
                     title = entryTitle,
-                    NodeDescription = nodeDescription,
-                    compatibleSlotId = slot.id
+                    NodeEditor = nodeEditor,
+                    compatibleSlotId = slot.MemberName
                 });
             }
         }
@@ -204,7 +204,7 @@ namespace GeoTetra.GTGenericGraph
         public bool OnSelectEntry(SearchTreeEntry entry, SearchWindowContext context)
         {
             var nodeEntry = (NodeEntry)entry.userData;
-            var nodeEditor = nodeEntry.NodeDescription;
+            var nodeEditor = nodeEntry.NodeEditor;
             
             var windowMousePosition = _editorWindow.GetRootVisualContainer().ChangeCoordinatesTo(_editorWindow.GetRootVisualContainer().parent, context.screenMousePosition - _editorWindow.position.position);
             var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);

@@ -31,21 +31,21 @@ namespace GeoTetra.GTGenericGraph
             _label = label;
         }
 
-        public VisualElement InstantiateControl(NodeDescription nodeDescription, PropertyInfo propertyInfo)
+        public VisualElement InstantiateControl(NodeEditor nodeEditor, PropertyInfo propertyInfo)
         {
-            return new GenericToggleControlView(_label, nodeDescription, propertyInfo);
+            return new GenericToggleControlView(_label, nodeEditor, propertyInfo);
         }
     }
 
     public class GenericToggleControlView : VisualElement
     {
-        private NodeDescription _nodeDescription;
+        private NodeEditor _nodeEditor;
         private PropertyInfo _propertyInfo;
         private UnityEngine.Experimental.UIElements.Toggle _toggle;
 
-        public GenericToggleControlView(string label, NodeDescription nodeDescription, PropertyInfo propertyInfo)
+        public GenericToggleControlView(string label, NodeEditor nodeEditor, PropertyInfo propertyInfo)
         {
-            _nodeDescription = nodeDescription;
+            _nodeEditor = nodeEditor;
             _propertyInfo = propertyInfo;
             AddStyleSheetPath("Styles/Controls/ToggleControlView");
 
@@ -54,7 +54,7 @@ namespace GeoTetra.GTGenericGraph
 
             label = label ?? ObjectNames.NicifyVariableName(propertyInfo.Name);
 
-            var value = (GenericToggleData)_propertyInfo.GetValue(_nodeDescription, null);
+            var value = (GenericToggleData)_propertyInfo.GetValue(_nodeEditor, null);
             var panel = new VisualElement { name = "togglePanel" };
             if (!string.IsNullOrEmpty(label))
                 panel.Add(new Label(label));
@@ -68,10 +68,10 @@ namespace GeoTetra.GTGenericGraph
 
         void OnChangeToggle()
         {
-            _nodeDescription.Owner.GraphObject.RegisterCompleteObjectUndo("Toggle Change");
-            var value = (GenericToggleData)_propertyInfo.GetValue(_nodeDescription, null);
+            _nodeEditor.Owner.GraphObject.RegisterCompleteObjectUndo("Toggle Change");
+            var value = (GenericToggleData)_propertyInfo.GetValue(_nodeEditor, null);
             value.isOn = !value.isOn;
-            _propertyInfo.SetValue(_nodeDescription, value, null);
+            _propertyInfo.SetValue(_nodeEditor, value, null);
             Dirty(ChangeType.Repaint);
         }
     }

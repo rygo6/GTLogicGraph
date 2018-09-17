@@ -40,7 +40,7 @@ namespace GeoTetra.GTGenericGraph
 
 		public void OnAfterDeserialize()
 		{
-			Debug.Log("OnAfterDeserialize");
+//			Debug.Log("OnAfterDeserialize");
 			if (Deserialized != null) Deserialized();
 		}
 	}
