@@ -72,12 +72,12 @@ namespace GeoTetra.GTGenericGraph
                     return;
                 }
 
-                MethodInfo targetMethodInfo = MethodInfoByIndex(targetNode, serializedEdge.TargetIndex);
-                SubscribeToEventByIndex(sourceNode, serializedEdge.SourceIndex, targetNode, targetMethodInfo);
+                MethodInfo targetMethodInfo = MethodInfoByName(targetNode, serializedEdge.TargetIndex);
+                SubscribeToEventByName(sourceNode, serializedEdge.SourceIndex, targetNode, targetMethodInfo);
             }
         }
 
-        private MethodInfo MethodInfoByIndex(LogicNode node, string memberName)
+        private MethodInfo MethodInfoByName(LogicNode node, string memberName)
         {
             var methods = node.GetType()
                 .GetMethods(BindingFlags.Public |
@@ -98,7 +98,10 @@ namespace GeoTetra.GTGenericGraph
             return null;
         }
 
-        private void SubscribeToEventByIndex(LogicNode sourceNode, string memberName, LogicNode targetNode,
+        private void SubscribeToEventByName(
+            LogicNode sourceNode, 
+            string memberName, 
+            LogicNode targetNode,
             MethodInfo targetMethodInfo)
         {
             var events = sourceNode.GetType()
@@ -112,9 +115,6 @@ namespace GeoTetra.GTGenericGraph
                 {
                     if (eventInfo.Name == memberName)
                     {
-                        MethodInfo method = typeof(GraphOutput).GetMethod("RaiseUpdated",
-                            BindingFlags.Public | BindingFlags.Instance);
-
                         Type type = eventInfo.EventHandlerType;
                         Delegate handler = Delegate.CreateDelegate(type, targetNode, targetMethodInfo);
                         eventInfo.AddEventHandler(sourceNode, handler);
@@ -134,16 +134,6 @@ namespace GeoTetra.GTGenericGraph
 
             return null;
         }
-        
-//        private LogicNode FindNodeByGuid(string guid, List<LogicNode> nodes, List<LogicNode> inputNodes, List<LogicNode> outputNodes)
-//        {
-//            LogicNode node = nodes.Find(n => n.NodeGuid == guid);
-//            if (node != null) return node;
-//            node = inputNodes.Find(n => n.NodeGuid == guid);
-//            if (node != null) return node;
-//            node = outputNodes.Find(n => n.NodeGuid == guid);
-//            return node;
-//        }
 
         private LogicNode CreateLogicNodeFromSerializedNode(SerializedNode serializedNode)
         {
