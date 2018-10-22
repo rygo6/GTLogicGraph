@@ -3,6 +3,10 @@
         {
             "NodeType": "Vector1InputLogicNode",
             "JSON": "{\"_position\":{\"x\":-395.7063903808594,\"y\":617.2811279296875,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"6314f94f-b9bf-44cf-aa67-f7b19839f05b\"}"
+        },
+        {
+            "NodeType": "Vector3InputLogicNode",
+            "JSON": "{\"_displayName\":\"\",\"_position\":{\"x\":-363.5,\"y\":851.5,\"z\":0.0},\"_expanded\":true,\"_nodeGuid\":\"5136de93-6a39-46e6-bf7c-1dc8f20ba8a4\"}"
         }
     ],
     "_serializedOutputNodes": [

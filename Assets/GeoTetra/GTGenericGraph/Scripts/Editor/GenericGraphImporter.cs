@@ -17,17 +17,18 @@ public class GenericGraphImporter : ScriptedImporter
         var graph = JsonUtility.FromJson<GraphData>(textGraph);
         UnityEngine.Object[] asset = AssetDatabase.LoadAllAssetsAtPath(ctx.assetPath);
 
-        if (asset.Length == 0)
-        {
+//        if (asset.Length == 0)
+//        {
             GraphLogicData graphObject = ScriptableObject.CreateInstance<GraphLogicData>();
             graphObject.Initialize(graph);
             ctx.AddObjectToAsset("MainAsset", graphObject);
             ctx.SetMainObject(graphObject);
-        }
-        else
-        {
-            GraphLogicData graphObject = asset[0]  as GraphLogicData;
-            graphObject.Initialize(graph);
-        }
+//        }
+//        else
+//        {
+//            Debug.Log("updating existing object");
+//            GraphLogicData graphObject = asset[0]  as GraphLogicData;
+//            graphObject.Initialize(graph);
+//        }
     }
 }

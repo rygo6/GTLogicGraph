@@ -51,6 +51,8 @@ public class GraphLogicEditor : Editor
                 SerializedProperty componentValue = _inputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("ComponentValue");    
                 EditorGUILayout.ObjectField(componentValue, typeof(Transform));
             }
+            EditorGUILayout.Space();
+
         }
         
         EditorGUI.indentLevel = 0;
