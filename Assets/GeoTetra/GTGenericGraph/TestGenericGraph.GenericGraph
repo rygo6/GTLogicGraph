@@ -20,15 +20,15 @@
     "_serializedEdges": [
         {
             "SourceNodeGuid": "51dceb93-6d99-4b82-9f2f-3299aec20431",
-            "SourceIndex": "Vector1Output",
+            "SourceMemberName": "Vector1Output",
             "TargetNodeGuid": "0caf7071-d66f-41fc-8d7b-b973805c5f6e",
-            "TargetIndex": "Vector1Input"
+            "TargetMemberName": "Vector1Input"
         },
         {
             "SourceNodeGuid": "6314f94f-b9bf-44cf-aa67-f7b19839f05b",
-            "SourceIndex": "Vector1Output",
+            "SourceMemberName": "Vector1Output",
             "TargetNodeGuid": "51dceb93-6d99-4b82-9f2f-3299aec20431",
-            "TargetIndex": "Vector1Input"
+            "TargetMemberName": "Vector1Input"
         }
     ]
 }

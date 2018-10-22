@@ -35,12 +35,12 @@ namespace GeoTetra.GTGenericGraph
 		
 		public void OnBeforeSerialize()
 		{
-			Debug.Log("OnBeforeSerialize");
+//			Debug.Log("OnBeforeSerialize");
 		}
 
 		public void OnAfterDeserialize()
 		{
-			Debug.Log("OnAfterDeserialize");
+//			Debug.Log("OnAfterDeserialize");
 			if (Deserialized != null) Deserialized();
 		}
 	}

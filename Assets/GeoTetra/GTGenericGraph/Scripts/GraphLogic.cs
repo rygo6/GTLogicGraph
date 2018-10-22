@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Cryptography;
+using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.Events;
 using Object = System.Object;
@@ -15,7 +16,6 @@ namespace GeoTetra.GTGenericGraph
         [SerializeField] private List<GraphInput> _inputs;
         [SerializeField] private List<GraphOutput> _outputs;
 
-        private GraphLogicData _priorGraphLogicData;
         private List<LogicNode> _inputNodes = new List<LogicNode>();
         private List<LogicNode> _outputNodes = new List<LogicNode>();
         private List<LogicNode> _nodes = new List<LogicNode>();
@@ -35,20 +35,27 @@ namespace GeoTetra.GTGenericGraph
             Debug.Log("Start");
         }
 
-        private void OnEnable()
+        public void OnEnable()
         {
             Debug.Log("OnEnable");
             _graphLogicData.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
             UpdateInputsAndOutputs();
         }
 
+        private void Reset()
+        {
+            _inputNodes.Clear();
+            _outputNodes.Clear();
+            _graphLogicData = null;
+        }
+
         private void OnValidate()
         {
             Debug.Log("OnValidate");
 
-            if (_graphLogicData != _priorGraphLogicData && _graphLogicData != null)
+            if (_graphLogicData != null)
             {
-                _priorGraphLogicData = _graphLogicData;
+                _graphLogicData.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
                 UpdateInputsAndOutputs();
             }
 
@@ -66,13 +73,12 @@ namespace GeoTetra.GTGenericGraph
             {
                 List<GraphInput> loadedInputs = new List<GraphInput>();
                 LoadInputs(loadedInputs);
-                Debug.Log(loadedInputs.Count);
 
                 //add nodes
                 for (int i = 0; i < loadedInputs.Count; ++i)
                 {
                     if (Inputs.Find(n => n.MemberName == loadedInputs[i].MemberName &&
-                                          n.NodeGuid == loadedInputs[i].NodeGuid) == null)
+                                         n.NodeGuid == loadedInputs[i].NodeGuid) == null)
                     {
                         Inputs.Add(loadedInputs[i]);
                     }
@@ -97,13 +103,12 @@ namespace GeoTetra.GTGenericGraph
             {
                 List<GraphOutput> loadedOutputs = new List<GraphOutput>();
                 LoadOutputs(loadedOutputs);
-                Debug.Log(loadedOutputs.Count);
 
                 //add nodes
                 for (int i = 0; i < loadedOutputs.Count; ++i)
                 {
                     if (Outputs.Find(n => n.MemberName == loadedOutputs[i].MemberName &&
-                                           n.NodeGuid == loadedOutputs[i].NodeGuid) == null)
+                                          n.NodeGuid == loadedOutputs[i].NodeGuid) == null)
                     {
                         Outputs.Add(loadedOutputs[i]);
                     }
@@ -141,7 +146,8 @@ namespace GeoTetra.GTGenericGraph
                         {
                             MemberName = method.Name,
                             NodeGuid = node.NodeGuid,
-                            DisplayName = node.DisplayName + " " + method.Name
+                            DisplayName = node.DisplayName + " " + method.Name,
+                            InputType = attrs[0].InputType()
                         };
                         inputs.Add(input);
                         if (attrs.Length > 1)
@@ -164,6 +170,7 @@ namespace GeoTetra.GTGenericGraph
                 {
                     if (method.Name == graphInput.MemberName)
                     {
+                        graphInput.InputType = attrs[0].InputType();
                         attrs[0].HookUpMethodInvoke(node, method, graphInput);
                     }
 
@@ -201,7 +208,6 @@ namespace GeoTetra.GTGenericGraph
                         graphOutput.NodeGuid = node.NodeGuid;
                         graphOutput.DisplayName = node.DisplayName + " " + eventInfo.Name;
                         graphOutput.OutputType = types[0];
-                        Debug.Log(graphOutput.OutputType +  "   DASDAIJDASNIOJ");
                         outputs.Add(graphOutput);
 
                         if (attrs.Length > 1)
@@ -224,6 +230,8 @@ namespace GeoTetra.GTGenericGraph
                 {
                     if (eventInfo.Name == graphOutput.MemberName)
                     {
+                        Type[] types = eventInfo.EventHandlerType.GetGenericArguments();
+                        graphOutput.OutputType = types[0];
                         graphOutput.SubscribeRaiseUpdate(eventInfo, node);
                     }
 
@@ -240,7 +248,11 @@ namespace GeoTetra.GTGenericGraph
         public string DisplayName;
         public string MemberName;
         public string NodeGuid;
-        public float FloatValue;
+        public float FloatValueX;
+        public float FloatValueY;
+        public float FloatValueZ;
+        public float FloatValueW;
+        public Type InputType;
         public Component ComponentValue;
         public Action OnValidate;
     }
@@ -249,21 +261,18 @@ namespace GeoTetra.GTGenericGraph
     [Serializable]
     public class GraphOutput
     {
-        [SerializeField]
-        private FloatUnityEvent _updatedFloat = new FloatUnityEvent();
-        
-        [SerializeField]
-        private Vector3UnityEvent _updatedVector3 = new Vector3UnityEvent();
-        
-        [SerializeField]
-        private ObjectUnityEvent _updatedObject = new ObjectUnityEvent();
-        
+        [SerializeField] private FloatUnityEvent _updatedFloat = new FloatUnityEvent();
+
+        [SerializeField] private Vector3UnityEvent _updatedVector3 = new Vector3UnityEvent();
+
+        [SerializeField] private ObjectUnityEvent _updatedObject = new ObjectUnityEvent();
+
         public string DisplayName;
         public string MemberName;
         public string NodeGuid;
         public Type OutputType;
         public event Action<ObjectEvent> Updated;
-        
+
         private void RaiseUpdatedFloat(float value)
         {
             Debug.Log("RaiseUpdatedFloat " + value);
@@ -279,7 +288,7 @@ namespace GeoTetra.GTGenericGraph
             ObjectEvent objectEvent = new ObjectEvent(value, OutputType);
             if (Updated != null) Updated(objectEvent);
         }
-        
+
         private void RaiseUpdatedObject(Object value)
         {
             Debug.Log("RaiseUpdatedObject " + value);
@@ -299,23 +308,20 @@ namespace GeoTetra.GTGenericGraph
             }
             else if (passingTypes[0] == typeof(Single))
             {
-                Debug.Log("is single");
                 methodName = "RaiseUpdatedFloat";
             }
             else if (passingTypes[0] == typeof(Vector3))
             {
-                Debug.Log("is vector3");
                 methodName = "RaiseUpdatedVector3";
             }
             else
             {
-                Debug.Log("is object");
                 methodName = "RaiseUpdatedObject";
             }
-            
+
             MethodInfo method = typeof(GraphOutput).GetMethod(methodName,
-                BindingFlags.Public | 
-                BindingFlags.Instance | 
+                BindingFlags.Public |
+                BindingFlags.Instance |
                 BindingFlags.NonPublic);
             Delegate handler = Delegate.CreateDelegate(type, this, method);
             eventInfo.AddEventHandler(node, handler);
@@ -336,7 +342,7 @@ namespace GeoTetra.GTGenericGraph
 
         public T TypedValue<T>()
         {
-           return (T)Convert.ChangeType(ObjectValue, ObjectType);
+            return (T) Convert.ChangeType(ObjectValue, ObjectType);
         }
     }
 

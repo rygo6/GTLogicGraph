@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace GeoTetra.GTGenericGraph
 {
@@ -8,25 +9,62 @@ namespace GeoTetra.GTGenericGraph
     public abstract class InputAttribute : Attribute
     {
         public abstract void HookUpMethodInvoke(LogicNode node, MethodInfo method, GraphInput graphInput);
+
+        public abstract Type InputType();
     }
 
     [AttributeUsage(AttributeTargets.Method)]
-    public class FloatInputAttribute : InputAttribute
+    public class Vector1InputAttribute : InputAttribute
     {
-        private float _priorFloatValue;
+        private float _priorFloatValueX;
 
         public override void HookUpMethodInvoke(LogicNode node, MethodInfo method, GraphInput graphInput)
         {
             graphInput.OnValidate = () => OnValidate(node, method, graphInput);
         }
 
+        public override Type InputType()
+        {
+            return typeof(float);
+        }
+        
         private void OnValidate(LogicNode node, MethodInfo method, GraphInput graphInput)
         {
-            Debug.Log(graphInput.FloatValue + " != " + _priorFloatValue);
-            if (graphInput.FloatValue != _priorFloatValue)
+            if (!Mathf.Approximately(graphInput.FloatValueX, _priorFloatValueX))
             {
-                method.Invoke(node, new object[] {graphInput.FloatValue});
-                _priorFloatValue = graphInput.FloatValue;
+                method.Invoke(node, new object[] {graphInput.FloatValueX});
+                _priorFloatValueX = graphInput.FloatValueX;
+            }
+        }
+    }
+    
+    [AttributeUsage(AttributeTargets.Method)]
+    public class Vector3InputAttribute : InputAttribute
+    {
+        private float _priorFloatValueX;
+        private float _priorFloatValueY;
+        private float _priorFloatValueZ;
+
+        public override void HookUpMethodInvoke(LogicNode node, MethodInfo method, GraphInput graphInput)
+        {
+            graphInput.OnValidate = () => OnValidate(node, method, graphInput);
+        }
+
+        public override Type InputType()
+        {
+            return typeof(float);
+        }
+        
+        private void OnValidate(LogicNode node, MethodInfo method, GraphInput graphInput)
+        {
+            if (!Mathf.Approximately(graphInput.FloatValueX, _priorFloatValueX) ||
+                !Mathf.Approximately(graphInput.FloatValueY, _priorFloatValueY) ||
+                !Mathf.Approximately(graphInput.FloatValueZ, _priorFloatValueZ))
+            {
+                method.Invoke(node, new object[] {new Vector3(graphInput.FloatValueX, graphInput.FloatValueY, graphInput.FloatValueZ)});
+                _priorFloatValueX = graphInput.FloatValueX;
+                _priorFloatValueY = graphInput.FloatValueY;
+                _priorFloatValueZ = graphInput.FloatValueZ;
             }
         }
     }

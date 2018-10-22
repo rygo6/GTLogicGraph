@@ -35,6 +35,7 @@ namespace GeoTetra.GTGenericGraph
             }
 
             inputNodes.Clear();
+            Debug.Log(_graphData.SerializedInputNodes.Count);
             for (int i = 0; i < _graphData.SerializedInputNodes.Count; ++i)
             {
                 LogicNode node = CreateLogicNodeFromSerializedNode(_graphData.SerializedInputNodes[i]);
@@ -72,8 +73,8 @@ namespace GeoTetra.GTGenericGraph
                     return;
                 }
 
-                MethodInfo targetMethodInfo = MethodInfoByName(targetNode, serializedEdge.TargetIndex);
-                SubscribeToEventByName(sourceNode, serializedEdge.SourceIndex, targetNode, targetMethodInfo);
+                MethodInfo targetMethodInfo = MethodInfoByName(targetNode, serializedEdge.TargetMemberName);
+                SubscribeToEventByName(sourceNode, serializedEdge.SourceMemberName, targetNode, targetMethodInfo);
             }
         }
 
@@ -85,6 +86,7 @@ namespace GeoTetra.GTGenericGraph
                             BindingFlags.Instance);
             foreach (MethodInfo method in methods)
             {
+                //TODO is nodeport attribute necessary? Maybe just search by name?
                 var attrs = method.GetCustomAttributes(typeof(NodePortAttribute), false) as NodePortAttribute[];
                 for (int i = 0; i < attrs.Length; ++i)
                 {
@@ -110,6 +112,7 @@ namespace GeoTetra.GTGenericGraph
                            BindingFlags.Instance);
             foreach (EventInfo eventInfo in events)
             {
+                //TODO is nodeport attribute necessary? Maybe just search by name?
                 var attrs = eventInfo.GetCustomAttributes(typeof(NodePortAttribute), false) as NodePortAttribute[];
                 for (int i = 0; i < attrs.Length; ++i)
                 {

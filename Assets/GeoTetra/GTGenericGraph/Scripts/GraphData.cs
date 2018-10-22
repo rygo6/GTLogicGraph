@@ -53,8 +53,8 @@ namespace GeoTetra.GTGenericGraph
 	public class SerializedEdge
 	{
 		public string SourceNodeGuid;
-		public string SourceIndex;
+		public string SourceMemberName;
 		public string TargetNodeGuid;
-		public string TargetIndex;
+		public string TargetMemberName;
 	}
 }

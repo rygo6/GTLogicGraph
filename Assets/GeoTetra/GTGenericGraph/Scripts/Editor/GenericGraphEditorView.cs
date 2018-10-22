@@ -276,9 +276,9 @@ namespace GeoTetra.GTGenericGraph
             SerializedEdge serializedEdge = new SerializedEdge
             {
                 SourceNodeGuid = leftPortDescription.Owner.NodeGuid,
-                SourceIndex = leftPortDescription.MemberName,
+                SourceMemberName = leftPortDescription.MemberName,
                 TargetNodeGuid = rightPortDescription.Owner.NodeGuid,
-                TargetIndex = rightPortDescription.MemberName
+                TargetMemberName = rightPortDescription.MemberName
             };
 
             _graphObject.GraphData.SerializedEdges.Add(serializedEdge);
@@ -296,12 +296,12 @@ namespace GeoTetra.GTGenericGraph
             if (sourceNodeView != null)
             {
                 PortView sourceAnchor = sourceNodeView.outputContainer.Children().OfType<PortView>()
-                    .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.SourceIndex);
+                    .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.SourceMemberName);
 
                 GenericNodeView targetNodeView = _graphView.nodes.ToList().OfType<GenericNodeView>()
                     .FirstOrDefault(x => x.NodeEditor.NodeGuid == serializedEdge.TargetNodeGuid);
                 PortView targetAnchor = targetNodeView.inputContainer.Children().OfType<PortView>()
-                    .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.TargetIndex);
+                    .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.TargetMemberName);
 
                 var edgeView = new Edge
                 {

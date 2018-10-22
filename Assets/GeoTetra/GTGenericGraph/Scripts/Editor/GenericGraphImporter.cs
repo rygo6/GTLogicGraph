@@ -1,14 +1,10 @@
-﻿using UnityEditor.ShaderGraph;
-using UnityEngine;
-using System;
-using System.Collections.Generic;
+﻿using UnityEngine;
 using System.IO;
-using System.Linq;
 using System.Text;
 using GeoTetra.GTGenericGraph;
 using UnityEditor;
 using UnityEditor.Experimental.AssetImporters;
-using UnityEditor.ShaderGraph.Drawing;
+using UnityEditor.Graphs;
 
 [ScriptedImporter(13, GenericGraphImporter.GenericGraphExtension)]
 public class GenericGraphImporter : ScriptedImporter
@@ -19,9 +15,19 @@ public class GenericGraphImporter : ScriptedImporter
     {
         var textGraph = File.ReadAllText(ctx.assetPath, Encoding.UTF8);
         var graph = JsonUtility.FromJson<GraphData>(textGraph);
-        GraphLogicData graphObject = ScriptableObject.CreateInstance<GraphLogicData>();
-        graphObject.Initialize(graph);
-        ctx.AddObjectToAsset("MainAsset", graphObject);
-        ctx.SetMainObject(graphObject);
+        UnityEngine.Object[] asset = AssetDatabase.LoadAllAssetsAtPath(ctx.assetPath);
+
+        if (asset.Length == 0)
+        {
+            GraphLogicData graphObject = ScriptableObject.CreateInstance<GraphLogicData>();
+            graphObject.Initialize(graph);
+            ctx.AddObjectToAsset("MainAsset", graphObject);
+            ctx.SetMainObject(graphObject);
+        }
+        else
+        {
+            GraphLogicData graphObject = asset[0]  as GraphLogicData;
+            graphObject.Initialize(graph);
+        }
     }
 }

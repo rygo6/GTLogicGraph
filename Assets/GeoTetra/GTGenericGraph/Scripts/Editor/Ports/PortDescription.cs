@@ -75,19 +75,10 @@ namespace GeoTetra.GTGenericGraph
     [Serializable]
     public enum PortValueType
     {
-        SamplerState,
-        DynamicMatrix,
-        Matrix4,
-        Matrix3,
-        Matrix2,
-        Texture2D,
-        Cubemap,
-        DynamicVector,
         Vector4,
         Vector3,
         Vector2,
         Vector1,
-        Dynamic,
         Boolean
     }
 }

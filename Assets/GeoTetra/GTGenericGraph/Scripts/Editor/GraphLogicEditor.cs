@@ -18,7 +18,6 @@ public class GraphLogicEditor : Editor
     {
         serializedObject.Update();
         
-        
         GraphLogic graphLogic = (GraphLogic) target;
 
         _graphLogicDataProperty = serializedObject.FindProperty("_graphLogicData");
@@ -26,19 +25,32 @@ public class GraphLogicEditor : Editor
         _outputsProperty = serializedObject.FindProperty("_outputs");
 
         EditorGUILayout.PropertyField(_graphLogicDataProperty);
+        if (GUILayout.Button("Refresh"))
+        {
+            graphLogic.OnEnable();
+        }
+        
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Inputs");
 
         for (int i = 0; i < _inputsProperty.arraySize; ++i)
         {
-            SerializedProperty displayName = _inputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("DisplayName");
-            SerializedProperty floatValue = _inputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("FloatValue");
-            SerializedProperty componentValue = _inputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("ComponentValue");           
+            SerializedProperty displayName = _inputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("DisplayName");       
             
             EditorGUI.indentLevel = 2;
             EditorGUILayout.LabelField(displayName.stringValue);
-            EditorGUILayout.PropertyField(floatValue);
-            EditorGUILayout.ObjectField(componentValue, typeof(Transform));
+
+            if (graphLogic.Inputs[i].InputType == typeof(float))
+            {
+                SerializedProperty floatValue =
+                    _inputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("FloatValueX");
+                EditorGUILayout.PropertyField(floatValue);
+            }
+            else
+            {
+                SerializedProperty componentValue = _inputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("ComponentValue");    
+                EditorGUILayout.ObjectField(componentValue, typeof(Transform));
+            }
         }
         
         EditorGUI.indentLevel = 0;
@@ -51,8 +63,6 @@ public class GraphLogicEditor : Editor
             EditorGUI.indentLevel = 2;
             EditorGUILayout.LabelField(displayName.stringValue);
             
-            Debug.Log(graphLogic.Outputs[i]);
-            Debug.Log(graphLogic.Outputs[i].OutputType);
             if (graphLogic.Outputs[i].OutputType == typeof(Single))
             {
                 SerializedProperty eventProperty = _outputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("_updatedFloat");

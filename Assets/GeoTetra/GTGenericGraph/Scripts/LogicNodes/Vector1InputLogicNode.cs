@@ -11,7 +11,7 @@ namespace GeoTetra.GTGenericGraph
         [NodePort]
         public event Action<float> Vector1Output;
        
-        [FloatInput]
+        [Vector1Input]
         public void Vector1Input(float value)
         {
             Debug.Log("Vector1InputLogicNode Vector1Input " + value);

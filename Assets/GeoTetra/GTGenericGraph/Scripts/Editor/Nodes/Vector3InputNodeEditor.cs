@@ -7,13 +7,13 @@ using UnityEditor.ShaderGraph;
 
 namespace GeoTetra.GTGenericGraph
 {
-    [Title("Input", "Vector1")]
-    [NodeEditorType(typeof(Vector1InputLogicNode))]
-    public class Vector1InputNodeEditor : NodeEditor, IInputNode
+    [Title("Input", "Vector3")]
+    [NodeEditorType(typeof(Vector3InputLogicNode))]
+    public class Vector3InputNodeEditor : NodeEditor, IInputNode
     {        
         public override void ConstructNode()
         {
-            AddSlot(new Vector1PortDescription(this, "Vector1Output", "Out", PortDirection.Output));
+            AddSlot(new Vector3PortDescription(this, "Vector3Output", "Out", PortDirection.Output));
         }
     }
 }
