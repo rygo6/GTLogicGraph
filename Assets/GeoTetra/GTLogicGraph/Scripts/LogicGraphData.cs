@@ -7,7 +7,7 @@ using UnityEngine;
 namespace GeoTetra.GTLogicGraph
 {
 	[Serializable]
-	public class GraphData 
+	public class LogicGraphData 
 	{		
 		[SerializeField]
 		private List<SerializedNode> _serializedInputNodes = new List<SerializedNode>();

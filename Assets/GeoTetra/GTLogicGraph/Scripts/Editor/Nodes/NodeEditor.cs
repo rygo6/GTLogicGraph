@@ -20,7 +20,7 @@ namespace GeoTetra.GTLogicGraph
 
         [SerializeField] private string _nodeGuid;
 
-        public GenericGraphView Owner { get; set; }
+        public LogicGraphView Owner { get; set; }
         public SerializedNode SerializedNode { get; set; }
 
         public Vector3 Position

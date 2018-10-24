@@ -10,22 +10,22 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
-    public class GenericSearchWindowProvider : ScriptableObject, ISearchWindowProvider
+    public class SearchWindowProvider : ScriptableObject, ISearchWindowProvider
     {
         private EditorWindow _editorWindow;
-        private GenericGraphEditorView _genericGraphEditorView;
-        private GenericGraphView _graphView;
+        private LogicGraphEditorView _logicGraphEditorView;
+        private LogicGraphView _graphView;
         private Texture2D m_Icon;
         public PortView ConnectedPortView { get; set; }
         public bool nodeNeedsRepositioning { get; set; }
         public Vector2 targetPosition { get; private set; }
 
         public void Initialize(EditorWindow editorWindow, 
-            GenericGraphEditorView genericGraphEditorView, 
-            GenericGraphView graphView)
+            LogicGraphEditorView logicGraphEditorView, 
+            LogicGraphView graphView)
         {
             _editorWindow = editorWindow;
-            _genericGraphEditorView = genericGraphEditorView;
+            _logicGraphEditorView = logicGraphEditorView;
             _graphView = graphView;
             
             // Transparent icon to trick search window into indenting items
@@ -219,7 +219,7 @@ namespace GeoTetra.GTLogicGraph
             var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);
             nodeEditor.Position = new Vector3(graphMousePosition.x, graphMousePosition.y, 0);
             
-            _genericGraphEditorView.AddNode(nodeEditor);
+            _logicGraphEditorView.AddNode(nodeEditor);
 
 //            if (connectedPort != null)
 //            {

@@ -1,4 +1,4 @@
-GenericGraphView {
+LogicGraphView {
     flex-direction: row;
     background-color: #202020;
     flex: 1;

@@ -1,4 +1,4 @@
-GenericGraphEditorView {
+LogicGraphEditorView {
     flex: 1;
 }
 
@@ -6,7 +6,7 @@ GraphEditorView #TitleBar {
 
 }
 
-GenericGraphEditorView > #content {
+LogicGraphEditorView > #content {
     flex: 1;
 }
 

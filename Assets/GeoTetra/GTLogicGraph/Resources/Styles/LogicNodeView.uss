@@ -1,36 +1,36 @@
-GenericNodeView {
+LogicNodeView {
   width: 300;
 }
 
-GenericNodeView.graphElement.node.MaterialNode {
+LogicNodeView.graphElement.node.MaterialNode {
     margin-top: 0;
     margin-bottom: 0;
     margin-left: 0;
     margin-right: 0;
 }
 
-GenericNodeView #collapsible-area {
+LogicNodeView #collapsible-area {
     width: 0;
     height: 0;
 }
 
-GenericNodeView #previewFiller.expanded {
+LogicNodeView #previewFiller.expanded {
     width: 200;
     padding-bottom: 200;
 }
 
-GenericNodeView #previewFiller,
-GenericNodeView #controls {
+LogicNodeView #previewFiller,
+LogicNodeView #controls {
     background-color: rgba(63, 63, 63, 0.8);
 }
 
-GenericNodeView #controls > #items {
+LogicNodeView #controls > #items {
     padding-top: 4;
     padding-bottom: 4;
 }
 
 
-GenericNodeView > #previewContainer {
+LogicNodeView > #previewContainer {
     position-type: absolute;
     position-bottom: 4;
     position-left: 4;
@@ -38,13 +38,13 @@ GenericNodeView > #previewContainer {
     padding-top: 6;
 }
 
-GenericNodeView > #previewContainer > #preview  {
+LogicNodeView > #previewContainer > #preview  {
     width: 200;
     height: 200;
     align-items:center;
 }
 
-GenericNodeView > #previewContainer > #preview > #collapse {
+LogicNodeView > #previewContainer > #preview > #collapse {
     background-color: #000;
     border-color: #F0F0F0;
     width: 0;
@@ -61,23 +61,23 @@ GenericNodeView > #previewContainer > #preview > #collapse {
 }
 
 
-GenericNodeView:hover > #previewContainer > #preview > #collapse {
+LogicNodeView:hover > #previewContainer > #preview > #collapse {
     width: 20;
     height: 20;
     opacity: 0.6;
 }
 
-GenericNodeView > #previewContainer > #preview > #collapse > #icon  {
+LogicNodeView > #previewContainer > #preview > #collapse > #icon  {
     background-image : resource("GraphView/Nodes/PreviewCollapse.png");
     width: 16;
     height: 16;
 }
 
-GenericNodeView > #previewContainer > #preview > #collapse:hover {
+LogicNodeView > #previewContainer > #preview > #collapse:hover {
     opacity: 1.0;
 }
 
-GenericNodeView #previewFiller > #expand {
+LogicNodeView #previewFiller > #expand {
     align-self: center;
     width: 56;
     height: 16;
@@ -85,23 +85,23 @@ GenericNodeView #previewFiller > #expand {
     justify-content:center;
 }
 
-GenericNodeView #previewFiller > #expand > #icon {
+LogicNodeView #previewFiller > #expand > #icon {
     align-self: center;
     background-image : resource("GraphView/Nodes/PreviewExpand.png");
     width: 16;
     height: 16;
 }
 
-GenericNodeView #previewFiller.collapsed > #expand:hover {
+LogicNodeView #previewFiller.collapsed > #expand:hover {
     background-color: #2B2B2B;
 }
 
-GenericNodeView #previewFiller.expanded > #expand {
+LogicNodeView #previewFiller.expanded > #expand {
     height: 0;
 }
 
 
-GenericNodeView > #resize {
+LogicNodeView > #resize {
     background-image : resource("GraphView/Nodes/NodeChevronLeft.png");
     position-type: absolute;
     position-right: 5;
@@ -111,14 +111,14 @@ GenericNodeView > #resize {
     cursor: resize-up-left;
 }
 
-GenericNodeView > #portInputContainer {
+LogicNodeView > #portInputContainer {
     position-type: absolute;
     width: 212;
     position-left: -200;
     position-top: 46;
 }
 
-GenericNodeView > #settings-container {
+LogicNodeView > #settings-container {
 	background-color : rgb(63, 63, 63);
 }
 

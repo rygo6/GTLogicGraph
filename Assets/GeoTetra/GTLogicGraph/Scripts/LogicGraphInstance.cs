@@ -10,9 +10,9 @@ using Object = System.Object;
 namespace GeoTetra.GTLogicGraph
 {
     [ExecuteInEditMode]
-    public class GraphLogic : MonoBehaviour
+    public class LogicGraphInstance : MonoBehaviour
     {
-        [SerializeField] private GraphLogicData _graphLogicData;
+        [SerializeField] private LogicGraphObject _logicGraphObject;
         [SerializeField] private List<GraphInput> _inputs;
         [SerializeField] private List<GraphOutput> _outputs;
 
@@ -38,7 +38,7 @@ namespace GeoTetra.GTLogicGraph
         public void OnEnable()
         {
             Debug.Log("OnEnable");
-            _graphLogicData.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
+            _logicGraphObject.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
             UpdateInputsAndOutputs();
         }
 
@@ -46,16 +46,16 @@ namespace GeoTetra.GTLogicGraph
         {
             _inputNodes.Clear();
             _outputNodes.Clear();
-            _graphLogicData = null;
+            _logicGraphObject = null;
         }
 
         private void OnValidate()
         {
             Debug.Log("OnValidate");
 
-            if (_graphLogicData != null)
+            if (_logicGraphObject != null)
             {
-                _graphLogicData.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
+                _logicGraphObject.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
                 UpdateInputsAndOutputs();
             }
 

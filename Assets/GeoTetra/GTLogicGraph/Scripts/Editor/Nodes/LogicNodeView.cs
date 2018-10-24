@@ -9,7 +9,7 @@ namespace GeoTetra.GTLogicGraph
     /// <summary>
     /// Actual visual nodes which gets added to the graph UI.
     /// </summary>
-    public class GenericNodeView : Node
+    public class LogicNodeView : Node
     {
         VisualElement _controlsDivider;
         VisualElement _controlItems;
@@ -20,7 +20,7 @@ namespace GeoTetra.GTLogicGraph
 
         public void Initialize(NodeEditor nodeEditor, IEdgeConnectorListener connectorListener)
         {
-            AddStyleSheetPath("Styles/GenericNodeView");
+            AddStyleSheetPath("Styles/LogicNodeView");
 
             _connectorListener = connectorListener;
             NodeEditor = nodeEditor;

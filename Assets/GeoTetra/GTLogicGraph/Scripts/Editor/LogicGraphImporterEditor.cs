@@ -24,11 +24,11 @@ namespace GeoTetra.GTLogicGraph
 		{
 			var guid = AssetDatabase.AssetPathToGUID(path);
 			var extension = Path.GetExtension(path);
-			if (extension != ".GenericGraph" && extension != ".GenericSubGraph")
+			if (extension != ".LogicGraph" && extension != ".LogicGraph")
 				return false;
 
 			var foundWindow = false;
-			foreach (var w in Resources.FindObjectsOfTypeAll<GenericGraphEditorWindow>())
+			foreach (var w in Resources.FindObjectsOfTypeAll<LogicGraphEditorWindow>())
 			{
 				if (w.SelectedGuid == guid)
 				{
@@ -39,7 +39,7 @@ namespace GeoTetra.GTLogicGraph
 
 			if (!foundWindow)
 			{
-				var window = CreateInstance<GenericGraphEditorWindow>();
+				var window = CreateInstance<LogicGraphEditorWindow>();
 				window.Show();
 				window.Initialize(guid);
 			}

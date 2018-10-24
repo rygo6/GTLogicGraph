@@ -6,28 +6,27 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Experimental.PlayerLoop;
 
-[CustomEditor(typeof(GraphLogic))]
+[CustomEditor(typeof(LogicGraphInstance))]
 public class GraphLogicEditor : Editor
 {
-    private SerializedProperty _graphLogicDataProperty;
+    private SerializedProperty _logicGraphObjectProperty;
     private SerializedProperty _inputsProperty;
     private SerializedProperty _outputsProperty;
-    
 
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
         
-        GraphLogic graphLogic = (GraphLogic) target;
+        LogicGraphInstance logicGraphInstance = (LogicGraphInstance) target;
 
-        _graphLogicDataProperty = serializedObject.FindProperty("_graphLogicData");
+        _logicGraphObjectProperty = serializedObject.FindProperty("_logicGraphObject");
         _inputsProperty = serializedObject.FindProperty("_inputs");
         _outputsProperty = serializedObject.FindProperty("_outputs");
 
-        EditorGUILayout.PropertyField(_graphLogicDataProperty);
+        EditorGUILayout.PropertyField(_logicGraphObjectProperty);
         if (GUILayout.Button("Refresh"))
         {
-            graphLogic.OnEnable();
+            logicGraphInstance.OnEnable();
         }
         
         EditorGUILayout.Space();
@@ -40,7 +39,7 @@ public class GraphLogicEditor : Editor
             EditorGUI.indentLevel = 2;
             EditorGUILayout.LabelField(displayName.stringValue);
 
-            if (graphLogic.Inputs[i].InputType == typeof(float))
+            if (logicGraphInstance.Inputs[i].InputType == typeof(float))
             {
                 SerializedProperty floatValue =
                     _inputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("FloatValueX");
@@ -65,7 +64,7 @@ public class GraphLogicEditor : Editor
             EditorGUI.indentLevel = 2;
             EditorGUILayout.LabelField(displayName.stringValue);
             
-            if (graphLogic.Outputs[i].OutputType == typeof(Single))
+            if (logicGraphInstance.Outputs[i].OutputType == typeof(Single))
             {
                 SerializedProperty eventProperty = _outputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("_updatedFloat");
                 EditorGUILayout.PropertyField(eventProperty);

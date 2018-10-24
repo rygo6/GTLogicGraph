@@ -5,24 +5,24 @@ using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
 {
-	public class GraphObject : ScriptableObject, ISerializationCallbackReceiver
+	public class LogicGraphEditorObject : ScriptableObject, ISerializationCallbackReceiver
 	{
 		[SerializeField]
-		private GraphData _graphData;
+		private LogicGraphData _logicGraphData;
 		
 		public event Action Deserialized;
 		
-		public GraphData GraphData
+		public LogicGraphData LogicGraphData
 		{
-			get { return _graphData; }
+			get { return _logicGraphData; }
 		}
 
-		public void Initialize(GraphData graphData)
+		public void Initialize(LogicGraphData logicGraphData)
 		{
-			_graphData = graphData;
-			if (_graphData == null)
+			_logicGraphData = logicGraphData;
+			if (_logicGraphData == null)
 			{
-				_graphData = new GraphData();
+				_logicGraphData = new LogicGraphData();
 			}
 		}
 		

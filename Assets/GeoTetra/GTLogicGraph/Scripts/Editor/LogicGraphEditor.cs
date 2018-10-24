@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
 {
-	[CustomEditor(typeof(GraphData))]
-	public class GenericGraphEditor : Editor
+	[CustomEditor(typeof(LogicGraphData))]
+	public class LogicGraphEditor : Editor
 	{
 		public override void OnInspectorGUI()
 		{

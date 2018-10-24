@@ -6,19 +6,19 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
-	public class GenericGraphView : GraphView
+	public class LogicGraphView : GraphView
 	{		
-		public GraphObject GraphObject { get; private set; }
+		public LogicGraphEditorObject LogicGraphEditorObject { get; private set; }
 		
-		public GenericGraphView()
+		public LogicGraphView()
 		{
-			AddStyleSheetPath("Styles/GenericGraphView");
-			Debug.Log("GenericGraphView Constructor");
+			AddStyleSheetPath("Styles/LogicGraphView");
+			Debug.Log("LogicGraphView Constructor");
 		}
 		
-		public GenericGraphView(GraphObject graphObject) : this()
+		public LogicGraphView(LogicGraphEditorObject logicGraphEditorObject) : this()
 		{
-			GraphObject = graphObject;
+			LogicGraphEditorObject = logicGraphEditorObject;
 		}
 		
 		public override List<Port> GetCompatiblePorts(Port startAnchor, NodeAdapter nodeAdapter)

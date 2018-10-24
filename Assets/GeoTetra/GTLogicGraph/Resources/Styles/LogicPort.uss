@@ -74,7 +74,7 @@ PortView.output > #type {
 }
 
 /*******************************/
-/* GenericPorts colors by types */
+/* LogicPorts colors by types */
 /*******************************/
 
 PortView.typeTexture {

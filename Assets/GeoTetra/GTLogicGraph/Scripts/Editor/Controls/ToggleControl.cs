@@ -28,17 +28,17 @@ namespace GeoTetra.GTLogicGraph
 
         public VisualElement InstantiateControl(NodeEditor nodeEditor, PropertyInfo propertyInfo)
         {
-            return new GenericToggleControlView(_label, nodeEditor, propertyInfo);
+            return new ToggleControlView(_label, nodeEditor, propertyInfo);
         }
     }
 
-    public class GenericToggleControlView : VisualElement
+    public class ToggleControlView : VisualElement
     {
         private NodeEditor _nodeEditor;
         private PropertyInfo _propertyInfo;
-        private UnityEngine.Experimental.UIElements.Toggle _toggle;
+        private Toggle _toggle;
 
-        public GenericToggleControlView(string label, NodeEditor nodeEditor, PropertyInfo propertyInfo)
+        public ToggleControlView(string label, NodeEditor nodeEditor, PropertyInfo propertyInfo)
         {
             _nodeEditor = nodeEditor;
             _propertyInfo = propertyInfo;
@@ -54,7 +54,7 @@ namespace GeoTetra.GTLogicGraph
             if (!string.IsNullOrEmpty(label))
                 panel.Add(new Label(label));
             Action changedToggle = () => { OnChangeToggle(); };
-            _toggle = new UnityEngine.Experimental.UIElements.Toggle(changedToggle);
+            _toggle = new Toggle(changedToggle);
   
             _toggle.on = value.isOn;
             panel.Add(_toggle);
@@ -63,7 +63,7 @@ namespace GeoTetra.GTLogicGraph
 
         void OnChangeToggle()
         {
-            _nodeEditor.Owner.GraphObject.RegisterCompleteObjectUndo("Toggle Change");
+            _nodeEditor.Owner.LogicGraphEditorObject.RegisterCompleteObjectUndo("Toggle Change");
             var value = (ToggleData)_propertyInfo.GetValue(_nodeEditor, null);
             value.isOn = !value.isOn;
             _propertyInfo.SetValue(_nodeEditor, value, null);

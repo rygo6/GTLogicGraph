@@ -287,7 +287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d38e4f4ae64d3c842a7e7cd68e742b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _graphLogicData: {fileID: 11400000, guid: 33ce9b207e2a7dc4a841580b9036671c, type: 3}
+  _logicGraphObject: {fileID: 11400000, guid: fe447ef328442e641ae35fe75f7c6f5d, type: 3}
   _inputs:
   - DisplayName: ' Vector1Input'
     MemberName: Vector1Input
@@ -297,29 +297,21 @@ MonoBehaviour:
     FloatValueZ: 0
     FloatValueW: 0
     ComponentValue: {fileID: 0}
-  - DisplayName: ' Vector3Input'
-    MemberName: Vector3Input
-    NodeGuid: adfdf0c4-7528-4786-8c23-7bfc4890a52f
-    FloatValueX: 0
-    FloatValueY: 0
-    FloatValueZ: 0
-    FloatValueW: 0
-    ComponentValue: {fileID: 0}
   _outputs:
   - _updatedFloat:
       m_PersistentCalls:
         m_Calls: []
-      m_TypeName: GeoTetra.GTGenericGraph.FloatUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      m_TypeName: GeoTetra.GTLogicGraph.FloatUnityEvent, Assembly-CSharp, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     _updatedVector3:
       m_PersistentCalls:
         m_Calls: []
-      m_TypeName: GeoTetra.GTGenericGraph.Vector3UnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      m_TypeName: GeoTetra.GTLogicGraph.Vector3UnityEvent, Assembly-CSharp, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     _updatedObject:
       m_PersistentCalls:
         m_Calls: []
-      m_TypeName: GeoTetra.GTGenericGraph.ObjectUnityEvent, Assembly-CSharp, Version=0.0.0.0,
+      m_TypeName: GeoTetra.GTLogicGraph.ObjectUnityEvent, Assembly-CSharp, Version=0.0.0.0,
         Culture=neutral, PublicKeyToken=null
     DisplayName: ' Vector1Output'
     MemberName: Vector1Output

@@ -91,7 +91,7 @@ namespace GeoTetra.GTLogicGraph
                     if (m_UndoGroup == -1)
                     {
                         m_UndoGroup = Undo.GetCurrentGroup();
-                        m_Node.Owner.GraphObject.RegisterCompleteObjectUndo("Change " + m_Node.ToString());
+                        m_Node.Owner.LogicGraphEditorObject.RegisterCompleteObjectUndo("Change " + m_Node.ToString());
                     }
                     float newValue;
                     if (!float.TryParse(evt.newData, out newValue))

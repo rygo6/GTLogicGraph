@@ -8,18 +8,18 @@ using UnityEditor.Graphs;
 using UnityEditor.SceneManagement;
 using UnityEngine.SceneManagement;
 
-[ScriptedImporter(13, LogicGraphImporter.GenericGraphExtension)]
+[ScriptedImporter(13, LogicGraphImporter.LogicGraphExtension)]
 public class LogicGraphImporter : ScriptedImporter
 {
-    public const string GenericGraphExtension = "GenericGraph";
+    public const string LogicGraphExtension = "LogicGraph";
 
     public override void OnImportAsset(AssetImportContext ctx)
     {
         var textGraph = File.ReadAllText(ctx.assetPath, Encoding.UTF8);
-        var graph = JsonUtility.FromJson<GraphData>(textGraph);
-        GraphLogicData graphObject = ScriptableObject.CreateInstance<GraphLogicData>();
-        graphObject.Initialize(graph);
-        ctx.AddObjectToAsset("MainAsset", graphObject);
-        ctx.SetMainObject(graphObject);
+        var graph = JsonUtility.FromJson<LogicGraphData>(textGraph);
+        LogicGraphObject logicGraphObject = ScriptableObject.CreateInstance<LogicGraphObject>();
+        logicGraphObject.Initialize(graph);
+        ctx.AddObjectToAsset("MainAsset", logicGraphObject);
+        ctx.SetMainObject(logicGraphObject);
     }
 }

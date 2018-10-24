@@ -9,14 +9,14 @@ using Object = UnityEngine.Object;
 
 namespace GeoTetra.GTLogicGraph
 {
-    public class GenericGraphEditorWindow : EditorWindow
+    public class LogicGraphEditorWindow : EditorWindow
     {
-        private GraphObject _graphObject;
+        private LogicGraphEditorObject _logicGraphEditorObject;
 
-        private GenericGraphEditorView _graphEditorView;
+        private LogicGraphEditorView _graphEditorView;
         private string _selectedGuid;
 
-        private GenericGraphEditorView GenericGraphEditorView
+        private LogicGraphEditorView LogicGraphEditorView
         {
             get { return _graphEditorView; }
             set
@@ -51,40 +51,40 @@ namespace GeoTetra.GTLogicGraph
                 var path = AssetDatabase.GetAssetPath(asset);
                 var textGraph = File.ReadAllText(path, Encoding.UTF8);
 
-                _graphObject = CreateInstance<GraphObject>();
-                GraphData graphData = JsonUtility.FromJson<GraphData>(textGraph);
-                _graphObject.Initialize(graphData);
-                GenericGraphEditorView = new GenericGraphEditorView(this, _graphObject)
+                _logicGraphEditorObject = CreateInstance<LogicGraphEditorObject>();
+                LogicGraphData logicGraphData = JsonUtility.FromJson<LogicGraphData>(textGraph);
+                _logicGraphEditorObject.Initialize(logicGraphData);
+                LogicGraphEditorView = new LogicGraphEditorView(this, _logicGraphEditorObject)
                 {
-                    persistenceKey = _graphObject.GetInstanceID().ToString()
+                    persistenceKey = _logicGraphEditorObject.GetInstanceID().ToString()
                 };
-                GenericGraphEditorView.RegisterCallback<GeometryChangedEvent>(OnPostLayout);
+                LogicGraphEditorView.RegisterCallback<GeometryChangedEvent>(OnPostLayout);
 
-                titleContent = new GUIContent(_graphObject.name);
+                titleContent = new GUIContent(_logicGraphEditorObject.name);
 
                 Repaint();
             }
             catch (Exception)
             {
                 _graphEditorView = null;
-                _graphObject = null;
+                _logicGraphEditorObject = null;
                 throw;
             }
         }
 
         private void OnDisable()
         {
-            GenericGraphEditorView = null;
+            LogicGraphEditorView = null;
         }
 
         private void OnDestroy()
         {
-            GenericGraphEditorView = null;
+            LogicGraphEditorView = null;
         }
 
         void Update()
         {
-            GenericGraphEditorView.HandleGraphChanges();
+            LogicGraphEditorView.HandleGraphChanges();
         }
 
         public void PingAsset()
@@ -99,17 +99,17 @@ namespace GeoTetra.GTLogicGraph
 
         public void UpdateAsset()
         {
-            if (SelectedGuid != null && _graphObject != null)
+            if (SelectedGuid != null && _logicGraphEditorObject != null)
             {
                 var path = AssetDatabase.GUIDToAssetPath(SelectedGuid);
-                if (string.IsNullOrEmpty(path) && _graphObject.GraphData != null)
+                if (string.IsNullOrEmpty(path) && _logicGraphEditorObject.LogicGraphData != null)
                     return;
 
                 var shaderImporter = AssetImporter.GetAtPath(path) as LogicGraphImporter;
                 if (shaderImporter == null)
                     return;
                 
-                File.WriteAllText(path, EditorJsonUtility.ToJson(_graphObject.GraphData, true));
+                File.WriteAllText(path, EditorJsonUtility.ToJson(_logicGraphEditorObject.LogicGraphData, true));
                 shaderImporter.SaveAndReimport();
                 AssetDatabase.ImportAsset(path);
             }
@@ -118,8 +118,8 @@ namespace GeoTetra.GTLogicGraph
         void OnPostLayout(GeometryChangedEvent evt)
         {
             Debug.Log("OnGeometryChanged");
-            GenericGraphEditorView.UnregisterCallback<GeometryChangedEvent>(OnPostLayout);
-            GenericGraphEditorView.GenericGraphView.FrameAll();
+            LogicGraphEditorView.UnregisterCallback<GeometryChangedEvent>(OnPostLayout);
+            LogicGraphEditorView.LogicGraphView.FrameAll();
         }
     }
 }

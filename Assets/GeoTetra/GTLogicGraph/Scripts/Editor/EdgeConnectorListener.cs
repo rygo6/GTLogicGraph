@@ -6,12 +6,12 @@ namespace GeoTetra.GTLogicGraph
 {
     public class EdgeConnectorListener : IEdgeConnectorListener
     {
-        private readonly GenericGraphEditorView _genericGraphEditorView;
-        private readonly GenericSearchWindowProvider _searchWindowProvider;
+        private readonly LogicGraphEditorView _logicGraphEditorView;
+        private readonly SearchWindowProvider _searchWindowProvider;
 
-        public EdgeConnectorListener(GenericGraphEditorView genericGraphEditorView, GenericSearchWindowProvider searchWindowProvider)
+        public EdgeConnectorListener(LogicGraphEditorView logicGraphEditorView, SearchWindowProvider searchWindowProvider)
         {
-            _genericGraphEditorView = genericGraphEditorView;
+            _logicGraphEditorView = logicGraphEditorView;
             _searchWindowProvider = searchWindowProvider;
         }
 
@@ -26,7 +26,7 @@ namespace GeoTetra.GTLogicGraph
 
         public void OnDrop(GraphView graphView, Edge edge)
         {
-            _genericGraphEditorView.AddEdge(edge);
+            _logicGraphEditorView.AddEdge(edge);
         }
     }
 }
