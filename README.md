@@ -26,5 +26,5 @@ Bugs
 
 This repo is intended to cloned as a submodule into a unity project.
 ```
-git subdmoule add https://github.com/rygo6/GTLogicGraph.git Assets/GeoTetra/GTLogicGraph
+git submodule add https://github.com/rygo6/GTLogicGraph.git Assets/GeoTetra/GTLogicGraph
 ```
