@@ -11,7 +11,7 @@ Completed or Started:
 - Can drag a box to multi select nodes and drag multiple nodes.
 - Can drag line off of node.
 - Can chain together nodes.
-- Can open search menu.
+- Can open search menu to add nodes.
 - Serializing and save of graphs.
 - Graphs can be loaded into scene via LogicGraphInstance component.
 
