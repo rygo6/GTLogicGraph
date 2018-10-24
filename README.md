@@ -21,5 +21,8 @@ Completed or Started:
 - Graphs can be loaded into scene via GraphLogic component
 
 Still to do:
-- Implement a whole set of common base types and nodes.
-- Graph Input and Graph Output in LogicGraph component needs to be more comprehensive.
+- Implement more common base types and nodes.
+- copy and paste nodes
+
+Bugs
+- After you clicks 'save asset' in graph, you must hit ctrl+S for the reference in a scene to update. Why?
