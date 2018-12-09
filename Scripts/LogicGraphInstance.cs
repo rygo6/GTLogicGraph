@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Cryptography;
+using GeoTetra.GTBuilder.Component;
 using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.Events;
@@ -61,7 +62,20 @@ namespace GeoTetra.GTLogicGraph
 
             for (int i = 0; i < Inputs.Count; ++i)
             {
-                if (Inputs[i].OnValidate != null) Inputs[i].OnValidate();
+                if (Inputs[i].ComponentValue != null)
+                {
+                    Curve curve = Inputs[i].ComponentValue as Curve;
+                    GraphInput input = Inputs[i];
+                    curve.Changed += (c) =>
+                    {
+                        if (input.OnValidate != null) input.OnValidate();
+                    }
+                    ;
+                }
+                else if (Inputs[i].OnValidate != null)
+                {
+                    Inputs[i].OnValidate();
+                }
             }
         }
 
@@ -271,22 +285,17 @@ namespace GeoTetra.GTLogicGraph
         public string MemberName;
         public string NodeGuid;
         public Type OutputType;
-        public event Action<ObjectEvent> Updated;
 
         private void RaiseUpdatedFloat(float value)
         {
             Debug.Log("RaiseUpdatedFloat " + value);
             _updatedFloat.Invoke(value);
-            ObjectEvent objectEvent = new ObjectEvent(value, OutputType);
-            if (Updated != null) Updated(objectEvent);
         }
 
         private void RaiseUpdatedVector3(Vector3 value)
         {
             Debug.Log("RaiseUpdatedVector3 " + value);
             _updatedVector3.Invoke(value);
-            ObjectEvent objectEvent = new ObjectEvent(value, OutputType);
-            if (Updated != null) Updated(objectEvent);
         }
 
         private void RaiseUpdatedObject(Object value)
@@ -294,7 +303,6 @@ namespace GeoTetra.GTLogicGraph
             Debug.Log("RaiseUpdatedObject " + value);
             ObjectEvent objectEvent = new ObjectEvent(value, OutputType);
             _updatedObject.Invoke(objectEvent);
-            if (Updated != null) Updated(objectEvent);
         }
 
         public void SubscribeRaiseUpdate(EventInfo eventInfo, LogicNode node)

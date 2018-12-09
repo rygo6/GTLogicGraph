@@ -8,6 +8,13 @@ namespace GeoTetra.GTLogicGraph
     [AttributeUsage(AttributeTargets.Method)]
     public abstract class InputAttribute : Attribute
     {
+        /// <summary>
+        /// Gets called from OnEnable or OnValidate of LogicGraphInstance, needs to hook up the InputAttribute
+        /// so that it pipes the data from the serialized GraphInput object through the nodechain.
+        /// </summary>
+        /// <param name="node">The node to hooke up.</param>
+        /// <param name="method">The method which the InputAttribute is.</param>
+        /// <param name="graphInput">The GraphiInput holding the serialized data.</param>
         public abstract void HookUpMethodInvoke(LogicNode node, MethodInfo method, GraphInput graphInput);
 
         public abstract Type InputType();

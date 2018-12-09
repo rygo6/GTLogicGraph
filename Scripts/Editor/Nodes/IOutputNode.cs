@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
 {
-	public interface IOutputNode
+	public interface IOutputNode //should this be an attribute?
 	{
         
 	}

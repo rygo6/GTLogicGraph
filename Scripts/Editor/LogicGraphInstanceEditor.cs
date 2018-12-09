@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Experimental.PlayerLoop;
 
 [CustomEditor(typeof(LogicGraphInstance))]
-public class GraphLogicEditor : Editor
+public class LogicGraphInstanceEditor : Editor
 {
     private SerializedProperty _logicGraphObjectProperty;
     private SerializedProperty _inputsProperty;
@@ -48,7 +48,7 @@ public class GraphLogicEditor : Editor
             else
             {
                 SerializedProperty componentValue = _inputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("ComponentValue");    
-                EditorGUILayout.ObjectField(componentValue, typeof(Transform));
+                EditorGUILayout.ObjectField(componentValue, logicGraphInstance.Inputs[i].InputType);
             }
             EditorGUILayout.Space();
 
@@ -63,10 +63,16 @@ public class GraphLogicEditor : Editor
             SerializedProperty displayName = _outputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("DisplayName");
             EditorGUI.indentLevel = 2;
             EditorGUILayout.LabelField(displayName.stringValue);
-            
+
             if (logicGraphInstance.Outputs[i].OutputType == typeof(Single))
             {
-                SerializedProperty eventProperty = _outputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("_updatedFloat");
+                SerializedProperty eventProperty =
+                    _outputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("_updatedFloat");
+                EditorGUILayout.PropertyField(eventProperty);
+            }
+            else
+            {
+                SerializedProperty eventProperty = _outputsProperty.GetArrayElementAtIndex(i).FindPropertyRelative("_updatedObject");
                 EditorGUILayout.PropertyField(eventProperty);
             }
         }
