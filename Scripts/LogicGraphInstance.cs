@@ -17,30 +17,28 @@ namespace GeoTetra.GTLogicGraph
         [SerializeField] private List<GraphInput> _inputs;
         [SerializeField] private List<GraphOutput> _outputs;
 
-        private List<LogicNode> _inputNodes = new List<LogicNode>();
-        private List<LogicNode> _outputNodes = new List<LogicNode>();
-        private List<LogicNode> _nodes = new List<LogicNode>();
+        private readonly List<LogicNode> _inputNodes = new List<LogicNode>();
+        private readonly List<LogicNode> _outputNodes = new List<LogicNode>();
+        private readonly List<LogicNode> _nodes = new List<LogicNode>();
 
-        public List<GraphInput> Inputs
-        {
-            get { return _inputs; }
-        }
+        public List<GraphInput> Inputs => _inputs;
 
-        public List<GraphOutput> Outputs
-        {
-            get { return _outputs; }
-        }
+        public List<GraphOutput> Outputs => _outputs;
 
         private void Awake()
         {
-            Debug.Log("Start");
+            Debug.Log("Awake");
         }
 
         public void OnEnable()
         {
             Debug.Log("OnEnable");
-            _logicGraphObject.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
-            UpdateInputsAndOutputs();
+            //is this needed? Probably in a build
+//            if (_logicGraphObject != null)
+//            {
+//                _logicGraphObject.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
+//                UpdateInputsAndOutputs();
+//            }
         }
 
         private void Reset()
@@ -58,27 +56,25 @@ namespace GeoTetra.GTLogicGraph
             {
                 _logicGraphObject.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
                 UpdateInputsAndOutputs();
-            }
 
-            for (int i = 0; i < Inputs.Count; ++i)
-            {
-                if (Inputs[i].ComponentValue != null)
+                for (int i = 0; i < Inputs.Count; ++i)
                 {
-                    Curve curve = Inputs[i].ComponentValue as Curve;
-                    GraphInput input = Inputs[i];
-                    curve.Changed += (c) =>
+                    if (Inputs[i].ComponentValue != null)
                     {
-                        if (input.OnValidate != null) input.OnValidate();
+                        IInputComponent component = Inputs[i].ComponentValue as IInputComponent;
+                        if (component != null)
+                        {
+                            Inputs[i].RegisterValidateEvent(component);
+                        }
                     }
-                    ;
-                }
-                else if (Inputs[i].OnValidate != null)
-                {
-                    Inputs[i].OnValidate();
+                    else if (Inputs[i].Validate != null)
+                    {
+                        Inputs[i].Validate();
+                    }
                 }
             }
         }
-
+        
         private void UpdateInputsAndOutputs()
         {
             Debug.Log("GraphLogic OnEnable");
@@ -268,7 +264,23 @@ namespace GeoTetra.GTLogicGraph
         public float FloatValueW;
         public Type InputType;
         public Component ComponentValue;
-        public Action OnValidate;
+        public Action Validate;
+
+        private bool _validateEventRegistered;
+
+        public void RegisterValidateEvent(IInputComponent inputComponent)
+        {
+            if (!_validateEventRegistered)
+            {
+                _validateEventRegistered = true;
+                inputComponent.Changed += OnValidate;
+            }
+        }
+
+        public void OnValidate(IInputComponent component)
+        {
+            if (Validate != null) Validate();
+        }
     }
 
 

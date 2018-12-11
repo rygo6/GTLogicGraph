@@ -27,7 +27,7 @@ namespace GeoTetra.GTLogicGraph
 
         public override void HookUpMethodInvoke(LogicNode node, MethodInfo method, GraphInput graphInput)
         {
-            graphInput.OnValidate = () => OnValidate(node, method, graphInput);
+            graphInput.Validate = () => OnValidate(node, method, graphInput);
         }
 
         public override Type InputType()
@@ -54,7 +54,7 @@ namespace GeoTetra.GTLogicGraph
 
         public override void HookUpMethodInvoke(LogicNode node, MethodInfo method, GraphInput graphInput)
         {
-            graphInput.OnValidate = () => OnValidate(node, method, graphInput);
+            graphInput.Validate = () => OnValidate(node, method, graphInput);
         }
 
         public override Type InputType()

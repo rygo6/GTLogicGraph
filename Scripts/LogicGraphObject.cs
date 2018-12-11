@@ -62,14 +62,14 @@ namespace GeoTetra.GTLogicGraph
                 LogicNode sourceNode = FindNodeByGuid(serializedEdge.SourceNodeGuid, nodes, inputNodes, outputNodes);
                 if (sourceNode == null)
                 {
-                    Debug.LogWarning("source node is null for edge " + serializedEdge);
+                    Debug.LogWarning("source node is null for edge " + serializedEdge.SourceNodeGuid);
                     return;
                 }
                 
                 LogicNode targetNode = FindNodeByGuid(serializedEdge.TargetNodeGuid, nodes, inputNodes, outputNodes);
                 if (targetNode == null)
                 {
-                    Debug.LogWarning("target node is null for edge " + serializedEdge);
+                    Debug.LogWarning("target node is null for edge " + serializedEdge.TargetNodeGuid);
                     return;
                 }
 
@@ -140,6 +140,7 @@ namespace GeoTetra.GTLogicGraph
 
         private LogicNode CreateLogicNodeFromSerializedNode(SerializedNode serializedNode)
         {
+            Debug.Log("Created node " + serializedNode.NodeType);
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 foreach (var type in assembly.GetTypes())
@@ -154,6 +155,7 @@ namespace GeoTetra.GTLogicGraph
                 }
             }
 
+            Debug.LogError("Failed to create node " + serializedNode.NodeType);
             return null;
         }
     }
