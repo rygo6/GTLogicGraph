@@ -56,7 +56,7 @@ namespace GeoTetra.GTLogicGraph
             Action changedToggle = () => { OnChangeToggle(); };
             _toggle = new Toggle(changedToggle);
   
-            _toggle.on = value.isOn;
+            _toggle.value = value.isOn;
             panel.Add(_toggle);
             Add(panel);
         }

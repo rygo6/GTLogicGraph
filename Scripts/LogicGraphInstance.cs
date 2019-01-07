@@ -40,6 +40,16 @@ namespace GeoTetra.GTLogicGraph
 //                UpdateInputsAndOutputs();
 //            }
         }
+        
+        public void OnDisable()
+        {
+            Debug.Log("OnDisable");
+            
+            for (int i = 0; i < Inputs.Count; ++i)
+            {
+                Inputs[i].ValidateEventRegistered = false;
+            }
+        }
 
         private void Reset()
         {
@@ -48,7 +58,7 @@ namespace GeoTetra.GTLogicGraph
             _logicGraphObject = null;
         }
 
-        private void OnValidate()
+        public void OnValidate()
         {
             Debug.Log("OnValidate");
 
@@ -74,7 +84,7 @@ namespace GeoTetra.GTLogicGraph
                 }
             }
         }
-        
+
         private void UpdateInputsAndOutputs()
         {
             Debug.Log("GraphLogic OnEnable");
@@ -202,6 +212,7 @@ namespace GeoTetra.GTLogicGraph
                     var attrs = eventInfo.GetCustomAttributes(typeof(OutputAttribute), false) as OutputAttribute[];
                     if (attrs.Length > 0)
                     {
+                        Debug.Log($"Output attribute found{attrs[0]}");
                         Type[] types = eventInfo.EventHandlerType.GetGenericArguments();
                         if (types.Length > 1)
                         {
@@ -266,13 +277,14 @@ namespace GeoTetra.GTLogicGraph
         public Component ComponentValue;
         public Action Validate;
 
-        private bool _validateEventRegistered;
+        public bool ValidateEventRegistered { get; set; }
 
         public void RegisterValidateEvent(IInputComponent inputComponent)
         {
-            if (!_validateEventRegistered)
+            Debug.Log(ValidateEventRegistered);
+            if (!ValidateEventRegistered)
             {
-                _validateEventRegistered = true;
+                ValidateEventRegistered = true;
                 inputComponent.Changed += OnValidate;
             }
         }

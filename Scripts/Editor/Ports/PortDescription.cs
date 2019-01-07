@@ -72,6 +72,7 @@ namespace GeoTetra.GTLogicGraph
         Vector2,
         Vector1,
         Boolean,
-        CurvePrimitive
+        CurvePrimitive,
+        Mesh,
     }
 }

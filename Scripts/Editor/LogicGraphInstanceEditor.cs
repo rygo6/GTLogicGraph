@@ -26,7 +26,7 @@ public class LogicGraphInstanceEditor : Editor
         EditorGUILayout.PropertyField(_logicGraphObjectProperty);
         if (GUILayout.Button("Refresh"))
         {
-            logicGraphInstance.OnEnable();
+            logicGraphInstance.OnValidate();
         }
         
         EditorGUILayout.Space();
