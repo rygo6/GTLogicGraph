@@ -8,7 +8,7 @@ namespace GeoTetra.GTLogicGraph
 {
     public class Vector1InputLogicNode : LogicNode
     {
-        [NodePort]
+        [LogicNodePort]
         public event Action<float> Vector1Output;
        
         [Vector1Input]

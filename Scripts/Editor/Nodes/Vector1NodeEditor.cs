@@ -14,14 +14,12 @@ namespace GeoTetra.GTLogicGraph
         private bool _boolValue;
 
         [NodeToggleControl("Bool")]
-        public ToggleData BoolValue
+        public bool BoolValue
         {
-            get { return new ToggleData(_boolValue); }
+            get { return _boolValue; }
             set
             {
-                if (_boolValue == value.isOn)
-                    return;
-                _boolValue = value.isOn;
+                _boolValue = value;
                 SetDirty();
             }
         }

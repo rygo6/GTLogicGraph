@@ -11,5 +11,8 @@ namespace GeoTetra.GTLogicGraph
     public interface IInputComponent
     {
         event Action<IInputComponent> Changed;
+
+        void OnChange();
+
     }
 }

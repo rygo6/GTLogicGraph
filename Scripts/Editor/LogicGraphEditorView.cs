@@ -97,12 +97,12 @@ namespace GeoTetra.GTLogicGraph
             {
                 AddNodeFromload(_logicGraphEditorObject.LogicGraphData.SerializedNodes[i]);
             }
-            
+
             for (int i = 0; i < _logicGraphEditorObject.LogicGraphData.SerializedInputNodes.Count; ++i)
             {
                 AddNodeFromload(_logicGraphEditorObject.LogicGraphData.SerializedInputNodes[i]);
             }
-            
+
             for (int i = 0; i < _logicGraphEditorObject.LogicGraphData.SerializedOutputNodes.Count; ++i)
             {
                 AddNodeFromload(_logicGraphEditorObject.LogicGraphData.SerializedOutputNodes[i]);
@@ -119,7 +119,7 @@ namespace GeoTetra.GTLogicGraph
             if (_reloadGraph)
             {
                 _reloadGraph = false;
-                
+
                 foreach (var nodeView in _graphView.nodes.ToList())
                 {
                     Debug.Log("removing node " + nodeView);
@@ -131,11 +131,11 @@ namespace GeoTetra.GTLogicGraph
                     Debug.Log("removing edge " + edge);
                     _graphView.RemoveElement(edge);
                 }
-                
+
                 LoadElements();
             }
         }
-        
+
         private void LogicGraphEditorDataOnDeserialized()
         {
             Debug.Log("GraphOnDeserialized");
@@ -162,12 +162,14 @@ namespace GeoTetra.GTLogicGraph
             if (graphViewChange.elementsToRemove != null)
             {
                 _logicGraphEditorObject.RegisterCompleteObjectUndo("Deleted Graph Elements.");
-                
+
                 foreach (var nodeView in graphViewChange.elementsToRemove.OfType<LogicNodeView>())
                 {
                     _logicGraphEditorObject.LogicGraphData.SerializedNodes.Remove(nodeView.NodeEditor.SerializedNode);
-                    _logicGraphEditorObject.LogicGraphData.SerializedInputNodes.Remove(nodeView.NodeEditor.SerializedNode);
-                    _logicGraphEditorObject.LogicGraphData.SerializedOutputNodes.Remove(nodeView.NodeEditor.SerializedNode);
+                    _logicGraphEditorObject.LogicGraphData.SerializedInputNodes.Remove(nodeView.NodeEditor
+                        .SerializedNode);
+                    _logicGraphEditorObject.LogicGraphData.SerializedOutputNodes.Remove(nodeView.NodeEditor
+                        .SerializedNode);
                 }
 
                 foreach (var edge in graphViewChange.elementsToRemove.OfType<Edge>())
@@ -285,30 +287,45 @@ namespace GeoTetra.GTLogicGraph
         {
             LogicNodeView sourceNodeView = _graphView.nodes.ToList().OfType<LogicNodeView>()
                 .FirstOrDefault(x => x.NodeEditor.NodeGuid == serializedEdge.SourceNodeGuid);
-            if (sourceNodeView != null)
+            if (sourceNodeView == null)
             {
-                PortView sourceAnchor = sourceNodeView.outputContainer.Children().OfType<PortView>()
-                    .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.SourceMemberName);
-
-                LogicNodeView targetNodeView = _graphView.nodes.ToList().OfType<LogicNodeView>()
-                    .FirstOrDefault(x => x.NodeEditor.NodeGuid == serializedEdge.TargetNodeGuid);
-                PortView targetAnchor = targetNodeView.inputContainer.Children().OfType<PortView>()
-                    .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.TargetMemberName);
-
-                var edgeView = new Edge
-                {
-                    userData = serializedEdge,
-                    output = sourceAnchor,
-                    input = targetAnchor
-                };
-                edgeView.output.Connect(edgeView);
-                edgeView.input.Connect(edgeView);
-                _graphView.AddElement(edgeView);
+                Debug.LogWarning($"Source NodeGUID not found {serializedEdge.SourceNodeGuid}");
+                return;
             }
+
+            PortView sourceAnchor = sourceNodeView.outputContainer.Children().OfType<PortView>()
+                .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.SourceMemberName);
+            if (sourceAnchor == null)
+            {
+                Debug.LogError($"Source anchor null {serializedEdge.SourceMemberName}");
+                return;
+            }
+
+            LogicNodeView targetNodeView = _graphView.nodes.ToList().OfType<LogicNodeView>()
+                .FirstOrDefault(x => x.NodeEditor.NodeGuid == serializedEdge.TargetNodeGuid);
+            if (targetNodeView == null)
+            {
+                Debug.LogWarning($"Target NodeGUID not found {serializedEdge.TargetNodeGuid}");
+                return;
+            }
+
+            PortView targetAnchor = targetNodeView.inputContainer.Children().OfType<PortView>()
+                .FirstOrDefault(x => x.PortDescription.MemberName == serializedEdge.TargetMemberName);
+
+            var edgeView = new Edge
+            {
+                userData = serializedEdge,
+                output = sourceAnchor,
+                input = targetAnchor
+            };
+            edgeView.output.Connect(edgeView);
+            edgeView.input.Connect(edgeView);
+            _graphView.AddElement(edgeView);
         }
 
 
-        private void GetSlots(Edge edge, out PortDescription leftPortDescription, out PortDescription rightPortDescription)
+        private void GetSlots(Edge edge, out PortDescription leftPortDescription,
+            out PortDescription rightPortDescription)
         {
             leftPortDescription = (edge.output as PortView).PortDescription;
             rightPortDescription = (edge.input as PortView).PortDescription;

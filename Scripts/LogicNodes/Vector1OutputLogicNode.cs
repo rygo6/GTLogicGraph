@@ -13,7 +13,7 @@ namespace GeoTetra.GTLogicGraph
         [SerializeField]
         private float _value;
 
-        [NodePort]
+        [LogicNodePort]
         public void Vector1Input(float value)
         {
             Debug.Log("Vector1OutputLogicNode SetValue " + value);

@@ -74,12 +74,18 @@ namespace GeoTetra.GTLogicGraph
                 }
 
                 MethodInfo targetMethodInfo = MethodInfoByName(targetNode, serializedEdge.TargetMemberName);
+                if (targetMethodInfo == null)
+                {
+                    Debug.LogWarning($"target method is null for {serializedEdge.TargetMemberName} on {targetNode.GetType()}");
+                    return;
+                }
                 SubscribeToEventByName(sourceNode, serializedEdge.SourceMemberName, targetNode, targetMethodInfo);
             }
         }
 
         private MethodInfo MethodInfoByName(LogicNode node, string memberName)
         {
+//            Debug.Log($"Finding method {memberName} on {node.GetType()}");
             var methods = node.GetType()
                 .GetMethods(BindingFlags.Public |
                             BindingFlags.NonPublic |
@@ -87,9 +93,10 @@ namespace GeoTetra.GTLogicGraph
             foreach (MethodInfo method in methods)
             {
                 //TODO is nodeport attribute necessary? Maybe just search by name?
-                var attrs = method.GetCustomAttributes(typeof(NodePortAttribute), false) as NodePortAttribute[];
+                var attrs = method.GetCustomAttributes(typeof(LogicNodePortAttribute), false) as LogicNodePortAttribute[];
                 for (int i = 0; i < attrs.Length; ++i)
                 {
+                    Debug.Log(method.Name);
                     if (method.Name == memberName)
                     {
                         return method;
@@ -106,24 +113,34 @@ namespace GeoTetra.GTLogicGraph
             LogicNode targetNode,
             MethodInfo targetMethodInfo)
         {
-            var events = sourceNode.GetType()
-                .GetEvents(BindingFlags.Public |
-                           BindingFlags.NonPublic |
-                           BindingFlags.Instance);
-            foreach (EventInfo eventInfo in events)
+
+            try
             {
-                //TODO is nodeport attribute necessary? Maybe just search by name?
-                var attrs = eventInfo.GetCustomAttributes(typeof(NodePortAttribute), false) as NodePortAttribute[];
-                for (int i = 0; i < attrs.Length; ++i)
+                var events = sourceNode.GetType()
+                    .GetEvents(BindingFlags.Public |
+                               BindingFlags.NonPublic |
+                               BindingFlags.Instance);
+                foreach (EventInfo eventInfo in events)
                 {
-                    if (eventInfo.Name == memberName)
+                    //TODO is nodeport attribute necessary? Maybe just search by name?
+                    var attrs =
+                        eventInfo.GetCustomAttributes(typeof(LogicNodePortAttribute),
+                            false) as LogicNodePortAttribute[];
+                    for (int i = 0; i < attrs.Length; ++i)
                     {
-                        Type type = eventInfo.EventHandlerType;
-                        Delegate handler = Delegate.CreateDelegate(type, targetNode, targetMethodInfo);
-                        eventInfo.AddEventHandler(sourceNode, handler);
-                        return;
+                        if (eventInfo.Name == memberName)
+                        {
+                            Type type = eventInfo.EventHandlerType;
+                            Delegate handler = Delegate.CreateDelegate(type, targetNode, targetMethodInfo);
+                            eventInfo.AddEventHandler(sourceNode, handler);
+                            return;
+                        }
                     }
                 }
+            }
+            catch (ArgumentException e)
+            {
+                Debug.LogError($"Subscribing to event {memberName} on {sourceNode.GetType()} failed. {e.Message}");
             }
         }
 

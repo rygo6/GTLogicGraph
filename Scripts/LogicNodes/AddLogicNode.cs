@@ -7,7 +7,7 @@ namespace GeoTetra.GTLogicGraph
 {
     public class AddLogicNode : LogicNode
     {
-        [NodePort] public event Action<float> Vector1Output;
+        [LogicNodePort] public event Action<float> Vector1Output;
 
         [SerializeField]
         private float _valueA;
@@ -15,7 +15,7 @@ namespace GeoTetra.GTLogicGraph
         [SerializeField]
         private float _valueB;
         
-        [NodePort]
+        [LogicNodePort]
         public void Vector1AInput(float value)
         {
             Debug.Log("Vector1LogicNode SetValue " + value);
@@ -23,7 +23,7 @@ namespace GeoTetra.GTLogicGraph
             if (Vector1Output != null) Vector1Output(_valueA);
         }
         
-        [NodePort]
+        [LogicNodePort]
         public void Vector1BInput(float value)
         {
             Debug.Log("Vector1LogicNode SetValue " + value);

@@ -281,17 +281,17 @@ namespace GeoTetra.GTLogicGraph
 
         public void RegisterValidateEvent(IInputComponent inputComponent)
         {
-            Debug.Log(ValidateEventRegistered);
             if (!ValidateEventRegistered)
             {
                 ValidateEventRegistered = true;
-                inputComponent.Changed += OnValidate;
+                inputComponent.Changed += OnValidate; 
             }
+            inputComponent.OnChange(); //call right after subscribing so it sends it's data through
         }
 
         public void OnValidate(IInputComponent component)
         {
-            if (Validate != null) Validate();
+            Validate?.Invoke();
         }
     }
 
@@ -312,19 +312,19 @@ namespace GeoTetra.GTLogicGraph
 
         private void RaiseUpdatedFloat(float value)
         {
-            Debug.Log("RaiseUpdatedFloat " + value);
+//            Debug.Log("RaiseUpdatedFloat " + value);
             _updatedFloat.Invoke(value);
         }
 
         private void RaiseUpdatedVector3(Vector3 value)
         {
-            Debug.Log("RaiseUpdatedVector3 " + value);
+//            Debug.Log("RaiseUpdatedVector3 " + value);
             _updatedVector3.Invoke(value);
         }
 
         private void RaiseUpdatedObject(Object value)
         {
-            Debug.Log("RaiseUpdatedObject " + value);
+//            Debug.Log("RaiseUpdatedObject " + value);
             ObjectEvent objectEvent = new ObjectEvent(value, OutputType);
             _updatedObject.Invoke(objectEvent);
         }
