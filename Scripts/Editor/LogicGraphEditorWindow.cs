@@ -105,13 +105,13 @@ namespace GeoTetra.GTLogicGraph
                 if (string.IsNullOrEmpty(path) && _logicGraphEditorObject.LogicGraphData != null)
                     return;
 
-                var shaderImporter = AssetImporter.GetAtPath(path) as LogicGraphImporter;
-                if (shaderImporter == null)
+                var importer = AssetImporter.GetAtPath(path) as LogicGraphImporter;
+                if (importer == null)
                     return;
                 
                 File.WriteAllText(path, EditorJsonUtility.ToJson(_logicGraphEditorObject.LogicGraphData, true));
-                shaderImporter.SaveAndReimport();
-                AssetDatabase.ImportAsset(path);
+                importer.SaveAndReimport();
+//                AssetDatabase.ImportAsset(path);
             }
         }
 

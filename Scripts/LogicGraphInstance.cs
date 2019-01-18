@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Cryptography;
 using GeoTetra.GTBuilder.Component;
+using UnityEditor;
 using UnityEditor.U2D;
 using UnityEngine;
 using UnityEngine.Events;
@@ -25,6 +26,8 @@ namespace GeoTetra.GTLogicGraph
 
         public List<GraphOutput> Outputs => _outputs;
 
+        private int _editorInstanceId;
+        
         private void Awake()
         {
             Debug.Log("Awake");
@@ -62,8 +65,18 @@ namespace GeoTetra.GTLogicGraph
         {
             Debug.Log("OnValidate");
 
+            Debug.Log(_logicGraphObject);
+
+            if (_logicGraphObject == null)
+            {
+                _logicGraphObject = EditorUtility.InstanceIDToObject(_editorInstanceId) as LogicGraphObject;
+            }
+            
             if (_logicGraphObject != null)
             {
+                _editorInstanceId = _logicGraphObject.GetInstanceID();
+                Debug.Log(_editorInstanceId);
+                
                 _logicGraphObject.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
                 UpdateInputsAndOutputs();
 
