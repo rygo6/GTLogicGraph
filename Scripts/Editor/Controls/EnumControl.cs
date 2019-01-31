@@ -16,37 +16,37 @@ namespace GeoTetra.GTLogicGraph
             _label = label;
         }
 
-        public VisualElement InstantiateControl(NodeEditor node, PropertyInfo propertyInfo)
+        public VisualElement InstantiateControl(LogicNodeEditor logicNode, PropertyInfo propertyInfo)
         {
-            return new EnumControlView(_label, node, propertyInfo);
+            return new EnumControlView(_label, logicNode, propertyInfo);
         }
     }
 
     public class EnumControlView : VisualElement
     {
-        private readonly NodeEditor _nodeEditor;
+        private readonly LogicNodeEditor _logicNodeEditor;
         private readonly PropertyInfo _propertyInfo;
 
-        public EnumControlView(string label, NodeEditor nodeEditor, PropertyInfo propertyInfo)
+        public EnumControlView(string label, LogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
         {
             AddStyleSheetPath("Styles/Controls/EnumControlView");
-            _nodeEditor = nodeEditor;
+            _logicNodeEditor = logicNodeEditor;
             _propertyInfo = propertyInfo;
             if (!propertyInfo.PropertyType.IsEnum)
                 throw new ArgumentException("Property must be an enum.", nameof(propertyInfo));
             Add(new Label(label ?? ObjectNames.NicifyVariableName(propertyInfo.Name)));
-            var enumField = new EnumField((Enum)_propertyInfo.GetValue(_nodeEditor, null));
+            var enumField = new EnumField((Enum)_propertyInfo.GetValue(_logicNodeEditor, null));
             enumField.OnValueChanged(OnValueChanged);
             Add(enumField);
         }
 
         void OnValueChanged(ChangeEvent<Enum> evt)
         {
-            var value = (Enum)_propertyInfo.GetValue(_nodeEditor, null);
+            var value = (Enum)_propertyInfo.GetValue(_logicNodeEditor, null);
             if (!evt.newValue.Equals(value))
             {
-                _nodeEditor.Owner.LogicGraphEditorObject.RegisterCompleteObjectUndo("Change " + _nodeEditor.NodeType());
-                _propertyInfo.SetValue(_nodeEditor, evt.newValue, null);
+                _logicNodeEditor.Owner.LogicGraphEditorObject.RegisterCompleteObjectUndo("Change " + _logicNodeEditor.NodeType());
+                _propertyInfo.SetValue(_logicNodeEditor, evt.newValue, null);
             }
         }
     }

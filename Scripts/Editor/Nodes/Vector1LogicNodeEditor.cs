@@ -5,7 +5,7 @@ namespace GeoTetra.GTLogicGraph
 {
     [Title("Basic", "Vector1")]
     [NodeEditorType(typeof(Vector1LogicNode))]
-    public class Vector1NodeEditor : NodeEditor
+    public class Vector1LogicNodeEditor : LogicNodeEditor
     {
         [SerializeField]
         private float _value;
@@ -26,8 +26,8 @@ namespace GeoTetra.GTLogicGraph
         
         public override void ConstructNode()
         {
-            AddSlot(new Vector1PortDescription(this, "Vector1Input", "X", PortDirection.Input));
-            AddSlot(new Vector1PortDescription(this, "Vector1Output", "Out", PortDirection.Output));
+            AddPort(new Vector1PortDescription(this, "Vector1Input", "X", PortDirection.Input));
+            AddPort(new Vector1PortDescription(this, "Vector1Output", "Out", PortDirection.Output));
 //            AddSlot(new BooleanPortDescription(this, 3, InputPortDisplayName, PortDirection.Input));
 //            AddSlot(new BooleanPortDescription(this, 4, OutputPortDisplayName, PortDirection.Output));
         }

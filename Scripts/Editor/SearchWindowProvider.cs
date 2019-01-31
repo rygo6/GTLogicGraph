@@ -16,7 +16,7 @@ namespace GeoTetra.GTLogicGraph
         private LogicGraphEditorView _logicGraphEditorView;
         private LogicGraphView _graphView;
         private Texture2D m_Icon;
-        public PortView ConnectedPortView { get; set; }
+        public LogicPort ConnectedLogicPort { get; set; }
         public bool nodeNeedsRepositioning { get; set; }
         public Vector2 targetPosition { get; private set; }
 
@@ -46,7 +46,7 @@ namespace GeoTetra.GTLogicGraph
         struct NodeEntry
         {
             public string[] title;
-            public NodeEditor NodeEditor;
+            public LogicNodeEditor LogicNodeEditor;
             public string compatibleSlotId;
         }
 
@@ -61,12 +61,12 @@ namespace GeoTetra.GTLogicGraph
             {
                 foreach (var type in GetTypesOrNothing(assembly))
                 {
-                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(NodeEditor)))
+                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(LogicNodeEditor)))
                     {
                         var attrs = type.GetCustomAttributes(typeof(TitleAttribute), false) as TitleAttribute[];
                         if (attrs != null && attrs.Length > 0)
                         {
-                            var node = (NodeEditor)Activator.CreateInstance(type);
+                            var node = (LogicNodeEditor)Activator.CreateInstance(type);
                             AddEntries(node, attrs[0].title, nodeEntries);
                         }
                     }
@@ -162,22 +162,22 @@ namespace GeoTetra.GTLogicGraph
             }
         }
         
-        void AddEntries(NodeEditor nodeEditor, string[] title, List<NodeEntry> nodeEntries)
+        void AddEntries(LogicNodeEditor logicNodeEditor, string[] title, List<NodeEntry> nodeEntries)
         {
-            if (ConnectedPortView == null)
+            if (ConnectedLogicPort == null)
             {
                 nodeEntries.Add(new NodeEntry
                 {
-                    NodeEditor = nodeEditor,
+                    LogicNodeEditor = logicNodeEditor,
                     title = title,
                     compatibleSlotId = ""
                 });
                 return;
             }
 
-            var connectedSlot = ConnectedPortView.PortDescription;
+            var connectedSlot = ConnectedLogicPort.Description;
             m_Slots.Clear();
-            nodeEditor.GetSlots(m_Slots);
+            logicNodeEditor.GetSlots(m_Slots);
             var hasSingleSlot = m_Slots.Count(s => s.isOutputSlot != connectedSlot.isOutputSlot) == 1;
             m_Slots.RemoveAll(slot =>
             {
@@ -189,7 +189,7 @@ namespace GeoTetra.GTLogicGraph
             {
                 nodeEntries.Add(new NodeEntry
                 {
-                    NodeEditor = nodeEditor,
+                    LogicNodeEditor = logicNodeEditor,
                     title = title,
                     compatibleSlotId = m_Slots.First().MemberName
                 });
@@ -204,7 +204,7 @@ namespace GeoTetra.GTLogicGraph
                 nodeEntries.Add(new NodeEntry
                 {
                     title = entryTitle,
-                    NodeEditor = nodeEditor,
+                    LogicNodeEditor = logicNodeEditor,
                     compatibleSlotId = slot.MemberName
                 });
             }
@@ -213,7 +213,7 @@ namespace GeoTetra.GTLogicGraph
         public bool OnSelectEntry(SearchTreeEntry entry, SearchWindowContext context)
         {
             var nodeEntry = (NodeEntry)entry.userData;
-            var nodeEditor = nodeEntry.NodeEditor;
+            var nodeEditor = nodeEntry.LogicNodeEditor;
             
             var windowMousePosition = _editorWindow.GetRootVisualContainer().ChangeCoordinatesTo(_editorWindow.GetRootVisualContainer().parent, context.screenMousePosition - _editorWindow.position.position);
             var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);

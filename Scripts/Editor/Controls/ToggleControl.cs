@@ -15,21 +15,21 @@ namespace GeoTetra.GTLogicGraph
             _label = label;
         }
 
-        public VisualElement InstantiateControl(NodeEditor nodeEditor, PropertyInfo propertyInfo)
+        public VisualElement InstantiateControl(LogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
         {
-            return new ToggleControlView(_label, nodeEditor, propertyInfo);
+            return new ToggleControlView(_label, logicNodeEditor, propertyInfo);
         }
     }
 
     public class ToggleControlView : VisualElement
     {
-        private NodeEditor _nodeEditor;
+        private LogicNodeEditor _logicNodeEditor;
         private PropertyInfo _propertyInfo;
         private Toggle _toggle;
 
-        public ToggleControlView(string label, NodeEditor nodeEditor, PropertyInfo propertyInfo)
+        public ToggleControlView(string label, LogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
         {
-            _nodeEditor = nodeEditor;
+            _logicNodeEditor = logicNodeEditor;
             _propertyInfo = propertyInfo;
             AddStyleSheetPath("Styles/Controls/ToggleControlView");
 
@@ -38,7 +38,7 @@ namespace GeoTetra.GTLogicGraph
 
             label = label ?? ObjectNames.NicifyVariableName(propertyInfo.Name);
 
-            var value = (bool)_propertyInfo.GetValue(_nodeEditor, null);
+            var value = (bool)_propertyInfo.GetValue(_logicNodeEditor, null);
             var panel = new VisualElement { name = "togglePanel" };
             if (!string.IsNullOrEmpty(label))
                 panel.Add(new Label(label));
@@ -52,10 +52,10 @@ namespace GeoTetra.GTLogicGraph
 
         private void OnChangeToggle()
         {
-            _nodeEditor.Owner.LogicGraphEditorObject.RegisterCompleteObjectUndo("Toggle Change " + _nodeEditor.NodeType());
-            var value = (bool)_propertyInfo.GetValue(_nodeEditor, null);
+            _logicNodeEditor.Owner.LogicGraphEditorObject.RegisterCompleteObjectUndo("Toggle Change " + _logicNodeEditor.NodeType());
+            var value = (bool)_propertyInfo.GetValue(_logicNodeEditor, null);
             value = !value;
-            _propertyInfo.SetValue(_nodeEditor, value, null);
+            _propertyInfo.SetValue(_logicNodeEditor, value, null);
             Dirty(ChangeType.Repaint);
         }
     }

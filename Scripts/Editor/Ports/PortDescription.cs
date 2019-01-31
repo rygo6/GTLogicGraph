@@ -1,16 +1,17 @@
 ﻿using System;
+using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
     public abstract class PortDescription
     {
-        private readonly string _memberName;
-        private readonly string _displayName = "";
-        private readonly PortDirection _portDirection;
+        public readonly string _memberName;
+        public readonly string _displayName = "";
+        public readonly PortDirection _portDirection;
 
-        public NodeEditor Owner { get; private set; }
+        public LogicNodeEditor Owner { get; private set; }
         
-        public PortDescription(NodeEditor owner, string memberName, string displayName, PortDirection portDirection)
+        public PortDescription(LogicNodeEditor owner, string memberName, string displayName, PortDirection portDirection)
         {
             Owner = owner;
             _memberName = memberName;
@@ -55,6 +56,11 @@ namespace GeoTetra.GTLogicGraph
                    && ((isInputSlot
                        ? otherPortDescription.IsCompatibleWithInputSlotType(ValueType)
                        : IsCompatibleWithInputSlotType(otherPortDescription.ValueType)));
+        }
+        
+        public virtual VisualElement InstantiateControl()
+        {
+            return null;
         }
     }
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using UnityEditor.ShaderGraph.Drawing.Slots;
+using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTLogicGraph.Slots
 {
@@ -10,7 +12,7 @@ namespace GeoTetra.GTLogicGraph.Slots
             get { return PortValueType.Vector3; }
         }
 
-        public Vector3PortDescription(NodeEditor owner, string memberName, string displayName, PortDirection portDirection) 
+        public Vector3PortDescription(LogicNodeEditor owner, string memberName, string displayName, PortDirection portDirection) 
             : base(owner, memberName, displayName, portDirection)
         {
         }
@@ -19,5 +21,10 @@ namespace GeoTetra.GTLogicGraph.Slots
         {
             return inputType == PortValueType.Vector3;
         }
+        
+//        public override VisualElement InstantiateControl()
+//        {
+//            return new MultiFloatSlotControlView(owner, m_Labels, () => new Vector4(value, 0f, 0f, 0f), (newValue) => value = newValue.x);
+//        }
     }
 }

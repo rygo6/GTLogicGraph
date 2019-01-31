@@ -7,7 +7,7 @@ namespace GeoTetra.GTLogicGraph
     {
         public override PortValueType ValueType { get { return PortValueType.Boolean; } }
 
-        public BooleanPortDescription(NodeEditor owner, string memberName, string displayName,
+        public BooleanPortDescription(LogicNodeEditor owner, string memberName, string displayName,
             PortDirection portDirection) : base(owner, memberName, displayName, portDirection)
         {
         }

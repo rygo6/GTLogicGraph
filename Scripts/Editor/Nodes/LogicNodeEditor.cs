@@ -6,9 +6,9 @@ namespace GeoTetra.GTLogicGraph
 {
     /// <summary>
     /// Describes how to draw a node, paired with GenericNodeview
-    /// </summary>
+    /// </summar y>
     [Serializable]
-    public abstract class NodeEditor
+    public abstract class LogicNodeEditor
     {
         [NonSerialized] private List<PortDescription> _portDescriptions = new List<PortDescription>();
 
@@ -40,7 +40,7 @@ namespace GeoTetra.GTLogicGraph
             get { return _nodeGuid; }
         }
 
-        public NodeEditor()
+        public LogicNodeEditor()
         {
             _nodeGuid = System.Guid.NewGuid().ToString();
             ConstructNode();
@@ -94,7 +94,7 @@ namespace GeoTetra.GTLogicGraph
             SerializedNode.JSON = JsonUtility.ToJson(this);
         }
 
-        public void AddSlot(PortDescription portDescription)
+        public void AddPort(PortDescription portDescription)
         {
             if (!(portDescription is PortDescription))
                 throw new ArgumentException(string.Format(
@@ -104,7 +104,7 @@ namespace GeoTetra.GTLogicGraph
             _portDescriptions.Add(portDescription);
         }
 
-        public T FindSlot<T>(string memberName) where T : PortDescription
+        public T FindPort<T>(string memberName) where T : PortDescription
         {
             foreach (var slot in _portDescriptions)
             {
@@ -115,7 +115,7 @@ namespace GeoTetra.GTLogicGraph
             return default(T);
         }
 
-        public T FindInputSlot<T>(string memberName) where T : PortDescription
+        public T FindInputPort<T>(string memberName) where T : PortDescription
         {
             foreach (var slot in _portDescriptions)
             {
@@ -126,7 +126,7 @@ namespace GeoTetra.GTLogicGraph
             return default(T);
         }
 
-        public T FindOutputSlot<T>(string memberName) where T : PortDescription
+        public T FindOutputPort<T>(string memberName) where T : PortDescription
         {
             foreach (var slot in _portDescriptions)
             {

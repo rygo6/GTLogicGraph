@@ -40,6 +40,17 @@ namespace GeoTetra.GTLogicGraph
 		{
 			get { return _serializedOutputNodes; }
 		}
+
+		public void GetEdges(string nodeGuid, string memberName, List<SerializedEdge> foundEdges)
+		{
+			foreach (SerializedEdge serializedEdge in _serializedEdges)
+			{
+				if (serializedEdge.SourceNodeGuid == nodeGuid && serializedEdge.SourceMemberName == memberName)
+					foundEdges.Add(serializedEdge);
+				else if (serializedEdge.TargetNodeGuid == nodeGuid && serializedEdge.TargetMemberName == memberName)
+					foundEdges.Add(serializedEdge);
+			}
+		}
 	}
 
 	[Serializable]

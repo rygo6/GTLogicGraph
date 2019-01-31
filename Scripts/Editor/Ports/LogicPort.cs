@@ -4,19 +4,19 @@ using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
-    public sealed class PortView : Port
+    public sealed class LogicPort : Port
     {
-        PortView(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type)
+        LogicPort(Orientation portOrientation, Direction portDirection, Capacity portCapacity, Type type)
             : base(portOrientation, portDirection, portCapacity, type)
         {
             AddStyleSheetPath("Styles/LogicPort");
         }
 
-        PortDescription _portDescription;
+        private PortDescription _description;
 
         public static Port Create(PortDescription portDescription, IEdgeConnectorListener connectorListener)
         {
-            var port = new PortView(Orientation.Horizontal, 
+            var port = new LogicPort(Orientation.Horizontal, 
                 portDescription.isInputSlot ? Direction.Input : Direction.Output,
                 portDescription.isInputSlot ? Capacity.Single : Capacity.Multi,
                 null)
@@ -24,24 +24,24 @@ namespace GeoTetra.GTLogicGraph
                 m_EdgeConnector = new EdgeConnector<Edge>(connectorListener),
             };
             port.AddManipulator(port.m_EdgeConnector);
-            port.PortDescription = portDescription;
+            port.Description = portDescription;
             return port;
         }
 
-        public PortDescription PortDescription
+        public PortDescription Description
         {
-            get { return _portDescription; }
+            get => _description;
             set
             {
-                if (ReferenceEquals(value, _portDescription))
+                if (ReferenceEquals(value, _description))
                     return;
                 if (value == null)
                     throw new NullReferenceException();
-                if (_portDescription != null && value.isInputSlot != _portDescription.isInputSlot)
+                if (_description != null && value.isInputSlot != _description.isInputSlot)
                     throw new ArgumentException("Cannot change direction of already created port");
-                _portDescription = value;
-                portName = PortDescription.DisplayName;
-                visualClass = PortDescription.ValueType.ToString();
+                _description = value;
+                portName = Description.DisplayName;
+                visualClass = Description.ValueType.ToString();
             }
         }
     }
