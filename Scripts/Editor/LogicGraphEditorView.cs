@@ -21,10 +21,7 @@ namespace GeoTetra.GTLogicGraph
 
         public Action showInProjectRequested { get; set; }
 
-        public LogicGraphView LogicGraphView
-        {
-            get { return _graphView; }
-        }
+        public LogicGraphView LogicGraphView => _graphView;
 
         public LogicGraphEditorView(EditorWindow editorWindow, LogicGraphEditorObject logicGraphEditorObject)
         {
@@ -40,15 +37,13 @@ namespace GeoTetra.GTLogicGraph
                 GUILayout.BeginHorizontal(EditorStyles.toolbar);
                 if (GUILayout.Button("Save Asset", EditorStyles.toolbarButton))
                 {
-                    if (saveRequested != null)
-                        saveRequested();
+                    saveRequested?.Invoke();
                 }
 
                 GUILayout.Space(6);
                 if (GUILayout.Button("Show In Project", EditorStyles.toolbarButton))
                 {
-                    if (showInProjectRequested != null)
-                        showInProjectRequested();
+                    showInProjectRequested?.Invoke();
                 }
 
                 GUILayout.FlexibleSpace();

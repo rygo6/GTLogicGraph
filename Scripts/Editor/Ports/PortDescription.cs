@@ -9,7 +9,7 @@ namespace GeoTetra.GTLogicGraph
         public readonly string _displayName = "";
         public readonly PortDirection _portDirection;
 
-        public LogicNodeEditor Owner { get; private set; }
+        public LogicNodeEditor Owner { get; }
         
         public PortDescription(LogicNodeEditor owner, string memberName, string displayName, PortDirection portDirection)
         {

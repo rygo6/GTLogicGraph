@@ -10,11 +10,11 @@ namespace GeoTetra.GTLogicGraph
     {
         const string k_EdgeColorProperty = "edge-color";
 
-        StyleValue<Color> m_EdgeColor;
+        StyleValue<Color> _edgeColor;
 
         public Color edgeColor
         {
-            get { return m_EdgeColor.GetSpecifiedValueOrDefault(Color.red); }
+            get { return _edgeColor.GetSpecifiedValueOrDefault(Color.red); }
         }
 
         public PortDescription Description
@@ -66,7 +66,7 @@ namespace GeoTetra.GTLogicGraph
         protected override void OnStyleResolved(ICustomStyle styles)
         {
             base.OnStyleResolved(styles);
-            styles.ApplyCustomProperty(k_EdgeColorProperty, ref m_EdgeColor);
+            styles.ApplyCustomProperty(k_EdgeColorProperty, ref _edgeColor);
             _edgeControl.UpdateLayout();
             _edgeControl.inputColor = edgeColor;
             _edgeControl.outputColor = edgeColor;

@@ -1,4 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
+﻿using GeoTetra.GTLogicGraph.Ports;
 
 namespace GeoTetra.GTLogicGraph
 {
@@ -8,7 +8,7 @@ namespace GeoTetra.GTLogicGraph
     {        
         public override void ConstructNode()
         {
-            AddPort(new Vector3PortDescription(this, "Vector3Output", "Out", PortDirection.Output));
+            AddPort(new Vector3PortDescription(this, "Vector3Output", "Out", PortDirection.Output, null, null));
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using GeoTetra.GTLogicGraph.Slots;
+﻿using GeoTetra.GTLogicGraph.Ports;
 
 namespace GeoTetra.GTLogicGraph
 {

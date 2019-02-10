@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GeoTetra.GTLogicGraph.Slots
+namespace GeoTetra.GTLogicGraph.Ports
 {
     [Serializable]
     public class Vector1PortDescription : PortDescription

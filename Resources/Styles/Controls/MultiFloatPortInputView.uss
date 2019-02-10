@@ -1,0 +1,16 @@
+MultiFloatPortInputView {
+    flex-direction: row;
+    align-items: center;
+}
+
+MultiFloatPortInputView > #dummy > Label {
+    margin-left: 0;
+    margin-right: 0;
+    cursor: slide-arrow;
+}
+
+MultiFloatPortInputView > FloatField {
+    width: 30;
+    margin-left: 0;
+    margin-right: 0;
+}

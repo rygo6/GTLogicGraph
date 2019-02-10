@@ -117,7 +117,6 @@ namespace GeoTetra.GTLogicGraph
 
         void OnPostLayout(GeometryChangedEvent evt)
         {
-            Debug.Log("OnGeometryChanged");
             LogicGraphEditorView.UnregisterCallback<GeometryChangedEvent>(OnPostLayout);
             LogicGraphEditorView.LogicGraphView.FrameAll();
         }
