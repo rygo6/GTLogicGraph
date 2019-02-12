@@ -221,20 +221,15 @@ namespace GeoTetra.GTLogicGraph
             
             _logicGraphEditorView.AddNode(nodeEditor);
 
-//            if (connectedPort != null)
-//            {
-//                var connectedSlot = connectedPort.slot;
-//                var connectedSlotReference = connectedSlot.owner.GetSlotReference(connectedSlot.id);
-//                var compatibleSlotReference = node.GetSlotReference(nodeEntry.compatibleSlotId);
-//
-//                var fromReference = connectedSlot.isOutputSlot ? connectedSlotReference : compatibleSlotReference;
-//                var toReference = connectedSlot.isOutputSlot ? compatibleSlotReference : connectedSlotReference;
-//                m_Graph.Connect(fromReference, toReference);
-//
-//                nodeNeedsRepositioning = true;
-//                targetSlotReference = compatibleSlotReference;
-//                targetPosition = graphMousePosition;
-//            }
+            if (ConnectedLogicPort != null)
+            {
+                var connectedSlotReference = ConnectedLogicPort.Description;
+                var compatibleSlotReference = nodeEditor.FindOutputPort<PortDescription>(nodeEntry.compatibleSlotId);
+
+                var fromReference = ConnectedLogicPort.Description.isOutputSlot ? connectedSlotReference : compatibleSlotReference;
+                var toReference = ConnectedLogicPort.Description.isOutputSlot ? compatibleSlotReference : connectedSlotReference;
+                _logicGraphEditorView.AddEdge(fromReference, toReference);
+            }
 
             return true;
         }
