@@ -6,12 +6,9 @@ using UnityEngine.Experimental.UIElements;
 namespace GeoTetra.GTLogicGraph.Ports
 {
     [Serializable]
-    public class Vector3PortDescription : PortDescription
-    {
-        static readonly string[] k_Labels = {"X", "Y", "Z", "W"};
-        
-        public float value { get; set; }
-
+    public class VectorPortDescription : PortDescription
+    {        
+        private string[] _labels;
         private Func<Vector4> _get;
         private Action<Vector4> _set;
         
@@ -20,17 +17,19 @@ namespace GeoTetra.GTLogicGraph.Ports
             get { return PortValueType.Vector3; }
         }
 
-        public Vector3PortDescription(
+        public VectorPortDescription(
             LogicNodeEditor owner, 
             string memberName, 
             string displayName, 
             PortDirection portDirection,
+            string[] labels,
             Func<Vector4> get, 
             Action<Vector4> set) 
             : base(owner, memberName, displayName, portDirection)
         {
             _get = get;
             _set = set;
+            _labels = labels;
         }
 
         public override bool IsCompatibleWithInputSlotType(PortValueType inputType)
@@ -40,10 +39,9 @@ namespace GeoTetra.GTLogicGraph.Ports
         
         public override VisualElement InstantiateControl()
         {
-            var labels = k_Labels.Take(3).ToArray();
             return new MultiFloatPortInputView(
-                Owner, 
-                labels, 
+                Owner,
+                _labels,
                 _get, 
                 _set);
         }

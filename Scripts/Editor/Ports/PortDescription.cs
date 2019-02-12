@@ -19,30 +19,15 @@ namespace GeoTetra.GTLogicGraph
             _portDirection = portDirection;
         }
 
-        public string DisplayName
-        {
-            get { return _displayName + " " + ValueType; }
-        }
+        public string DisplayName => _displayName + " " + ValueType;
 
-        public string MemberName
-        {
-            get { return _memberName; }
-        }
+        public string MemberName => _memberName;
 
-        public bool isInputSlot
-        {
-            get { return _portDirection == PortDirection.Input; }
-        }
+        public bool isInputSlot => _portDirection == PortDirection.Input;
 
-        public bool isOutputSlot
-        {
-            get { return _portDirection == PortDirection.Output; }
-        }
+        public bool isOutputSlot => _portDirection == PortDirection.Output;
 
-        public PortDirection PortDirection
-        {
-            get { return _portDirection; }
-        }
+        public PortDirection PortDirection => _portDirection;
 
         public abstract PortValueType ValueType { get; }
 
