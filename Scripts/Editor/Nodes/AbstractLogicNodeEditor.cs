@@ -8,9 +8,9 @@ namespace GeoTetra.GTLogicGraph
     /// Describes how to draw a node, paired with GenericNodeview
     /// </summar y>
     [Serializable]
-    public abstract class LogicNodeEditor
+    public abstract class AbstractLogicNodeEditor
     {
-        [NonSerialized] private List<PortDescription> _portDescriptions = new List<PortDescription>();
+        [NonSerialized] private List<LogicSlot> _slots = new List<LogicSlot>();
 
         [SerializeField] private string _displayName;
         
@@ -40,7 +40,7 @@ namespace GeoTetra.GTLogicGraph
             get { return _nodeGuid; }
         }
 
-        public LogicNodeEditor()
+        public AbstractLogicNodeEditor()
         {
             _nodeGuid = System.Guid.NewGuid().ToString();
             ConstructNode();
@@ -62,27 +62,27 @@ namespace GeoTetra.GTLogicGraph
             }
         }
 
-        public void GetInputSlots<T>(List<T> foundSlots) where T : PortDescription
+        public void GetInputSlots<T>(List<T> foundSlots) where T : LogicSlot
         {
-            foreach (var slot in _portDescriptions)
+            foreach (var slot in _slots)
             {
                 if (slot.isInputSlot && slot is T)
                     foundSlots.Add((T) slot);
             }
         }
 
-        public void GetOutputSlots<T>(List<T> foundSlots) where T : PortDescription
+        public void GetOutputSlots<T>(List<T> foundSlots) where T : LogicSlot
         {
-            foreach (var slot in _portDescriptions)
+            foreach (var slot in _slots)
             {
                 if (slot.isOutputSlot && slot is T)
                     foundSlots.Add((T) slot);
             }
         }
 
-        public void GetSlots<T>(List<T> foundSlots) where T : PortDescription
+        public void GetSlots<T>(List<T> foundSlots) where T : LogicSlot
         {
-            foreach (var slot in _portDescriptions)
+            foreach (var slot in _slots)
             {
                 if (slot is T)
                     foundSlots.Add((T) slot);
@@ -94,19 +94,19 @@ namespace GeoTetra.GTLogicGraph
             SerializedNode.JSON = JsonUtility.ToJson(this);
         }
 
-        public void AddPort(PortDescription portDescription)
+        public void AddSlot(LogicSlot logicSlot)
         {
-            if (!(portDescription is PortDescription))
+            if (!(logicSlot is LogicSlot))
                 throw new ArgumentException(string.Format(
-                    "Trying to add slot {0} to Material node {1}, but it is not a {2}", portDescription, this,
-                    typeof(PortDescription)));
+                    "Trying to add slot {0} to Material node {1}, but it is not a {2}", logicSlot, this,
+                    typeof(LogicSlot)));
 
-            _portDescriptions.Add(portDescription);
+            _slots.Add(logicSlot);
         }
 
-        public T FindPort<T>(string memberName) where T : PortDescription
+        public T FindPort<T>(string memberName) where T : LogicSlot
         {
-            foreach (var slot in _portDescriptions)
+            foreach (var slot in _slots)
             {
                 if (slot.MemberName == memberName && slot is T)
                     return (T) slot;
@@ -115,9 +115,9 @@ namespace GeoTetra.GTLogicGraph
             return default(T);
         }
 
-        public T FindInputPort<T>(string memberName) where T : PortDescription
+        public T FindInputPort<T>(string memberName) where T : LogicSlot
         {
-            foreach (var slot in _portDescriptions)
+            foreach (var slot in _slots)
             {
                 if (slot.isInputSlot && slot.MemberName == memberName && slot is T)
                     return (T) slot;
@@ -126,9 +126,9 @@ namespace GeoTetra.GTLogicGraph
             return default(T);
         }
 
-        public T FindOutputPort<T>(string memberName) where T : PortDescription
+        public T FindOutputPort<T>(string memberName) where T : LogicSlot
         {
-            foreach (var slot in _portDescriptions)
+            foreach (var slot in _slots)
             {
                 if (slot.isOutputSlot && slot.MemberName == memberName && slot is T)
                     return (T) slot;

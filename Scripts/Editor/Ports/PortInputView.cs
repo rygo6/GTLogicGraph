@@ -17,18 +17,18 @@ namespace GeoTetra.GTLogicGraph
             get { return _edgeColor.GetSpecifiedValueOrDefault(Color.red); }
         }
 
-        public PortDescription Description
+        public LogicSlot Description
         {
             get { return _description; }
         }
 
-        PortDescription _description;
-        PortValueType _valueType;
+        LogicSlot _description;
+        SlotValueType _valueType;
         VisualElement _control;
         VisualElement _container;
         EdgeControl _edgeControl;
 
-        public PortInputView(PortDescription description)
+        public PortInputView(LogicSlot description)
         {
             AddStyleSheetPath("Styles/PortInputView");
             pickingMode = PickingMode.Ignore;
@@ -72,9 +72,9 @@ namespace GeoTetra.GTLogicGraph
             _edgeControl.outputColor = edgeColor;
         }
 
-        public void UpdateSlot(PortDescription newSlot)
+        public void UpdateSlot(LogicSlot newLogicSlot)
         {
-            _description = newSlot;
+            _description = newLogicSlot;
             Recreate();
         }
 

@@ -22,9 +22,9 @@ namespace GeoTetra.GTLogicGraph
         VisualElement _portInputContainer;
         IEdgeConnectorListener _connectorListener;
 
-        public LogicNodeEditor LogicNodeEditor { get; private set; }
+        public AbstractLogicNodeEditor LogicNodeEditor { get; private set; }
 
-        public void Initialize(LogicNodeEditor logicNodeEditor, IEdgeConnectorListener connectorListener)
+        public void Initialize(AbstractLogicNodeEditor logicNodeEditor, IEdgeConnectorListener connectorListener)
         {
             AddStyleSheetPath("Styles/LogicNodeView");
 
@@ -70,7 +70,7 @@ namespace GeoTetra.GTLogicGraph
             };
             Add(_portInputContainer);
 
-            List<PortDescription> foundSlots = new List<PortDescription>();
+            List<LogicSlot> foundSlots = new List<LogicSlot>();
             logicNodeEditor.GetSlots(foundSlots);
             AddPorts(foundSlots);
 
@@ -81,7 +81,7 @@ namespace GeoTetra.GTLogicGraph
             UpdatePortInputVisibilities();
         }
 
-        private void AddPorts(IEnumerable<PortDescription> slots)
+        private void AddPorts(IEnumerable<LogicSlot> slots)
         {
             foreach (var slot in slots)
             {

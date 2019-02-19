@@ -2,23 +2,22 @@
 using System.Globalization;
 using UnityEditor;
 using UnityEditor.Experimental.UIElements;
-using UnityEditor.Graphing;
 using UnityEngine;
 using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTLogicGraph.Ports
 {
-    public class MultiFloatPortInputView : VisualElement
+    public class MultiFloatSlotControlView : VisualElement
     {
-        readonly LogicNodeEditor _node;
+        readonly AbstractLogicNodeEditor _nodeEditor;
         readonly Func<Vector4> _get;
         readonly Action<Vector4> _set;
         int _undoGroup = -1;
 
-        public MultiFloatPortInputView(LogicNodeEditor node, string[] labels, Func<Vector4> get, Action<Vector4> set)
+        public MultiFloatSlotControlView(AbstractLogicNodeEditor nodeEditor, string[] labels, Func<Vector4> get, Action<Vector4> set)
         {
-            AddStyleSheetPath("Styles/Controls/MultiFloatPortInputView");
-            _node = node;
+            AddStyleSheetPath("Styles/Controls/MultiFloatSlotControlView");
+            _nodeEditor = nodeEditor;
             _get = get;
             _set = set;
             var initialValue = get();
@@ -40,7 +39,7 @@ namespace GeoTetra.GTLogicGraph.Ports
                     var value = _get();
                     value[index] = (float)evt.newValue;
                     _set(value);
-                    _node.SetDirty();
+                    _nodeEditor.SetDirty();
                     _undoGroup = -1;
                 });
             field.RegisterCallback<InputEvent>(evt =>
@@ -48,7 +47,7 @@ namespace GeoTetra.GTLogicGraph.Ports
                     if (_undoGroup == -1)
                     {
                         _undoGroup = Undo.GetCurrentGroup();
-                        _node.Owner.LogicGraphEditorObject.RegisterCompleteObjectUndo("Change " + _node.NodeType());
+                        _nodeEditor.Owner.LogicGraphEditorObject.RegisterCompleteObjectUndo("Change " + _nodeEditor.NodeType());
                     }
                     if (!float.TryParse(evt.newData, NumberStyles.Float, CultureInfo.InvariantCulture.NumberFormat, out var newValue))
                         newValue = 0f;
@@ -57,7 +56,7 @@ namespace GeoTetra.GTLogicGraph.Ports
                     {
                         value[index] = newValue;
                         _set(value);
-                        _node.SetDirty();
+                        _nodeEditor.SetDirty();
                     }
                 });
             field.RegisterCallback<KeyDownEvent>(evt =>

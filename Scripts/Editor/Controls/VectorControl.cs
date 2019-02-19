@@ -26,7 +26,7 @@ namespace GeoTetra.GTLogicGraph
             m_Label = label;
         }
 
-        public VisualElement InstantiateControl(LogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
+        public VisualElement InstantiateControl(AbstractLogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
         {
             if (!VectorControlView.validTypes.Contains(propertyInfo.PropertyType))
                 return null;
@@ -38,19 +38,19 @@ namespace GeoTetra.GTLogicGraph
     {
         public static Type[] validTypes = { typeof(float), typeof(Vector2), typeof(Vector3), typeof(Vector4) };
 
-        LogicNodeEditor _mLogicNode;
+        AbstractLogicNodeEditor _mLogicNodeEditor;
         PropertyInfo m_PropertyInfo;
         Vector4 m_Value;
         int m_UndoGroup = -1;
 
-        public VectorControlView(string label, string subLabel1, string subLabel2, string subLabel3, string subLabel4, LogicNodeEditor logicNode, PropertyInfo propertyInfo)
+        public VectorControlView(string label, string subLabel1, string subLabel2, string subLabel3, string subLabel4, AbstractLogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
         {
             var components = Array.IndexOf(validTypes, propertyInfo.PropertyType) + 1;
             if (components == -1)
                 throw new ArgumentException("Property must be of type float, Vector2, Vector3 or Vector4.", "propertyInfo");
 
             AddStyleSheetPath("Styles/VectorControlView");
-            _mLogicNode = logicNode;
+            _mLogicNodeEditor = logicNodeEditor;
             m_PropertyInfo = propertyInfo;
 
             label = label ?? ObjectNames.NicifyVariableName(propertyInfo.Name);
@@ -91,7 +91,7 @@ namespace GeoTetra.GTLogicGraph
                     if (m_UndoGroup == -1)
                     {
                         m_UndoGroup = Undo.GetCurrentGroup();
-                        _mLogicNode.Owner.LogicGraphEditorObject.RegisterCompleteObjectUndo("Change " + _mLogicNode.ToString());
+                        _mLogicNodeEditor.Owner.LogicGraphEditorObject.RegisterCompleteObjectUndo("Change " + _mLogicNodeEditor.ToString());
                     }
                     float newValue;
                     if (!float.TryParse(evt.newData, out newValue))
@@ -128,7 +128,7 @@ namespace GeoTetra.GTLogicGraph
 
         Vector4 GetValue()
         {
-            var value = m_PropertyInfo.GetValue(_mLogicNode, null);
+            var value = m_PropertyInfo.GetValue(_mLogicNodeEditor, null);
             if (m_PropertyInfo.PropertyType == typeof(float))
                 return new Vector4((float)value, 0f, 0f, 0f);
             if (m_PropertyInfo.PropertyType == typeof(Vector2))
@@ -140,7 +140,7 @@ namespace GeoTetra.GTLogicGraph
 
         void SetValue(Vector4 value)
         {
-            m_PropertyInfo.SetValue(_mLogicNode, ValueToPropertyType(value), null);
+            m_PropertyInfo.SetValue(_mLogicNodeEditor, ValueToPropertyType(value), null);
         }
 
         void Repaint<T>(MouseEventBase<T> evt) where T : MouseEventBase<T>, new()

@@ -16,18 +16,18 @@ namespace GeoTetra.GTLogicGraph
             _label = label;
         }
 
-        public VisualElement InstantiateControl(LogicNodeEditor logicNode, PropertyInfo propertyInfo)
+        public VisualElement InstantiateControl(AbstractLogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
         {
-            return new EnumControlView(_label, logicNode, propertyInfo);
+            return new EnumControlView(_label, logicNodeEditor, propertyInfo);
         }
     }
 
     public class EnumControlView : VisualElement
     {
-        private readonly LogicNodeEditor _logicNodeEditor;
+        private readonly AbstractLogicNodeEditor _logicNodeEditor;
         private readonly PropertyInfo _propertyInfo;
 
-        public EnumControlView(string label, LogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
+        public EnumControlView(string label, AbstractLogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
         {
             AddStyleSheetPath("Styles/Controls/EnumControlView");
             _logicNodeEditor = logicNodeEditor;

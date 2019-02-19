@@ -46,12 +46,12 @@ namespace GeoTetra.GTLogicGraph
         struct NodeEntry
         {
             public string[] title;
-            public LogicNodeEditor LogicNodeEditor;
+            public AbstractLogicNodeEditor LogicNodeEditor;
             public string compatibleSlotId;
         }
 
         List<int> m_Ids;
-        List<PortDescription> m_Slots = new List<PortDescription>();
+        List<LogicSlot> m_Slots = new List<LogicSlot>();
 
         public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
         {
@@ -61,12 +61,12 @@ namespace GeoTetra.GTLogicGraph
             {
                 foreach (var type in GetTypesOrNothing(assembly))
                 {
-                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(LogicNodeEditor)))
+                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(AbstractLogicNodeEditor)))
                     {
                         var attrs = type.GetCustomAttributes(typeof(TitleAttribute), false) as TitleAttribute[];
                         if (attrs != null && attrs.Length > 0)
                         {
-                            var node = (LogicNodeEditor)Activator.CreateInstance(type);
+                            var node = (AbstractLogicNodeEditor)Activator.CreateInstance(type);
                             AddEntries(node, attrs[0].title, nodeEntries);
                         }
                     }
@@ -162,7 +162,7 @@ namespace GeoTetra.GTLogicGraph
             }
         }
         
-        void AddEntries(LogicNodeEditor logicNodeEditor, string[] title, List<NodeEntry> nodeEntries)
+        void AddEntries(AbstractLogicNodeEditor logicNodeEditor, string[] title, List<NodeEntry> nodeEntries)
         {
             if (ConnectedLogicPort == null)
             {
@@ -181,7 +181,7 @@ namespace GeoTetra.GTLogicGraph
             var hasSingleSlot = m_Slots.Count(s => s.isOutputSlot != connectedSlot.isOutputSlot) == 1;
             m_Slots.RemoveAll(slot =>
             {
-                var materialSlot = (PortDescription)slot;
+                var materialSlot = (LogicSlot)slot;
                 return !materialSlot.IsCompatibleWith(connectedSlot);
             });
 
@@ -224,7 +224,7 @@ namespace GeoTetra.GTLogicGraph
             if (ConnectedLogicPort != null)
             {
                 var connectedSlotReference = ConnectedLogicPort.Description;
-                var compatibleSlotReference = nodeEditor.FindOutputPort<PortDescription>(nodeEntry.compatibleSlotId);
+                var compatibleSlotReference = nodeEditor.FindOutputPort<LogicSlot>(nodeEntry.compatibleSlotId);
 
                 var fromReference = ConnectedLogicPort.Description.isOutputSlot ? connectedSlotReference : compatibleSlotReference;
                 var toReference = ConnectedLogicPort.Description.isOutputSlot ? compatibleSlotReference : connectedSlotReference;

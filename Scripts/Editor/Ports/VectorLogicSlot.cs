@@ -6,40 +6,40 @@ using UnityEngine.Experimental.UIElements;
 namespace GeoTetra.GTLogicGraph.Ports
 {
     [Serializable]
-    public class VectorPortDescription : PortDescription
+    public class VectorLogicSlot : LogicSlot
     {        
-        private string[] _labels;
-        private Func<Vector4> _get;
-        private Action<Vector4> _set;
+        private readonly string[] _labels;
+        private readonly Func<Vector4> _get;
+        private readonly Action<Vector4> _set;
         
-        public override PortValueType ValueType
+        public override SlotValueType ValueType
         {
-            get { return PortValueType.Vector3; }
+            get { return SlotValueType.Vector3; }
         }
 
-        public VectorPortDescription(
-            LogicNodeEditor owner, 
+        public VectorLogicSlot(
+            AbstractLogicNodeEditor owner, 
             string memberName, 
             string displayName, 
-            PortDirection portDirection,
+            SlotDirection direction,
             string[] labels,
             Func<Vector4> get, 
             Action<Vector4> set) 
-            : base(owner, memberName, displayName, portDirection)
+            : base(owner, memberName, displayName, direction)
         {
             _get = get;
             _set = set;
             _labels = labels;
         }
 
-        public override bool IsCompatibleWithInputSlotType(PortValueType inputType)
+        public override bool IsCompatibleWithInputSlotType(SlotValueType inputType)
         {
-            return inputType == PortValueType.Vector3;
+            return inputType == SlotValueType.Vector3;
         }
         
         public override VisualElement InstantiateControl()
         {
-            return new MultiFloatPortInputView(
+            return new MultiFloatSlotControlView(
                 Owner,
                 _labels,
                 _get, 

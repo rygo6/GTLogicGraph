@@ -148,7 +148,7 @@ namespace GeoTetra.GTLogicGraph
                 _logicGraphEditorObject.RegisterCompleteObjectUndo("Graph Element Moved.");
                 foreach (var element in graphViewChange.movedElements)
                 {
-                    LogicNodeEditor logicNodeEditor = element.userData as LogicNodeEditor;
+                    AbstractLogicNodeEditor logicNodeEditor = element.userData as AbstractLogicNodeEditor;
                     logicNodeEditor.Position = element.GetPosition().position;
                     logicNodeEditor.SerializedNode.JSON = JsonUtility.ToJson(logicNodeEditor);
                 }
@@ -187,7 +187,7 @@ namespace GeoTetra.GTLogicGraph
             }
         }
 
-        public SerializedNode AddNode(LogicNodeEditor logicNodeEditor)
+        public SerializedNode AddNode(AbstractLogicNodeEditor logicNodeEditor)
         {
             _logicGraphEditorObject.RegisterCompleteObjectUndo("Add Node " + logicNodeEditor.NodeType());
 
@@ -221,19 +221,19 @@ namespace GeoTetra.GTLogicGraph
 
         private void AddNodeFromload(SerializedNode serializedNode)
         {
-            LogicNodeEditor logicNodeEditor = null;
+            AbstractLogicNodeEditor logicNodeEditor = null;
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 foreach (var type in assembly.GetTypes())
                 {
-                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(LogicNodeEditor)))
+                    if (type.IsClass && !type.IsAbstract && type.IsSubclassOf(typeof(AbstractLogicNodeEditor)))
                     {
                         var attrs = type.GetCustomAttributes(typeof(NodeEditorType), false) as NodeEditorType[];
                         if (attrs != null && attrs.Length > 0)
                         {
                             if (attrs[0].NodeType.Name == serializedNode.NodeType)
                             {
-                                logicNodeEditor = (LogicNodeEditor) Activator.CreateInstance(type);
+                                logicNodeEditor = (AbstractLogicNodeEditor) Activator.CreateInstance(type);
                             }
                         }
                     }
@@ -258,17 +258,17 @@ namespace GeoTetra.GTLogicGraph
 
         public void AddEdge(Edge edgeView)
         {
-            PortDescription leftPortDescription;
-            PortDescription rightPortDescription;
-            GetSlots(edgeView, out leftPortDescription, out rightPortDescription);
+            LogicSlot leftLogicSlot;
+            LogicSlot rightLogicSlot;
+            GetSlots(edgeView, out leftLogicSlot, out rightLogicSlot);
 
             _logicGraphEditorObject.RegisterCompleteObjectUndo("Connect Edge");
             SerializedEdge serializedEdge = new SerializedEdge
             {
-                SourceNodeGuid = leftPortDescription.Owner.NodeGuid,
-                SourceMemberName = leftPortDescription.MemberName,
-                TargetNodeGuid = rightPortDescription.Owner.NodeGuid,
-                TargetMemberName = rightPortDescription.MemberName
+                SourceNodeGuid = leftLogicSlot.Owner.NodeGuid,
+                SourceMemberName = leftLogicSlot.MemberName,
+                TargetNodeGuid = rightLogicSlot.Owner.NodeGuid,
+                TargetMemberName = rightLogicSlot.MemberName
             };
 
             _logicGraphEditorObject.LogicGraphData.SerializedEdges.Add(serializedEdge);
@@ -279,14 +279,14 @@ namespace GeoTetra.GTLogicGraph
             _graphView.AddElement(edgeView);
         }
         
-        public void AddEdge(PortDescription leftPortDescription, PortDescription rightPortDescription )
+        public void AddEdge(LogicSlot leftLogicSlot, LogicSlot rightLogicSlot )
         {
             SerializedEdge serializedEdge = new SerializedEdge
             {
-                SourceNodeGuid = leftPortDescription.Owner.NodeGuid,
-                SourceMemberName = leftPortDescription.MemberName,
-                TargetNodeGuid = rightPortDescription.Owner.NodeGuid,
-                TargetMemberName = rightPortDescription.MemberName
+                SourceNodeGuid = leftLogicSlot.Owner.NodeGuid,
+                SourceMemberName = leftLogicSlot.MemberName,
+                TargetNodeGuid = rightLogicSlot.Owner.NodeGuid,
+                TargetMemberName = rightLogicSlot.MemberName
             };
 
             _logicGraphEditorObject.LogicGraphData.SerializedEdges.Add(serializedEdge);
@@ -335,12 +335,12 @@ namespace GeoTetra.GTLogicGraph
         }
 
 
-        private void GetSlots(Edge edge, out PortDescription leftPortDescription,
-            out PortDescription rightPortDescription)
+        private void GetSlots(Edge edge, out LogicSlot leftLogicSlot,
+            out LogicSlot rightLogicSlot)
         {
-            leftPortDescription = (edge.output as LogicPort).Description;
-            rightPortDescription = (edge.input as LogicPort).Description;
-            if (leftPortDescription == null || rightPortDescription == null)
+            leftLogicSlot = (edge.output as LogicPort).Description;
+            rightLogicSlot = (edge.input as LogicPort).Description;
+            if (leftLogicSlot == null || rightLogicSlot == null)
             {
                 Debug.Log("an edge is null");
             }

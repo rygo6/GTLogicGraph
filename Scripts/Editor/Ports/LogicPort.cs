@@ -12,23 +12,23 @@ namespace GeoTetra.GTLogicGraph
             AddStyleSheetPath("Styles/LogicPort");
         }
 
-        private PortDescription _description;
+        private LogicSlot _description;
 
-        public static Port Create(PortDescription portDescription, IEdgeConnectorListener connectorListener)
+        public static Port Create(LogicSlot logicSlot, IEdgeConnectorListener connectorListener)
         {
             var port = new LogicPort(Orientation.Horizontal, 
-                portDescription.isInputSlot ? Direction.Input : Direction.Output,
-                portDescription.isInputSlot ? Capacity.Single : Capacity.Multi,
+                logicSlot.isInputSlot ? Direction.Input : Direction.Output,
+                logicSlot.isInputSlot ? Capacity.Single : Capacity.Multi,
                 null)
             {
                 m_EdgeConnector = new EdgeConnector<Edge>(connectorListener),
             };
             port.AddManipulator(port.m_EdgeConnector);
-            port.Description = portDescription;
+            port.Description = logicSlot;
             return port;
         }
 
-        public PortDescription Description
+        public LogicSlot Description
         {
             get => _description;
             set

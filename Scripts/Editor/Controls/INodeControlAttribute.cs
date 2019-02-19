@@ -5,6 +5,6 @@ namespace GeoTetra.GTLogicGraph
 {
 	public interface INodeControlAttribute
 	{
-		VisualElement InstantiateControl(LogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo);
+		VisualElement InstantiateControl(AbstractLogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo);
 	}
 }

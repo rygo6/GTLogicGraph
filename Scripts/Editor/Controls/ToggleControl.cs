@@ -15,7 +15,7 @@ namespace GeoTetra.GTLogicGraph
             _label = label;
         }
 
-        public VisualElement InstantiateControl(LogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
+        public VisualElement InstantiateControl(AbstractLogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
         {
             return new ToggleControlView(_label, logicNodeEditor, propertyInfo);
         }
@@ -23,11 +23,11 @@ namespace GeoTetra.GTLogicGraph
 
     public class ToggleControlView : VisualElement
     {
-        private LogicNodeEditor _logicNodeEditor;
+        private AbstractLogicNodeEditor _logicNodeEditor;
         private PropertyInfo _propertyInfo;
         private Toggle _toggle;
 
-        public ToggleControlView(string label, LogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
+        public ToggleControlView(string label, AbstractLogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
         {
             _logicNodeEditor = logicNodeEditor;
             _propertyInfo = propertyInfo;

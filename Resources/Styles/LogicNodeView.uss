@@ -1,5 +1,13 @@
 LogicNodeView {
-  width: 300;
+   width: 300;
+ }
+
+LogicNodeView.input {
+  width: 150;
+}
+
+LogicNodeView.output {
+  width: 150;
 }
 
 LogicNodeView #collapsible-area {
