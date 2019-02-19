@@ -4,7 +4,7 @@
 
 The intent of this project is to provide a generic graph view based on the new GraphView and VisualElements system found in Unity 2018, the same systems which the new ShaderGraph are based off of.
 
-It should be noted that this codebase is HEAVILY based off of the ShaderGraph source code. Many sections of it are directly copied with minimal editing. I did exhaustively try to make this an extension that rests on top of the ShaderGraph source code. But unfortunately the ShaderGraph source is far too intertwined with the being a material node system rather than a generic node system. So my methodology has been to retain as much code and pattern from the ShaderGraph source as is ideal, while editing it enable a generic graphic system. Theoretically the ShaderGraph system be reimplemented to use this as basis.
+It should be noted that this codebase is essentially a hard fork of the ShaderGraph source. It is HEAVILY based off of the ShaderGraph source code. Many sections of it are directly copied with minimal editing. I did exhaustively try to make this an extension that rests on top of the ShaderGraph source code. But unfortunately the ShaderGraph source is far too intertwined with the being a material node system rather than a generic node system. So my methodology has been to retain as much code and pattern from the ShaderGraph source as is ideal, while editing it to enable a generic graph system. Theoretically the ShaderGraph system could be reimplemented to use this as basis.
 
 Completed or Started:
 - Can drag graph around.
@@ -16,11 +16,11 @@ Completed or Started:
 - Can open search menu to add nodes.
 - Serializing and save of graphs.
 - Graphs can be loaded into scene via LogicGraphInstance component.
+- Slot input views
 
 Still to do:
 - Implement more common base types and nodes.
 - Copy and paste nodes.
-- Implement input views.
 - Implement blackboards.
 
 ## Installation
