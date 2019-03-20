@@ -1,6 +1,5 @@
 ﻿using System;
-using GeoTetra.GTBuilder;
-using GeoTetra.GTLogicGraph.Ports;
+using GeoTetra.GTCommon;
 using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTLogicGraph

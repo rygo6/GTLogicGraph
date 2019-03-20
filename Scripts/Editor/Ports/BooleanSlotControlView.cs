@@ -1,7 +1,5 @@
 using System;
-using GeoTetra.GTBuilder;
-using UnityEditor.Graphing;
-using UnityEngine;
+using GeoTetra.GTCommon;
 using UnityEngine.Experimental.UIElements;
 
 namespace GeoTetra.GTLogicGraph
