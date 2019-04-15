@@ -10,7 +10,7 @@ namespace GeoTetra.GTLogicGraph
     /// </summary>
     public interface IInputComponent
     {
-        event Action<IInputComponent> Changed;
+        event Action<IInputComponent, long> Changed;
 
         void OnChange();
 

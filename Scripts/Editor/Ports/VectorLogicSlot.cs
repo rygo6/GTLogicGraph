@@ -34,7 +34,8 @@ namespace GeoTetra.GTLogicGraph.Ports
 
         public override bool IsCompatibleWithInputSlotType(SlotValueType inputType)
         {
-            return inputType == SlotValueType.Vector3;
+            return inputType == SlotValueType.Vector3 || 
+                   inputType == SlotValueType.Vector1;
         }
         
         public override VisualElement InstantiateControl()

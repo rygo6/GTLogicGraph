@@ -23,6 +23,10 @@ namespace GeoTetra.GTLogicGraph
             _logicGraphData = logicGraphData;
         }
 
+        /// <summary>
+        /// Creates instances, and connects together the instances, of a LogicGraph.
+        /// Will flush the previously saved instances in the process. TODO investigate if any previous instances can be recycled
+        /// </summary>
         public void LoadLogicNodeGraph(List<LogicNode> nodes, List<LogicNode> inputNodes, List<LogicNode> outputNodes)
         {
             if (GraphData == null)
@@ -67,23 +71,24 @@ namespace GeoTetra.GTLogicGraph
                 LogicNode sourceNode = FindNodeByGuid(serializedEdge.SourceNodeGuid, nodes, inputNodes, outputNodes);
                 if (sourceNode == null)
                 {
-                    Debug.LogWarning("source node is null for edge " + serializedEdge.SourceNodeGuid);
-                    return;
+                    Debug.LogWarning($"Source node is null for edge. SourceNodeGuid: {serializedEdge.SourceNodeGuid} SourceMemberName: {serializedEdge.SourceMemberName}");
+                    continue;
                 }
-                
+
                 LogicNode targetNode = FindNodeByGuid(serializedEdge.TargetNodeGuid, nodes, inputNodes, outputNodes);
                 if (targetNode == null)
                 {
-                    Debug.LogWarning("target node is null for edge " + serializedEdge.TargetNodeGuid);
-                    return;
+                    Debug.LogWarning($"Target node is null for edge. TargetNodeGuid: {serializedEdge.TargetNodeGuid} TargetMemberName: {serializedEdge.TargetMemberName}");
+                    continue;
                 }
 
                 MethodInfo targetMethodInfo = MethodInfoByName(targetNode, serializedEdge.TargetMemberName);
                 if (targetMethodInfo == null)
                 {
-                    Debug.LogWarning($"target method is null for {serializedEdge.TargetMemberName} on {targetNode.GetType()}");
-                    return;
+                    Debug.LogWarning($"Target method is null for edge. TargetNodeGuid: {serializedEdge.TargetNodeGuid} TargetMemberName: {serializedEdge.TargetMemberName}");
+                    continue;
                 }
+
                 SubscribeToEventByName(sourceNode, serializedEdge.SourceMemberName, targetNode, targetMethodInfo);
             }
         }
@@ -97,15 +102,10 @@ namespace GeoTetra.GTLogicGraph
                             BindingFlags.Instance);
             foreach (MethodInfo method in methods)
             {
-                //TODO is nodeport attribute necessary? Maybe just search by name?
-                var attrs = method.GetCustomAttributes(typeof(LogicNodePortAttribute), false) as LogicNodePortAttribute[];
-                for (int i = 0; i < attrs.Length; ++i)
+//                    Debug.Log(method.Name);
+                if (method.Name == memberName)
                 {
-                    Debug.Log(method.Name);
-                    if (method.Name == memberName)
-                    {
-                        return method;
-                    }
+                    return method;
                 }
             }
 
@@ -113,12 +113,11 @@ namespace GeoTetra.GTLogicGraph
         }
 
         private void SubscribeToEventByName(
-            LogicNode sourceNode, 
-            string memberName, 
+            LogicNode sourceNode,
+            string memberName,
             LogicNode targetNode,
             MethodInfo targetMethodInfo)
         {
-
             try
             {
                 var events = sourceNode.GetType()
@@ -127,19 +126,12 @@ namespace GeoTetra.GTLogicGraph
                                BindingFlags.Instance);
                 foreach (EventInfo eventInfo in events)
                 {
-                    //TODO is nodeport attribute necessary? Maybe just search by name?
-                    var attrs =
-                        eventInfo.GetCustomAttributes(typeof(LogicNodePortAttribute),
-                            false) as LogicNodePortAttribute[];
-                    for (int i = 0; i < attrs.Length; ++i)
+                    if (eventInfo.Name == memberName)
                     {
-                        if (eventInfo.Name == memberName)
-                        {
-                            Type type = eventInfo.EventHandlerType;
-                            Delegate handler = Delegate.CreateDelegate(type, targetNode, targetMethodInfo);
-                            eventInfo.AddEventHandler(sourceNode, handler);
-                            return;
-                        }
+                        Type type = eventInfo.EventHandlerType;
+                        Delegate handler = Delegate.CreateDelegate(type, targetNode, targetMethodInfo);
+                        eventInfo.AddEventHandler(sourceNode, handler);
+                        return;
                     }
                 }
             }

@@ -88,24 +88,36 @@ namespace GeoTetra.GTLogicGraph
 
         private void LoadElements()
         {
-            for (int i = 0; i < _logicGraphEditorObject.LogicGraphData.SerializedNodes.Count; ++i)
+            bool errorCorrected = false;
+            
+            for (int i = _logicGraphEditorObject.LogicGraphData.SerializedNodes.Count - 1; i > -1; --i)
             {
                 AddNodeFromload(_logicGraphEditorObject.LogicGraphData.SerializedNodes[i]);
             }
 
-            for (int i = 0; i < _logicGraphEditorObject.LogicGraphData.SerializedInputNodes.Count; ++i)
+            for (int i = _logicGraphEditorObject.LogicGraphData.SerializedInputNodes.Count - 1; i > -1; --i)
             {
                 AddNodeFromload(_logicGraphEditorObject.LogicGraphData.SerializedInputNodes[i]);
             }
 
-            for (int i = 0; i < _logicGraphEditorObject.LogicGraphData.SerializedOutputNodes.Count; ++i)
+            for (int i = _logicGraphEditorObject.LogicGraphData.SerializedOutputNodes.Count - 1; i > -1; --i)
             {
                 AddNodeFromload(_logicGraphEditorObject.LogicGraphData.SerializedOutputNodes[i]);
             }
 
-            for (int i = 0; i < _logicGraphEditorObject.LogicGraphData.SerializedEdges.Count; ++i)
+            for (int i = _logicGraphEditorObject.LogicGraphData.SerializedEdges.Count - 1; i > -1; --i)
             {
-                AddEdgeFromLoad(_logicGraphEditorObject.LogicGraphData.SerializedEdges[i]);
+                if (!AddEdgeFromLoad(_logicGraphEditorObject.LogicGraphData.SerializedEdges[i]))
+                {
+                    Debug.Log("Removing erroneous edge.");
+                    _logicGraphEditorObject.LogicGraphData.SerializedEdges.RemoveAt(i);
+                    errorCorrected = true;
+                }
+            }
+
+            if (errorCorrected)
+            {
+                saveRequested?.Invoke();
             }
         }
 
@@ -294,22 +306,22 @@ namespace GeoTetra.GTLogicGraph
             AddEdgeFromLoad(serializedEdge);
         }
 
-        public void AddEdgeFromLoad(SerializedEdge serializedEdge)
+        public bool AddEdgeFromLoad(SerializedEdge serializedEdge)
         {
             LogicNodeView sourceNodeView = _graphView.nodes.ToList().OfType<LogicNodeView>()
                 .FirstOrDefault(x => x.LogicNodeEditor.NodeGuid == serializedEdge.SourceNodeGuid);
             if (sourceNodeView == null)
             {
                 Debug.LogWarning($"Source NodeGUID not found {serializedEdge.SourceNodeGuid}");
-                return;
+                return false;
             }
 
             LogicPort sourceAnchor = sourceNodeView.outputContainer.Children().OfType<LogicPort>()
                 .FirstOrDefault(x => x.Description.MemberName == serializedEdge.SourceMemberName);
             if (sourceAnchor == null)
             {
-                Debug.LogError($"Source anchor null {serializedEdge.SourceMemberName}");
-                return;
+                Debug.LogError($"Source anchor null {serializedEdge.SourceMemberName} {serializedEdge.SourceNodeGuid}");
+                return false;
             }
 
             LogicNodeView targetNodeView = _graphView.nodes.ToList().OfType<LogicNodeView>()
@@ -317,11 +329,16 @@ namespace GeoTetra.GTLogicGraph
             if (targetNodeView == null)
             {
                 Debug.LogWarning($"Target NodeGUID not found {serializedEdge.TargetNodeGuid}");
-                return;
+                return false;
             }
 
             LogicPort targetAnchor = targetNodeView.inputContainer.Children().OfType<LogicPort>()
                 .FirstOrDefault(x => x.Description.MemberName == serializedEdge.TargetMemberName);
+            if (targetAnchor == null)
+            {
+                Debug.LogError($"Target anchor null {serializedEdge.SourceMemberName} {serializedEdge.TargetNodeGuid}");
+                return false;
+            }
 
             var edgeView = new Edge
             {
@@ -332,6 +349,8 @@ namespace GeoTetra.GTLogicGraph
             edgeView.output.Connect(edgeView);
             edgeView.input.Connect(edgeView);
             _graphView.AddElement(edgeView);
+
+            return true;
         }
 
 

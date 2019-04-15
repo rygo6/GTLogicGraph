@@ -13,6 +13,8 @@ namespace GeoTetra.GTLogicGraph
         [SerializeField]
         private bool _boolValue;
 
+        private static readonly string[] Labels = {"X"};
+        
         [NodeToggleControl("Bool")]
         public bool BoolValue
         {
@@ -26,10 +28,23 @@ namespace GeoTetra.GTLogicGraph
         
         public override void ConstructNode()
         {
-            AddSlot(new Vector1LogicSlot(this, "Vector1Input", "X", SlotDirection.Input));
-            AddSlot(new Vector1LogicSlot(this, "Vector1Output", "Out", SlotDirection.Output));
-//            AddSlot(new BooleanPortDescription(this, 3, InputPortDisplayName, PortDirection.Input));
-//            AddSlot(new BooleanPortDescription(this, 4, OutputPortDisplayName, PortDirection.Output));
+            AddSlot(new VectorLogicSlot(
+                this,
+                nameof(Vector1LogicNode.Vector1Input),
+                "Vector1Input",
+                SlotDirection.Input,
+                Labels,
+                () => new Vector4(_value, 0, 0, 0),
+                (newValue) => _value = newValue.x));
+            
+            AddSlot(new VectorLogicSlot(
+                this,
+                nameof(Vector1LogicNode.Vector1Output),
+                "Vector1Output",
+                SlotDirection.Output,
+                Labels,
+                null,
+                null));
         }
     }
 }

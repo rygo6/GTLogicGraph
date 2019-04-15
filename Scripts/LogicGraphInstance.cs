@@ -64,6 +64,8 @@ namespace GeoTetra.GTLogicGraph
 
             Debug.Log(_logicGraphObject);
 
+            //there is an issue in unity editor that would cause this reference to be lost even when it shouldn't have
+            //this forces it to reconnect the reference in event of that
             if (_logicGraphObject == null)
             {
                 _logicGraphObject = EditorUtility.InstanceIDToObject(_editorInstanceId) as LogicGraphObject;
@@ -291,6 +293,8 @@ namespace GeoTetra.GTLogicGraph
 
         public void RegisterValidateEvent(IInputComponent inputComponent)
         {
+            //the object may not be reloaded, and lose prior references, everytime, this checks
+            //to ensure change doesn't get subscribed to multiple times
             if (!ValidateEventRegistered)
             {
                 ValidateEventRegistered = true;
@@ -299,8 +303,9 @@ namespace GeoTetra.GTLogicGraph
             inputComponent.OnChange(); //call right after subscribing so it sends it's data through
         }
 
-        public void OnValidate(IInputComponent component)
+        public void OnValidate(IInputComponent component, long timestamp)
         {
+            Debug.Log($"OnValidate {component} {timestamp}");
             Validate?.Invoke();
         }
     }

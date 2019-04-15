@@ -7,11 +7,10 @@ namespace GeoTetra.GTLogicGraph
 {
     public class Vector1LogicNode : LogicNode
     {
-        [LogicNodePort] public event Action<float> Vector1Output;
+        public event Action<float> Vector1Output;
 
         private float _value;
-        
-        [LogicNodePort]
+
         public void Vector1Input(float value)
         {
             Debug.Log("Vector1LogicNode SetValue " + value);

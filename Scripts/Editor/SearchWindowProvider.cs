@@ -181,8 +181,8 @@ namespace GeoTetra.GTLogicGraph
             var hasSingleSlot = m_Slots.Count(s => s.isOutputSlot != connectedSlot.isOutputSlot) == 1;
             m_Slots.RemoveAll(slot =>
             {
-                var materialSlot = (LogicSlot)slot;
-                return !materialSlot.IsCompatibleWith(connectedSlot);
+                var logicSlot = (LogicSlot)slot;
+                return !logicSlot.IsCompatibleWith(connectedSlot);
             });
 
             if (hasSingleSlot && m_Slots.Count == 1)

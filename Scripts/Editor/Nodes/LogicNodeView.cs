@@ -125,8 +125,6 @@ namespace GeoTetra.GTLogicGraph
 
         private void UpdatePortInput(LogicPort port)
         {
-            Debug.Log("UpdatePortInput");
-
             var inputView = _portInputContainer.OfType<PortInputView>()
                 .First(x => Equals(x.Description, port.Description));
 

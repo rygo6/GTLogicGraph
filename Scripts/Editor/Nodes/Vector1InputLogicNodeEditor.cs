@@ -6,9 +6,18 @@ namespace GeoTetra.GTLogicGraph
     [NodeEditorType(typeof(Vector1InputLogicNode))]
     public class Vector1InputLogicNodeEditor : AbstractLogicNodeEditor, IInputNode
     {        
+        private static readonly string[] Labels = {"X"};
+        
         public override void ConstructNode()
         {
-            AddSlot(new Vector1LogicSlot(this, "Vector1Output", "Out", SlotDirection.Output));
+            AddSlot(new VectorLogicSlot(
+                this,
+                nameof(Vector1InputLogicNode.Vector1Output),
+                "Vector1Output",
+                SlotDirection.Output,
+                Labels,
+                null,
+                null));
         }
     }
 }
