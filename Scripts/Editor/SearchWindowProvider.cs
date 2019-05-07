@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.Experimental.UIElements;
 using UnityEditor.Experimental.UIElements.GraphView;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
+using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
@@ -215,7 +216,7 @@ namespace GeoTetra.GTLogicGraph
             var nodeEntry = (NodeEntry)entry.userData;
             var nodeEditor = nodeEntry.LogicNodeEditor;
             
-            var windowMousePosition = _editorWindow.GetRootVisualContainer().ChangeCoordinatesTo(_editorWindow.GetRootVisualContainer().parent, context.screenMousePosition - _editorWindow.position.position);
+            var windowMousePosition = _editorWindow.rootVisualElement.ChangeCoordinatesTo(_editorWindow.rootVisualElement.parent, context.screenMousePosition - _editorWindow.position.position);
             var graphMousePosition = _graphView.contentViewContainer.WorldToLocal(windowMousePosition);
             nodeEditor.Position = new Vector3(graphMousePosition.x, graphMousePosition.y, 0);
             

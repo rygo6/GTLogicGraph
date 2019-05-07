@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Globalization;
+using GeoTetra.GTLogicGraph.Extensions;
 using UnityEditor;
-using UnityEditor.Experimental.UIElements;
+using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
+using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph.Ports
 {
@@ -16,7 +17,7 @@ namespace GeoTetra.GTLogicGraph.Ports
 
         public MultiFloatSlotControlView(AbstractLogicNodeEditor nodeEditor, string[] labels, Func<Vector4> get, Action<Vector4> set)
         {
-            AddStyleSheetPath("Styles/Controls/MultiFloatSlotControlView");
+           this.LoadAndAddStyleSheet("Styles/Controls/MultiFloatSlotControlView");
             _nodeEditor = nodeEditor;
             _get = get;
             _set = set;
@@ -34,7 +35,7 @@ namespace GeoTetra.GTLogicGraph.Ports
             var field = new FloatField { userData = index, value = initialValue[index] };
             var dragger = new FieldMouseDragger<float>(field);
             dragger.SetDragZone(label);
-            field.OnValueChanged(evt =>
+            field.RegisterValueChangedCallback(evt =>
                 {
                     var value = _get();
                     value[index] = (float)evt.newValue;

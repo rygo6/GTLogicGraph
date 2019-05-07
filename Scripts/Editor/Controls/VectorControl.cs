@@ -1,10 +1,11 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using GeoTetra.GTLogicGraph.Extensions;
 using UnityEditor;
-using UnityEditor.Experimental.UIElements;
+using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
+using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
@@ -49,7 +50,7 @@ namespace GeoTetra.GTLogicGraph
             if (components == -1)
                 throw new ArgumentException("Property must be of type float, Vector2, Vector3 or Vector4.", "propertyInfo");
 
-            AddStyleSheetPath("Styles/VectorControlView");
+            this.LoadAndAddStyleSheet("Styles/VectorControlView");
             _mLogicNodeEditor = logicNodeEditor;
             m_PropertyInfo = propertyInfo;
 
@@ -78,13 +79,13 @@ namespace GeoTetra.GTLogicGraph
 //            dragger.SetDragZone(label);
             field.RegisterCallback<MouseDownEvent>(Repaint);
             field.RegisterCallback<MouseMoveEvent>(Repaint);
-            field.OnValueChanged(evt =>
+            field.RegisterValueChangedCallback(evt =>
                 {
                     var value = GetValue();
                     value[index] = (float)evt.newValue;
                     SetValue(value);
                     m_UndoGroup = -1;
-                    Dirty(ChangeType.Repaint);
+                    MarkDirtyRepaint();
                 });
             field.RegisterCallback<InputEvent>(evt =>
                 {
@@ -99,7 +100,7 @@ namespace GeoTetra.GTLogicGraph
                     var value = GetValue();
                     value[index] = newValue;
                     SetValue(value);
-                    Dirty(ChangeType.Repaint);
+                    MarkDirtyRepaint();
                 });
             field.RegisterCallback<KeyDownEvent>(evt =>
                 {
@@ -110,7 +111,7 @@ namespace GeoTetra.GTLogicGraph
                         m_Value = GetValue();
                         evt.StopPropagation();
                     }
-                    Dirty(ChangeType.Repaint);
+                    MarkDirtyRepaint();
                 });
             Add(field);
         }
@@ -146,7 +147,7 @@ namespace GeoTetra.GTLogicGraph
         void Repaint<T>(MouseEventBase<T> evt) where T : MouseEventBase<T>, new()
         {
             evt.StopPropagation();
-            Dirty(ChangeType.Repaint);
+            MarkDirtyRepaint();
         }
     }
 }

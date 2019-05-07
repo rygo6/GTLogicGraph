@@ -1,20 +1,20 @@
 ﻿using System;
-using UnityEditor.Experimental.UIElements.GraphView;
+using GeoTetra.GTLogicGraph.Extensions;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
-using UnityEngine.Experimental.UIElements.StyleSheets;
+using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
     public class PortInputView : GraphElement, IDisposable
     {
-        const string k_EdgeColorProperty = "edge-color";
+        readonly CustomStyleProperty<Color> k_EdgeColorProperty = new CustomStyleProperty<Color>("--edge-color");
 
-        StyleValue<Color> _edgeColor;
-
+        Color _edgeColor = Color.red;
+       
         public Color edgeColor
         {
-            get { return _edgeColor.GetSpecifiedValueOrDefault(Color.red); }
+            get { return _edgeColor; }
         }
 
         public LogicSlot Description
@@ -30,7 +30,7 @@ namespace GeoTetra.GTLogicGraph
 
         public PortInputView(LogicSlot description)
         {
-            AddStyleSheetPath("Styles/PortInputView");
+            this.LoadAndAddStyleSheet("Styles/PortInputView");
             pickingMode = PickingMode.Ignore;
             ClearClassList();
             _description = description;
@@ -63,10 +63,13 @@ namespace GeoTetra.GTLogicGraph
             _container.visible = _edgeControl.visible = _control != null;
         }
 
-        protected override void OnStyleResolved(ICustomStyle styles)
+        private void OnCustomStyleResolved(CustomStyleResolvedEvent e)
         {
-            base.OnStyleResolved(styles);
-            styles.ApplyCustomProperty(k_EdgeColorProperty, ref _edgeColor);
+            Color colorValue;
+
+            if (e.customStyle.TryGetValue(k_EdgeColorProperty, out colorValue))
+                _edgeColor = colorValue;
+            
             _edgeControl.UpdateLayout();
             _edgeControl.inputColor = edgeColor;
             _edgeControl.outputColor = edgeColor;

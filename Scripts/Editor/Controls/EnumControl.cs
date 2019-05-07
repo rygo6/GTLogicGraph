@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Reflection;
+using GeoTetra.GTLogicGraph.Extensions;
 using UnityEditor;
 using UnityEditor.Experimental.UIElements;
-using UnityEngine.Experimental.UIElements;
+using UnityEditor.UIElements;
+using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
@@ -29,14 +31,14 @@ namespace GeoTetra.GTLogicGraph
 
         public EnumControlView(string label, AbstractLogicNodeEditor logicNodeEditor, PropertyInfo propertyInfo)
         {
-            AddStyleSheetPath("Styles/Controls/EnumControlView");
+            this.LoadAndAddStyleSheet("Styles/Controls/EnumControlView");
             _logicNodeEditor = logicNodeEditor;
             _propertyInfo = propertyInfo;
             if (!propertyInfo.PropertyType.IsEnum)
                 throw new ArgumentException("Property must be an enum.", nameof(propertyInfo));
             Add(new Label(label ?? ObjectNames.NicifyVariableName(propertyInfo.Name)));
             var enumField = new EnumField((Enum)_propertyInfo.GetValue(_logicNodeEditor, null));
-            enumField.OnValueChanged(OnValueChanged);
+            enumField.RegisterValueChangedCallback(OnValueChanged);
             Add(enumField);
         }
 

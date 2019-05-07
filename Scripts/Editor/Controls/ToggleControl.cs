@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Reflection;
+using GeoTetra.GTLogicGraph.Extensions;
 using UnityEditor;
-using UnityEngine.Experimental.UIElements;
+using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
@@ -31,7 +32,7 @@ namespace GeoTetra.GTLogicGraph
         {
             _logicNodeEditor = logicNodeEditor;
             _propertyInfo = propertyInfo;
-            AddStyleSheetPath("Styles/Controls/ToggleControlView");
+            this.LoadAndAddStyleSheet("Styles/Controls/ToggleControlView");
 
             if (propertyInfo.PropertyType != typeof(bool))
                 throw new ArgumentException("Property must be a Toggle.", "propertyInfo");
@@ -42,21 +43,20 @@ namespace GeoTetra.GTLogicGraph
             var panel = new VisualElement { name = "togglePanel" };
             if (!string.IsNullOrEmpty(label))
                 panel.Add(new Label(label));
-            Action changedToggle = () => { OnChangeToggle(); };
-            _toggle = new Toggle(changedToggle);
-  
-            _toggle.value = value;
+            _toggle = new Toggle {value = value};
+            _toggle.RegisterValueChangedCallback(OnChangeToggle);
+
             panel.Add(_toggle);
             Add(panel);
         }
 
-        private void OnChangeToggle()
+        private void OnChangeToggle(ChangeEvent<bool> evt)
         {
             _logicNodeEditor.Owner.LogicGraphEditorObject.RegisterCompleteObjectUndo("Toggle Change " + _logicNodeEditor.NodeType());
             var value = (bool)_propertyInfo.GetValue(_logicNodeEditor, null);
             value = !value;
             _propertyInfo.SetValue(_logicNodeEditor, value, null);
-            Dirty(ChangeType.Repaint);
+            MarkDirtyRepaint();            
         }
     }
 }

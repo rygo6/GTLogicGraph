@@ -1,6 +1,7 @@
 using System;
 using GeoTetra.GTCommon;
-using UnityEngine.Experimental.UIElements;
+using GeoTetra.GTLogicGraph.Extensions;
+using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
@@ -12,7 +13,7 @@ namespace GeoTetra.GTLogicGraph
         
         public BooleanSlotControlView(BooleanSlot slot, string[] labels, Func<Bool4> get, Action<Bool4> set)
         {
-            AddStyleSheetPath("Styles/Controls/BooleanSlotControlView");
+            this.LoadAndAddStyleSheet("Styles/Controls/BooleanSlotControlView");
             _slot = slot;
             _get = get;
             _set = set;
@@ -24,7 +25,7 @@ namespace GeoTetra.GTLogicGraph
                 
                 var toggleField = new Toggle();
                 toggleField.value = _get()[i];
-                toggleField.OnValueChanged(evt =>
+                toggleField.RegisterValueChangedCallback(evt =>
                 {
                     _slot.Owner.Owner.LogicGraphEditorObject.RegisterCompleteObjectUndo("Toggle Change");
                     var value = _get();

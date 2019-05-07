@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Linq;
+using GeoTetra.GTLogicGraph.Extensions;
 using UnityEditor;
+using UnityEditor.Experimental.GraphView;
 using UnityEditor.Experimental.UIElements.GraphView;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
-using Edge = UnityEditor.Experimental.UIElements.GraphView.Edge;
+using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
@@ -30,7 +31,7 @@ namespace GeoTetra.GTLogicGraph
             _logicGraphEditorObject = logicGraphEditorObject;
             _logicGraphEditorObject.Deserialized += LogicGraphEditorDataOnDeserialized;
 
-            AddStyleSheetPath("Styles/LogicGraphEditorView");
+             this.LoadAndAddStyleSheet("Styles/LogicGraphEditorView");
 
             var toolbar = new IMGUIContainer(() =>
             {
@@ -56,7 +57,7 @@ namespace GeoTetra.GTLogicGraph
                 _graphView = new LogicGraphView(_logicGraphEditorObject)
                 {
                     name = "GraphView",
-                    persistenceKey = "LogicGraphView"
+//                    persistenceKey = "LogicGraphView",
                 };
 
                 _graphView.SetupZoom(0.05f, ContentZoomer.DefaultMaxScale);
@@ -227,7 +228,7 @@ namespace GeoTetra.GTLogicGraph
             var nodeView = new LogicNodeView {userData = logicNodeEditor};
             _graphView.AddElement(nodeView);
             nodeView.Initialize(logicNodeEditor, _edgeConnectorListener);
-            nodeView.Dirty(ChangeType.Repaint);
+            nodeView.MarkDirtyRepaint();
             return serializedNode;
         }
 
@@ -260,7 +261,7 @@ namespace GeoTetra.GTLogicGraph
                 var nodeView = new LogicNodeView {userData = logicNodeEditor};
                 _graphView.AddElement(nodeView);
                 nodeView.Initialize(logicNodeEditor, _edgeConnectorListener);
-                nodeView.Dirty(ChangeType.Repaint);
+                nodeView.MarkDirtyRepaint();
             }
             else
             {
