@@ -110,9 +110,9 @@ namespace GeoTetra.GTLogicGraph
         {
             foreach (var port in inputContainer.Children().OfType<LogicPort>())
             {
-                if (!_portInputContainer.Children().OfType<PortInputView>().Any(a => Equals(a.Description, port.Description)))
+                if (!_portInputContainer.Children().OfType<PortInputView>().Any(a => Equals(a.Description, port.Slot)))
                 {
-                    var portInputView = new PortInputView(port.Description) { style = { position = Position.Absolute } };
+                    var portInputView = new PortInputView(port.Slot) { style = { position = Position.Absolute } };
                     _portInputContainer.Add(portInputView);
                     if (float.IsNaN(port.layout.width))
                     {
@@ -136,7 +136,7 @@ namespace GeoTetra.GTLogicGraph
         void UpdatePortInput(GeometryChangedEvent evt)
         {
             var port = (LogicPort)evt.target;
-            var inputView = _portInputContainer.Children().OfType<PortInputView>().First(x => Equals(x.Description, port.Description));
+            var inputView = _portInputContainer.Children().OfType<PortInputView>().First(x => Equals(x.Description, port.Slot));
             
             SetPortInputPosition(port, inputView);
             port.UnregisterCallback<GeometryChangedEvent>(UpdatePortInput);
@@ -151,7 +151,7 @@ namespace GeoTetra.GTLogicGraph
                 _foundEdges.Clear();
                 LogicNodeEditor.Owner.LogicGraphEditorObject.LogicGraphData.GetEdges(
                     LogicNodeEditor.NodeGuid,
-                    portInputView.Description._memberName,
+                    portInputView.Description.MemberName,
                     _foundEdges);
                 portInputView.visible = expanded && _foundEdges.Count == 0;
                 if (portInputView.visible != oldVisibility)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using GeoTetra.GTLogicGraph.Extensions;
 using UnityEditor;
@@ -9,11 +10,15 @@ using UnityEngine.UIElements;
 
 namespace GeoTetra.GTLogicGraph
 {
+    /// <summary>
+    /// Root Visual element which takes up entire editor window. Every other visual element is a child
+    /// of this.
+    /// </summary>
     public class LogicGraphEditorView : VisualElement
     {
         private LogicGraphEditorObject _logicGraphEditorObject;
         private LogicGraphView _graphView;
-        private EditorWindow _editorWindow;
+        private LogicGraphEditorWindow _editorWindow;
         private EdgeConnectorListener _edgeConnectorListener;
         private SearchWindowProvider _searchWindowProvider;
         private bool _reloadGraph;
@@ -24,7 +29,7 @@ namespace GeoTetra.GTLogicGraph
 
         public LogicGraphView LogicGraphView => _graphView;
 
-        public LogicGraphEditorView(EditorWindow editorWindow, LogicGraphEditorObject logicGraphEditorObject)
+        public LogicGraphEditorView(LogicGraphEditorWindow editorWindow, LogicGraphEditorObject logicGraphEditorObject)
         {
             Debug.Log(logicGraphEditorObject.GetInstanceID());
             _editorWindow = editorWindow;
@@ -93,22 +98,22 @@ namespace GeoTetra.GTLogicGraph
             
             for (int i = _logicGraphEditorObject.LogicGraphData.SerializedNodes.Count - 1; i > -1; --i)
             {
-                AddNodeFromload(_logicGraphEditorObject.LogicGraphData.SerializedNodes[i]);
+                AddNode(_logicGraphEditorObject.LogicGraphData.SerializedNodes[i]);
             }
 
             for (int i = _logicGraphEditorObject.LogicGraphData.SerializedInputNodes.Count - 1; i > -1; --i)
             {
-                AddNodeFromload(_logicGraphEditorObject.LogicGraphData.SerializedInputNodes[i]);
+                AddNode(_logicGraphEditorObject.LogicGraphData.SerializedInputNodes[i]);
             }
 
             for (int i = _logicGraphEditorObject.LogicGraphData.SerializedOutputNodes.Count - 1; i > -1; --i)
             {
-                AddNodeFromload(_logicGraphEditorObject.LogicGraphData.SerializedOutputNodes[i]);
+                AddNode(_logicGraphEditorObject.LogicGraphData.SerializedOutputNodes[i]);
             }
 
             for (int i = _logicGraphEditorObject.LogicGraphData.SerializedEdges.Count - 1; i > -1; --i)
             {
-                if (!AddEdgeFromLoad(_logicGraphEditorObject.LogicGraphData.SerializedEdges[i]))
+                if (!AddEdge(_logicGraphEditorObject.LogicGraphData.SerializedEdges[i]))
                 {
                     Debug.Log("Removing erroneous edge.");
                     _logicGraphEditorObject.LogicGraphData.SerializedEdges.RemoveAt(i);
@@ -153,11 +158,14 @@ namespace GeoTetra.GTLogicGraph
 
         private GraphViewChange GraphViewChanged(GraphViewChange graphViewChange)
         {
+            Debug.Log($"GraphViewChanged {graphViewChange}");
+            
             if (graphViewChange.edgesToCreate != null)
                 Debug.Log("EDGES TO CREATE " + graphViewChange.edgesToCreate.Count);
 
             if (graphViewChange.movedElements != null)
             {
+                Debug.Log("Moved elements " + graphViewChange.movedElements.Count);
                 _logicGraphEditorObject.RegisterCompleteObjectUndo("Graph Element Moved.");
                 foreach (var element in graphViewChange.movedElements)
                 {
@@ -169,6 +177,7 @@ namespace GeoTetra.GTLogicGraph
 
             if (graphViewChange.elementsToRemove != null)
             {
+                Debug.Log("Elements to remove" + graphViewChange.elementsToRemove.Count);
                 _logicGraphEditorObject.RegisterCompleteObjectUndo("Deleted Graph Elements.");
 
                 foreach (var nodeView in graphViewChange.elementsToRemove.OfType<LogicNodeView>())
@@ -232,7 +241,7 @@ namespace GeoTetra.GTLogicGraph
             return serializedNode;
         }
 
-        private void AddNodeFromload(SerializedNode serializedNode)
+        private void AddNode(SerializedNode serializedNode)
         {
             AbstractLogicNodeEditor logicNodeEditor = null;
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
@@ -269,6 +278,31 @@ namespace GeoTetra.GTLogicGraph
             }
         }
 
+        public void RemoveEdgesConnectedTo(LogicPort logicPort)
+        {
+            _foundEdges.Clear();
+            _logicGraphEditorObject.LogicGraphData.GetEdges(logicPort.Slot.Owner.NodeGuid, logicPort.Slot.MemberName, _foundEdges);
+            for (int i = 0; i < _foundEdges.Count; ++i)
+            {
+                RemoveEdge(_foundEdges[i]);
+            }
+        }
+       
+        private readonly List<SerializedEdge> _foundEdges = new List<SerializedEdge>();
+
+        public void RemoveEdge(SerializedEdge serializedEdge)
+        {
+            _logicGraphEditorObject.LogicGraphData.SerializedEdges.Remove(serializedEdge);
+            foreach (var edge in _graphView.edges.ToList())
+            {
+                if (edge.userData == serializedEdge)
+                {
+                    Debug.Log("removing edge " + edge);
+                    _graphView.RemoveElement(edge);
+                }
+            }
+        }
+        
         public void AddEdge(Edge edgeView)
         {
             LogicSlot leftLogicSlot;
@@ -304,10 +338,10 @@ namespace GeoTetra.GTLogicGraph
 
             _logicGraphEditorObject.LogicGraphData.SerializedEdges.Add(serializedEdge);
 
-            AddEdgeFromLoad(serializedEdge);
+            AddEdge(serializedEdge);
         }
 
-        public bool AddEdgeFromLoad(SerializedEdge serializedEdge)
+        public bool AddEdge(SerializedEdge serializedEdge)
         {
             LogicNodeView sourceNodeView = _graphView.nodes.ToList().OfType<LogicNodeView>()
                 .FirstOrDefault(x => x.LogicNodeEditor.NodeGuid == serializedEdge.SourceNodeGuid);
@@ -318,7 +352,7 @@ namespace GeoTetra.GTLogicGraph
             }
 
             LogicPort sourceAnchor = sourceNodeView.outputContainer.Children().OfType<LogicPort>()
-                .FirstOrDefault(x => x.Description.MemberName == serializedEdge.SourceMemberName);
+                .FirstOrDefault(x => x.Slot.MemberName == serializedEdge.SourceMemberName);
             if (sourceAnchor == null)
             {
                 Debug.LogError($"Source anchor null {serializedEdge.SourceMemberName} {serializedEdge.SourceNodeGuid}");
@@ -334,7 +368,7 @@ namespace GeoTetra.GTLogicGraph
             }
 
             LogicPort targetAnchor = targetNodeView.inputContainer.Children().OfType<LogicPort>()
-                .FirstOrDefault(x => x.Description.MemberName == serializedEdge.TargetMemberName);
+                .FirstOrDefault(x => x.Slot.MemberName == serializedEdge.TargetMemberName);
             if (targetAnchor == null)
             {
                 Debug.LogError($"Target anchor null {serializedEdge.SourceMemberName} {serializedEdge.TargetNodeGuid}");
@@ -358,8 +392,8 @@ namespace GeoTetra.GTLogicGraph
         private void GetSlots(Edge edge, out LogicSlot leftLogicSlot,
             out LogicSlot rightLogicSlot)
         {
-            leftLogicSlot = (edge.output as LogicPort).Description;
-            rightLogicSlot = (edge.input as LogicPort).Description;
+            leftLogicSlot = (edge.output as LogicPort).Slot;
+            rightLogicSlot = (edge.input as LogicPort).Slot;
             if (leftLogicSlot == null || rightLogicSlot == null)
             {
                 Debug.Log("an edge is null");

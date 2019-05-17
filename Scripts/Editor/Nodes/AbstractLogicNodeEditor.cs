@@ -104,7 +104,7 @@ namespace GeoTetra.GTLogicGraph
             _slots.Add(logicSlot);
         }
 
-        public T FindPort<T>(string memberName) where T : LogicSlot
+        public T FindSlot<T>(string memberName) where T : LogicSlot
         {
             foreach (var slot in _slots)
             {
@@ -115,7 +115,7 @@ namespace GeoTetra.GTLogicGraph
             return default(T);
         }
 
-        public T FindInputPort<T>(string memberName) where T : LogicSlot
+        public T FindInputSlot<T>(string memberName) where T : LogicSlot
         {
             foreach (var slot in _slots)
             {
@@ -126,7 +126,7 @@ namespace GeoTetra.GTLogicGraph
             return default(T);
         }
 
-        public T FindOutputPort<T>(string memberName) where T : LogicSlot
+        public T FindOutputSlot<T>(string memberName) where T : LogicSlot
         {
             foreach (var slot in _slots)
             {

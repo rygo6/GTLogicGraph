@@ -13,7 +13,7 @@ namespace GeoTetra.GTLogicGraph
             this.LoadAndAddStyleSheet("Styles/LogicPort");
         }
 
-        private LogicSlot _description;
+        private LogicSlot _slot;
 
         public static Port Create(LogicSlot logicSlot, IEdgeConnectorListener connectorListener)
         {
@@ -25,24 +25,24 @@ namespace GeoTetra.GTLogicGraph
                 m_EdgeConnector = new EdgeConnector<Edge>(connectorListener),
             };
             port.AddManipulator(port.m_EdgeConnector);
-            port.Description = logicSlot;
+            port.Slot = logicSlot;
             return port;
         }
 
-        public LogicSlot Description
+        public LogicSlot Slot
         {
-            get => _description;
+            get => _slot;
             set
             {
-                if (ReferenceEquals(value, _description))
+                if (ReferenceEquals(value, _slot))
                     return;
                 if (value == null)
                     throw new NullReferenceException();
-                if (_description != null && value.isInputSlot != _description.isInputSlot)
+                if (_slot != null && value.isInputSlot != _slot.isInputSlot)
                     throw new ArgumentException("Cannot change direction of already created port");
-                _description = value;
-                portName = Description.DisplayName;
-                visualClass = Description.ValueType.ToString();
+                _slot = value;
+                portName = Slot.DisplayName;
+                visualClass = Slot.ValueType.ToString();
             }
         }
     }

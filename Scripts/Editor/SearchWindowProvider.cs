@@ -13,7 +13,7 @@ namespace GeoTetra.GTLogicGraph
 {
     public class SearchWindowProvider : ScriptableObject, ISearchWindowProvider
     {
-        private EditorWindow _editorWindow;
+        private LogicGraphEditorWindow _editorWindow;
         private LogicGraphEditorView _logicGraphEditorView;
         private LogicGraphView _graphView;
         private Texture2D m_Icon;
@@ -21,7 +21,7 @@ namespace GeoTetra.GTLogicGraph
         public bool nodeNeedsRepositioning { get; set; }
         public Vector2 targetPosition { get; private set; }
 
-        public void Initialize(EditorWindow editorWindow, 
+        public void Initialize(LogicGraphEditorWindow editorWindow, 
             LogicGraphEditorView logicGraphEditorView, 
             LogicGraphView graphView)
         {
@@ -176,7 +176,7 @@ namespace GeoTetra.GTLogicGraph
                 return;
             }
 
-            var connectedSlot = ConnectedLogicPort.Description;
+            var connectedSlot = ConnectedLogicPort.Slot;
             m_Slots.Clear();
             logicNodeEditor.GetSlots(m_Slots);
             var hasSingleSlot = m_Slots.Count(s => s.isOutputSlot != connectedSlot.isOutputSlot) == 1;
@@ -224,11 +224,14 @@ namespace GeoTetra.GTLogicGraph
 
             if (ConnectedLogicPort != null)
             {
-                var connectedSlotReference = ConnectedLogicPort.Description;
-                var compatibleSlotReference = nodeEditor.FindOutputPort<LogicSlot>(nodeEntry.compatibleSlotId);
+                var connectedSlotReference = ConnectedLogicPort.Slot;
+                var compatibleSlotReference = nodeEditor.FindOutputSlot<LogicSlot>(nodeEntry.compatibleSlotId);
 
-                var fromReference = ConnectedLogicPort.Description.isOutputSlot ? connectedSlotReference : compatibleSlotReference;
-                var toReference = ConnectedLogicPort.Description.isOutputSlot ? compatibleSlotReference : connectedSlotReference;
+                var fromReference = ConnectedLogicPort.Slot.isOutputSlot ? connectedSlotReference : compatibleSlotReference;
+                var toReference = ConnectedLogicPort.Slot.isOutputSlot ? compatibleSlotReference : connectedSlotReference;
+
+                _logicGraphEditorView.RemoveEdgesConnectedTo(ConnectedLogicPort);
+                
                 _logicGraphEditorView.AddEdge(fromReference, toReference);
             }
 

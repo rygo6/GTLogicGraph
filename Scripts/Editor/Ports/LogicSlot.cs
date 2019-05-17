@@ -5,9 +5,9 @@ namespace GeoTetra.GTLogicGraph
 {
     public abstract class LogicSlot
     {
-        public readonly string _memberName;
-        public readonly string _displayName = "";
-        public readonly SlotDirection _direction;
+        private readonly string _memberName;
+        private readonly string _displayName = "";
+        private readonly SlotDirection _direction;
 
         public AbstractLogicNodeEditor Owner { get; }
         

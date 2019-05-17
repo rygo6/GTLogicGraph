@@ -7,6 +7,9 @@ using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
 {
+	/// <summary>
+	/// Implementation of GraphView
+	/// </summary>
 	public class LogicGraphView : GraphView
 	{		
 		public LogicGraphEditorObject LogicGraphEditorObject { get; private set; }
@@ -25,13 +28,13 @@ namespace GeoTetra.GTLogicGraph
 		public override List<Port> GetCompatiblePorts(Port startAnchor, NodeAdapter nodeAdapter)
 		{
 			var compatibleAnchors = new List<Port>();
-			var startSlot = (startAnchor as LogicPort).Description;
+			var startSlot = (startAnchor as LogicPort).Slot;
 			if (startSlot == null)
 				return compatibleAnchors;
 
 			foreach (var candidateAnchor in ports.ToList())
 			{
-				var candidateSlot = (candidateAnchor as LogicPort).Description;
+				var candidateSlot = (candidateAnchor as LogicPort).Slot;
 				if (!startSlot.IsCompatibleWith(candidateSlot))
 					continue;
 

@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
 {
+	/// <summary>
+	/// ScriptableObject to hold LogicGraphData to recieve serialize callbacks and undo.
+	/// </summary>
 	public class LogicGraphEditorObject : ScriptableObject, ISerializationCallbackReceiver
 	{
 		[SerializeField]

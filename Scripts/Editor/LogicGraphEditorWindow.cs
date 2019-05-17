@@ -9,6 +9,9 @@ using Object = UnityEngine.Object;
 
 namespace GeoTetra.GTLogicGraph
 {
+    /// <summary>
+    /// Root Editor Window. Entire system is a subset of this class.
+    /// </summary>
     public class LogicGraphEditorWindow : EditorWindow
     {
         private LogicGraphEditorObject _logicGraphEditorObject;
