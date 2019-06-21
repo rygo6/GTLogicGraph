@@ -384,6 +384,8 @@ namespace GeoTetra.GTLogicGraph
             edgeView.output.Connect(edgeView);
             edgeView.input.Connect(edgeView);
             _graphView.AddElement(edgeView);
+            targetNodeView.UpdatePortInputVisibilities();
+            sourceNodeView.UpdatePortInputVisibilities();
 
             return true;
         }

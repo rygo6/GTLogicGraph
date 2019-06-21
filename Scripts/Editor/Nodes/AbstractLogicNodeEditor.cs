@@ -19,6 +19,8 @@ namespace GeoTetra.GTLogicGraph
         [SerializeField] private bool _expanded = true;
 
         [SerializeField] private string _nodeGuid;
+        
+        public event Action m_OnModified;
 
         public LogicGraphView Owner { get; set; }
         public SerializedNode SerializedNode { get; set; }

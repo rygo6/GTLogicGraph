@@ -66,10 +66,10 @@ namespace GeoTetra.GTLogicGraph
 
             //there is an issue in unity editor that would cause this reference to be lost even when it shouldn't have
             //this forces it to reconnect the reference in event of that
-            if (_logicGraphObject == null)
-            {
-                _logicGraphObject = EditorUtility.InstanceIDToObject(_editorInstanceId) as LogicGraphObject;
-            }
+//            if (_logicGraphObject == null)
+//            {
+//                _logicGraphObject = EditorUtility.InstanceIDToObject(_editorInstanceId) as LogicGraphObject;
+//            }
             
             if (_logicGraphObject != null)
             {
