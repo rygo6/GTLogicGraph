@@ -39,6 +39,7 @@ namespace GeoTetra.GTLogicGraph
 //                _logicGraphObject.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
 //                UpdateInputsAndOutputs();
 //            }
+            HookUpGraph();
         }
         
         public void OnDisable()
@@ -61,21 +62,22 @@ namespace GeoTetra.GTLogicGraph
         public void OnValidate()
         {
             Debug.Log("OnValidate");
-
-            Debug.Log(_logicGraphObject);
-
-            //there is an issue in unity editor that would cause this reference to be lost even when it shouldn't have
-            //this forces it to reconnect the reference in event of that
-//            if (_logicGraphObject == null)
-//            {
-//                _logicGraphObject = EditorUtility.InstanceIDToObject(_editorInstanceId) as LogicGraphObject;
-//            }
-            
             if (_logicGraphObject != null)
             {
-                _editorInstanceId = _logicGraphObject.GetInstanceID();
-                Debug.Log(_editorInstanceId);
-                
+                for (int i = 0; i < Inputs.Count; ++i)
+                {
+                    if (Inputs[i].Validate != null)
+                    {
+                        Inputs[i].Validate();
+                    }
+                }
+            }
+        }
+
+        public void HookUpGraph()
+        {
+            if (_logicGraphObject != null)
+            {
                 _logicGraphObject.LoadLogicNodeGraph(_nodes, _inputNodes, _outputNodes);
                 UpdateInputsAndOutputs();
 
@@ -96,11 +98,11 @@ namespace GeoTetra.GTLogicGraph
                 }
             }
         }
-
+        
         private void UpdateInputsAndOutputs()
         {
             Debug.Log("GraphLogic OnEnable");
-
+                
             if (_inputNodes.Count != 0)
             {
                 List<GraphInput> loadedInputs = new List<GraphInput>();
