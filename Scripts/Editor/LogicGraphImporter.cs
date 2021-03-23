@@ -4,18 +4,18 @@ using System.IO;
 using System.Text;
 using GeoTetra.GTLogicGraph;
 using UnityEditor;
-using UnityEditor.Experimental.AssetImporters;
+
 using UnityEditor.Graphs;
 using UnityEditor.SceneManagement;
 using UnityEditor.VersionControl;
 using UnityEngine.SceneManagement;
 
-[ScriptedImporter(13, LogicGraphImporter.LogicGraphExtension)]
-public class LogicGraphImporter : ScriptedImporter
+[UnityEditor.AssetImporters.ScriptedImporter(13, LogicGraphImporter.LogicGraphExtension)]
+public class LogicGraphImporter : UnityEditor.AssetImporters.ScriptedImporter
 {
     public const string LogicGraphExtension = "LogicGraph";
 
-    public override void OnImportAsset(AssetImportContext ctx)
+    public override void OnImportAsset(UnityEditor.AssetImporters.AssetImportContext ctx)
     {
         List<Object> objectList = new List<Object>();
         Debug.Log("MAIN OBJECT  " + ctx.mainObject);

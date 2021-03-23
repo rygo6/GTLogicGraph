@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using GeoTetra.GTLogicGraph;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Experimental.PlayerLoop;
 
 [CustomEditor(typeof(LogicGraphInstance))]
 public class LogicGraphInstanceEditor : Editor

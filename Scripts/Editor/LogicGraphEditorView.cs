@@ -121,6 +121,12 @@ namespace GeoTetra.GTLogicGraph
                 }
             }
 
+            foreach (var node in _graphView.nodes.ToList())
+            {
+                
+            }
+            
+
             if (errorCorrected)
             {
                 saveRequested?.Invoke();

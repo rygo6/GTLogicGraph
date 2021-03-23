@@ -20,8 +20,7 @@ namespace GeoTetra.GTLogicGraph
             var draggedPort = (edge.output != null ? edge.output.edgeConnector.edgeDragHelper.draggedPort : null) ??
                               (edge.input != null ? edge.input.edgeConnector.edgeDragHelper.draggedPort : null);
             _searchWindowProvider.ConnectedLogicPort = (LogicPort) draggedPort;
-            SearchWindow.Open(new SearchWindowContext(GUIUtility.GUIToScreenPoint(Event.current.mousePosition)),
-                _searchWindowProvider);
+            SearchWindow.Open(new SearchWindowContext(GUIUtility.GUIToScreenPoint(Event.current.mousePosition)), _searchWindowProvider);
         }
 
         public void OnDrop(GraphView graphView, Edge edge)

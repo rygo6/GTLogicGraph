@@ -17,24 +17,40 @@ namespace GeoTetra.GTLogicGraph
             get { return _edgeColor; }
         }
 
-        public LogicSlot Description
+        public LogicSlot Slot
         {
-            get { return _description; }
+            get { return _slot; }
         }
 
-        LogicSlot _description;
+        public bool PortInputVisibility
+        {
+            get => _container.visible;
+            set
+            {
+                if (_control != null)
+                {
+                    visible = _edgeControl.visible = _container.visible = value;
+                }
+                else
+                {
+                    visible = _edgeControl.visible = _container.visible = false;
+                }
+            }
+        }
+
+        LogicSlot _slot;
         SlotValueType _valueType;
         VisualElement _control;
         VisualElement _container;
         EdgeControl _edgeControl;
 
-        public PortInputView(LogicSlot description)
+        public PortInputView(LogicSlot slot)
         {
             this.LoadAndAddStyleSheet("Styles/PortInputView");
             pickingMode = PickingMode.Ignore;
             ClearClassList();
-            _description = description;
-            _valueType = description.ValueType;
+            _slot = slot;
+            _valueType = slot.ValueType;
             AddToClassList("type" + _valueType);
 
             _edgeControl = new EdgeControl
@@ -48,7 +64,7 @@ namespace GeoTetra.GTLogicGraph
 
             _container = new VisualElement { name = "container" };
             {
-                _control = this.Description.InstantiateControl();
+                _control = this.Slot.InstantiateControl();
                 if (_control != null)
                     _container.Add(_control);
 
@@ -60,7 +76,7 @@ namespace GeoTetra.GTLogicGraph
             }
             Add(_container);
 
-            _container.visible = _edgeControl.visible = _control != null;
+            visible = true;
         }
 
         private void OnCustomStyleResolved(CustomStyleResolvedEvent e)
@@ -77,20 +93,20 @@ namespace GeoTetra.GTLogicGraph
 
         public void UpdateSlot(LogicSlot newLogicSlot)
         {
-            _description = newLogicSlot;
+            _slot = newLogicSlot;
             Recreate();
         }
 
         public void UpdateSlotType()
         {
-            if (Description.ValueType != _valueType)
+            if (Slot.ValueType != _valueType)
                 Recreate();
         }
 
         void Recreate()
         {
             RemoveFromClassList("type" + _valueType);
-            _valueType = Description.ValueType;
+            _valueType = Slot.ValueType;
             AddToClassList("type" + _valueType);
             if (_control != null)
             {
@@ -99,7 +115,7 @@ namespace GeoTetra.GTLogicGraph
                     disposable.Dispose();
                 _container.Remove(_control);
             }
-            _control = Description.InstantiateControl();
+            _control = Slot.InstantiateControl();
             if (_control != null)
                 _container.Insert(0, _control);
 

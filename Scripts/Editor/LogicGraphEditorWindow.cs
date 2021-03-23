@@ -57,10 +57,7 @@ namespace GeoTetra.GTLogicGraph
                 _logicGraphEditorObject = CreateInstance<LogicGraphEditorObject>();
                 LogicGraphData logicGraphData = JsonUtility.FromJson<LogicGraphData>(textGraph);
                 _logicGraphEditorObject.Initialize(logicGraphData);
-                LogicGraphEditorView = new LogicGraphEditorView(this, _logicGraphEditorObject)
-                {
-//                    persistenceKey = _logicGraphEditorObject.GetInstanceID().ToString()
-                };
+                LogicGraphEditorView = new LogicGraphEditorView(this, _logicGraphEditorObject);
                 LogicGraphEditorView.RegisterCallback<GeometryChangedEvent>(OnPostLayout);
 
                 titleContent = new GUIContent(_logicGraphEditorObject.name);

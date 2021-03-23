@@ -1,13 +1,13 @@
 ﻿using System.IO;
 using UnityEditor;
 using UnityEditor.Callbacks;
-using UnityEditor.Experimental.AssetImporters;
+
 using UnityEngine;
 
 namespace GeoTetra.GTLogicGraph
 {
 	[CustomEditor(typeof(LogicGraphImporter))]
-	public class LogicGraphImporterEditor : ScriptedImporterEditor
+	public class LogicGraphImporterEditor : UnityEditor.AssetImporters.ScriptedImporterEditor
 	{
 		public override void OnInspectorGUI()
 		{
